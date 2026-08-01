@@ -95,16 +95,24 @@ cargo install --git https://github.com/JGalego/HyperLab hyperlab-graph
 
 🔨 **Building the application** — needs 🦀 Rust 1.88, 🟢
 [Node](https://nodejs.org) 20, and
-[Tauri's system dependencies](https://tauri.app/start/prerequisites/):
+[Tauri's system dependencies](https://tauri.app/start/prerequisites/).
+
+Clone it:
 
 ```sh
 git clone https://github.com/JGalego/hyperlab
 cd hyperlab
 ```
 
+Check that the core is sound before spending anything on a build — this
+needs no Node and no system libraries:
+
 ```sh
 cargo test
 ```
+
+Then start the application. The first build takes a while; after that it
+reloads as you edit:
 
 ```sh
 cd apps/desktop
