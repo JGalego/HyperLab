@@ -144,6 +144,30 @@ is already inside the runtime and letting an assistant restructure a stack
 between two statements would pull the ground out from under the interpreter.
 Edits belong in the sidebar, where nothing is mid-handler.
 
+## Pictures ✅
+
+HyperLab could draw buttons and fields and nothing else, which ruled out
+most of what people actually made with HyperCard.
+
+A picture is a [`PartKind::Image`](../crates/stack/src/part.rs), not a new
+kind of object, and the feature is mostly the dividend of that: `hide image
+"Rope"`, `set the source of image "Board"`, dragging one in edit mode,
+clicking one to run its script, undo. None of it is written anywhere,
+because a part already does it. The parser needed one word and its plural.
+
+The bytes belong to the stack rather than the part, in an ordered library
+saved as real files in the bundle's `images/`. A `.png` opens in an image
+viewer; an `.svg` diffs like the text it is.
+
+Two locks on the door, because a picture ends up in a web view and SVG is a
+document that can carry script: the renderer only ever draws through
+`<img>`, where a browser runs no script and fetches nothing, and the model
+refuses bytes that are not the format the name claims — including on the
+way *in* from JSON, which is the input that did not come from this program.
+
+[Cluedo](../examples) is the example: a drawn board with transparent
+buttons over its rooms, and portraits that are themselves the buttons.
+
 ## The map ✅
 
 Not a phase — a thing that fell out of one. Once the parser is in the same
