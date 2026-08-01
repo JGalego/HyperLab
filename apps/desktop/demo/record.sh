@@ -77,12 +77,15 @@ echo "converting…"
 : "${GIF_FOR:=26}"
 : "${GIF_WIDTH:=640}"
 
-# A shared palette, or a black-and-white interface dithers into mush.
+# A shared palette, or a black-and-white interface dithers into mush — and a
+# small one, because Neo Classic is very nearly monochrome. Thirty-two
+# colours is indistinguishable here and half the bytes, and with that few
+# there is nothing left to dither.
 "$ffmpeg" -y -loglevel error -ss "$GIF_FROM" -t "$GIF_FOR" -i "$webm" \
-  -vf "fps=10,scale=$GIF_WIDTH:-1:flags=lanczos,palettegen=stats_mode=diff" \
+  -vf "fps=10,scale=$GIF_WIDTH:-1:flags=lanczos,palettegen=max_colors=32:stats_mode=diff" \
   "$out/palette.png"
 "$ffmpeg" -y -loglevel error -ss "$GIF_FROM" -t "$GIF_FOR" -i "$webm" -i "$out/palette.png" \
-  -lavfi "fps=10,scale=$GIF_WIDTH:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4" \
+  -lavfi "fps=10,scale=$GIF_WIDTH:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=none" \
   "$out/hyperlab.gif"
 rm -f "$out/palette.png"
 
