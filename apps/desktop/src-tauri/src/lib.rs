@@ -116,3 +116,34 @@ pub fn run() {
         .run(tauri::generate_context!())
         .expect("HyperLab could not open a window");
 }
+
+#[cfg(test)]
+mod tests {
+    /// The window's policy, read from the file the bundler reads.
+    const CONFIG: &str = include_str!("../tauri.conf.json");
+
+    /// The renderer draws every picture as a `data:` URI, and the window
+    /// applies a Content Security Policy that the development server does
+    /// not. Those two facts met for the first time in a release build, where
+    /// every picture in every stack silently failed to load.
+    #[test]
+    fn the_window_policy_allows_the_pictures_we_draw() {
+        let config: serde_json::Value =
+            serde_json::from_str(CONFIG).expect("tauri.conf.json should be valid JSON");
+        let policy = config["app"]["security"]["csp"]
+            .as_str()
+            .expect("there should be a csp");
+
+        let images = policy
+            .split(';')
+            .map(str::trim)
+            .find(|directive| directive.starts_with("img-src"))
+            .unwrap_or_else(|| {
+                panic!("no img-src in \"{policy}\", so default-src decides and blocks data: URIs")
+            });
+        assert!(
+            images.contains("data:"),
+            "img-src must allow data:, or no picture in any stack will draw: \"{images}\""
+        );
+    }
+}
