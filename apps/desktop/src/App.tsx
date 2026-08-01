@@ -39,6 +39,7 @@ export function App() {
   const [dialog, setDialog] = useState<DialogRequest | null>(null);
   const [ready, setReady] = useState(false);
   const [ai, setAi] = useState<AiView | null>(null);
+  const [aiOpen, setAiOpen] = useState(false);
   const [aiSettings, setAiSettings] = useState(false);
 
   /**
@@ -81,8 +82,8 @@ export function App() {
       setReady(true);
       return;
     }
-    // The sidebar is opened by the user, but its state is read up front so
-    // that "no model is set up" is known before anyone asks a question.
+    // Read up front, but not shown: the panel costs 300px, and someone with
+    // no model configured should never have to close it.
     api.aiView().then(setAi, () => setAi(null));
     api.getView().then(
       (outcome) => {
@@ -241,12 +242,13 @@ export function App() {
       title: 'AI',
       entries: [
         {
-          label: ai === null ? 'Show Assistant' : 'Hide Assistant',
+          label: aiOpen ? 'Hide Assistant' : 'Show Assistant',
           run: () => {
-            if (ai !== null) {
-              setAi(null);
+            if (aiOpen) {
+              setAiOpen(false);
               return;
             }
+            setAiOpen(true);
             api.aiView().then(setAi, (reason: unknown) => setError(String(reason)));
           },
         },
@@ -278,7 +280,7 @@ export function App() {
           />
         </div>
 
-        {ai !== null && (
+        {aiOpen && ai !== null && (
           <Assistant
             view={ai}
             onView={setAi}
@@ -313,6 +315,7 @@ export function App() {
         <AiSettings
           onDone={(next) => {
             setAi(next);
+            setAiOpen(true);
             setAiSettings(false);
           }}
           onCancel={() => setAiSettings(false)}
