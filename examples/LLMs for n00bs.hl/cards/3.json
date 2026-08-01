@@ -1,0 +1,75 @@
+{
+  "id": 3,
+  "name": "LLMs for n00bs",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 12,
+      "name": "Title",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "shadow",
+        "text": "LLMs for n00bs",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 12,
+        "width": 592,
+        "height": 30
+      }
+    },
+    {
+      "id": 13,
+      "name": "Body",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Nine slides on what a language model actually does, and what it cannot. No maths.\n\nThe last one asks a real one, if you have set one up. Press Next.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 50,
+        "width": 592,
+        "height": 78
+      }
+    },
+    {
+      "id": 14,
+      "name": "LLMs for n00bs",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "pipeline.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 24,
+        "top": 134,
+        "width": 592,
+        "height": 200
+      }
+    }
+  ]
+}

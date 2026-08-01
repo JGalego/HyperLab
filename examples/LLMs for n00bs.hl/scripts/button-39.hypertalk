@@ -1,0 +1,13 @@
+on mouseUp
+  put field "Question" into asked
+  if asked is empty then
+    answer "Type a question first."
+    exit mouseUp
+  end if
+  ask assistant asked
+  if the result is not empty then
+    put the result into field "Answer"
+  else
+    put it into field "Answer"
+  end if
+end mouseUp

@@ -1,0 +1,98 @@
+{
+  "id": 2,
+  "name": "Slide",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "parts": [
+    {
+      "id": 41,
+      "name": "Back",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 24,
+        "top": 346,
+        "width": 84,
+        "height": 26
+      }
+    },
+    {
+      "id": 42,
+      "name": "Next",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 116,
+        "top": 346,
+        "width": 84,
+        "height": 26
+      }
+    },
+    {
+      "id": 43,
+      "name": "Start Over",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 208,
+        "top": 346,
+        "width": 100,
+        "height": 26
+      }
+    },
+    {
+      "id": 44,
+      "name": "Where",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": null,
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 500,
+        "top": 348,
+        "width": 116,
+        "height": 22
+      }
+    }
+  ]
+}

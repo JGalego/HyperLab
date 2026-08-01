@@ -1,0 +1,75 @@
+{
+  "id": 7,
+  "name": "Temperature is how boldly it picks",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 24,
+      "name": "Title",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "shadow",
+        "text": "Temperature is how boldly it picks",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 12,
+        "width": 592,
+        "height": 30
+      }
+    },
+    {
+      "id": 25,
+      "name": "Body",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "The scores do not change. What changes is how far down the list it is willing to reach.\n\nLow repeats itself. High invents, and is wrong more often. Neither one is a truth setting.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 50,
+        "width": 592,
+        "height": 78
+      }
+    },
+    {
+      "id": 26,
+      "name": "Temperature is how boldly it picks",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "temperature.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 24,
+        "top": 134,
+        "width": 592,
+        "height": 200
+      }
+    }
+  ]
+}

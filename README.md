@@ -106,6 +106,13 @@ and [mystextract](https://github.com/erkyrath/mystextract) both exist to
 recover it from the original. **Go ▸ Map** finds the trap book without
 running a line.
 
+<p align="center">
+  <img src="docs/deck.gif" alt="Paging through the LLMs for n00bs deck" width="640">
+</p>
+
+**LLMs for n00bs** — nine slides on how a language model works, drawn one bit
+deep. The last one asks a real model, and says so plainly when none is set up.
+
 **Address Book** — a card per person, one shared background.
 
 **Recipe Box** — chunk expressions doing arithmetic on the ingredients.

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 592 200" width="592" height="200">
+  <title>A window over the conversation, and the old text falling out of it</title>
+  <defs>
+    <pattern id="d25" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#fff"/><rect width="2" height="2"/>
+    </pattern>
+    <marker id="tip2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z"/>
+    </marker>
+  </defs>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="13">
+    <g fill="url(#d25)" stroke="#000" stroke-width="1.5">
+      <rect x="0" y="96" width="30" height="14"/>
+      <rect x="36" y="96" width="44" height="14"/>
+      <rect x="86" y="96" width="22" height="14"/>
+    </g>
+    <g stroke="#000" stroke-width="2" fill="none">
+      <path d="M104 76 H24" marker-end="url(#tip2)"/>
+    </g>
+    <text x="16" y="62" font-style="italic">older text, gone</text>
+
+    <g fill="#fff" stroke="#000" stroke-width="2">
+      <rect x="170" y="72" width="46" height="14"/>
+      <rect x="222" y="72" width="28" height="14"/>
+      <rect x="256" y="72" width="56" height="14"/>
+      <rect x="318" y="72" width="34" height="14"/>
+      <rect x="358" y="72" width="48" height="14"/>
+      <rect x="412" y="72" width="24" height="14"/>
+      <rect x="170" y="96" width="38" height="14"/>
+      <rect x="214" y="96" width="60" height="14"/>
+      <rect x="280" y="96" width="30" height="14"/>
+      <rect x="316" y="96" width="44" height="14"/>
+      <rect x="366" y="96" width="26" height="14"/>
+      <rect x="398" y="96" width="38" height="14"/>
+    </g>
+    <rect x="158" y="54" width="292" height="76" fill="none" stroke="#000" stroke-width="5"/>
+    <text x="304" y="150" text-anchor="middle" font-size="15">everything it can see</text>
+    <text x="304" y="172" text-anchor="middle" font-style="italic">your prompt, the whole chat, and nothing else</text>
+
+    <g stroke="#000" stroke-width="2" fill="none">
+      <path d="M462 92 h34"/>
+      <path d="M496 60 v64"/>
+      <path d="M492 60 h8 M492 124 h8"/>
+    </g>
+    <text x="510" y="88" font-size="13">a fixed</text>
+    <text x="510" y="106" font-size="13">size</text>
+  </g>
+</svg>

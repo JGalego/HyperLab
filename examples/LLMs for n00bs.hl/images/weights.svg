@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 592 200" width="592" height="200">
+  <title>Not a filing cabinet being searched, but a number being computed</title>
+  <defs>
+    <pattern id="d50w" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#fff"/>
+      <rect width="2" height="2"/><rect x="2" y="2" width="2" height="2"/>
+    </pattern>
+  </defs>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="13" text-anchor="middle">
+    <g fill="#fff" stroke="#000" stroke-width="2.5">
+      <rect x="52" y="34" width="120" height="112"/>
+      <rect x="64" y="46" width="96" height="26"/>
+      <rect x="64" y="80" width="96" height="26"/>
+      <rect x="64" y="114" width="96" height="26"/>
+    </g>
+    <g fill="#000" stroke="none">
+      <rect x="100" y="56" width="24" height="6"/>
+      <rect x="100" y="90" width="24" height="6"/>
+      <rect x="100" y="124" width="24" height="6"/>
+    </g>
+    <g stroke="#000" stroke-width="6" fill="none" stroke-linecap="round">
+      <path d="M42 26 L182 154 M182 26 L42 154"/>
+    </g>
+    <text x="112" y="180" font-size="15">nothing is looked up</text>
+
+    <path d="M296 24 v152" stroke="#000" stroke-width="2.5" fill="none"/>
+
+    <circle cx="440" cy="90" r="62" fill="url(#d50w)" stroke="#000" stroke-width="2.5"/>
+    <rect x="386" y="76" width="108" height="28" fill="#fff" stroke="#000" stroke-width="2.5"/>
+    <text x="440" y="95" font-size="15">weights</text>
+    <text x="440" y="180" font-size="15">every answer is computed</text>
+  </g>
+</svg>

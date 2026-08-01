@@ -1,0 +1,26 @@
+{
+  "id": 1,
+  "name": "LLMs for n00bs",
+  "size": {
+    "width": 640,
+    "height": 400
+  },
+  "properties": {},
+  "nextId": 45,
+  "createdAt": 1735689600000,
+  "updatedAt": 1735689600000,
+  "backgrounds": [
+    2
+  ],
+  "cards": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ]
+}

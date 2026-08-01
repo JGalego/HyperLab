@@ -1,0 +1,3 @@
+on openCard
+  put "7 of " & the number of cards into field "Where"
+end openCard

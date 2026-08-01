@@ -35,6 +35,7 @@ film="${1:-film}"
 case "$film" in
 cluedo) default_stack="$root/examples/Cluedo.hl" ;;
 myst) default_stack="$root/examples/Myst.hl" ;;
+deck) default_stack="$root/examples/LLMs for n00bs.hl" ;;
 *) default_stack="$root/examples/Recipe Box.hl" ;;
 esac
 stack="${2:-$default_stack}"
@@ -94,6 +95,7 @@ case "$film" in
 cluedo) : "${GIF_FROM:=2}" "${GIF_FOR:=34}" ;;
 # Myst's gif is the ending: the map, which is the point of the stack.
 myst) : "${GIF_FROM:=58}" "${GIF_FOR:=28}" ;;
+deck) : "${GIF_FROM:=4}" "${GIF_FOR:=32}" ;;
 *) : "${GIF_FROM:=66}" "${GIF_FOR:=26}" ;;
 esac
 : "${GIF_WIDTH:=640}"
