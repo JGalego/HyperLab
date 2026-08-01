@@ -13,10 +13,7 @@ use hyperlab_ai::{
 };
 use serde_json::{Map, Value, json};
 
-use crate::{
-    configured_key,
-    http::{Endpoint, text_at},
-};
+use crate::http::{Endpoint, text_at};
 
 /// Where requests go when the configuration does not say.
 pub const DEFAULT_BASE_URL: &str = "https://api.openai.com/v1";
@@ -31,29 +28,12 @@ pub struct OpenAiProvider {
 }
 
 impl OpenAiProvider {
-    /// Builds a provider, taking its key from the environment variable the
-    /// configuration names.
-    ///
-    /// The key is optional, because a server on this machine has no use for
-    /// one. But a configuration that *names* an environment variable and does
-    /// not find it is a mistake worth reporting, rather than a request that
-    /// will be refused later for reasons the user cannot see.
-    ///
-    /// # Errors
-    ///
-    /// Returns [`AiError::NotConfigured`] if the configuration names an
-    /// environment variable that is unset or empty.
-    pub fn new(name: impl Into<String>, config: &ProviderConfig) -> AiResult<Self> {
-        let key = configured_key(config)?;
-        Self::with_api_key(name, config, key)
-    }
-
     /// Builds a provider with a key the caller has already found.
     ///
-    /// The environment is the simplest place to keep a key, not the best one:
-    /// an embedder that reads the operating system's keychain should use this
-    /// and leave [`ProviderConfig::api_key_env`] unset. `None` sends no
-    /// credentials at all.
+    /// Finding it is [`build`](crate::build)'s job, because where a key lives
+    /// is a question about configuration rather than about this protocol.
+    /// `None` sends no credentials at all, which is right for a server on
+    /// this machine.
     ///
     /// # Errors
     ///
@@ -379,28 +359,19 @@ mod tests {
     use hyperlab_ai::ProviderKind;
 
     fn provider() -> OpenAiProvider {
-        OpenAiProvider::new(
+        OpenAiProvider::with_api_key(
             "openai",
             &ProviderConfig::new(ProviderKind::OpenAi, "a-model"),
+            None,
         )
-        .expect("no key is named, so nothing can be missing")
-    }
-
-    #[test]
-    fn a_named_environment_variable_that_is_unset_is_reported_at_once() {
-        let mut config = ProviderConfig::new(ProviderKind::OpenAi, "a-model");
-        config.api_key_env = Some("HYPERLAB_TEST_KEY_THAT_IS_NOT_SET".into());
-        assert!(matches!(
-            OpenAiProvider::new("openai", &config),
-            Err(AiError::NotConfigured(_))
-        ));
+        .expect("no key, nothing to go wrong")
     }
 
     #[test]
     fn a_local_server_needs_no_key() {
         let mut config = ProviderConfig::new(ProviderKind::Ollama, "llama");
         config.base_url = Some("http://localhost:11434/v1".into());
-        let provider = OpenAiProvider::new("ollama", &config).unwrap();
+        let provider = OpenAiProvider::with_api_key("ollama", &config, None).unwrap();
         assert!(provider.capabilities().local);
     }
 

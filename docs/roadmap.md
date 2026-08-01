@@ -60,9 +60,11 @@ same string, not a summary of it — the panel and the request read one field,
 so they cannot drift apart. Field contents are left out unless a second
 switch is on, and the disclosure says which.
 
-**It never holds a key.** A provider is configured with the *name* of an
-environment variable. The settings file has nowhere to put a key, so it can
-be copied into a bug report.
+**It never holds a key.** A key typed into the settings panel goes to the
+keychain the operating system already runs; a key already exported is named
+by its variable. Either way the settings file records the *place* and has
+nowhere to put the value, so it can be copied into a bug report — and nothing
+reads a key back out to the interface that took it.
 
 The conversation itself lives in
 [`hyperlab-assistant`](../crates/assistant) — the AI layer the architecture

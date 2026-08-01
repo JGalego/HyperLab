@@ -9,7 +9,7 @@
 mod support;
 
 use hyperlab_ai::{
-    AiError, AiProvider, ChatMessage, CompletionRequest, FinishReason, ProviderConfig,
+    AiError, AiProvider, ChatMessage, CompletionRequest, FinishReason, NoKeychain, ProviderConfig,
     ProviderKind, ToolDefinition,
 };
 use hyperlab_ai_providers::{AnthropicProvider, OpenAiProvider, build};
@@ -236,8 +236,12 @@ async fn a_provider_built_from_a_configuration_reaches_the_same_server() {
         &json!({"choices": [{"message": {"content": "hi"}, "finish_reason": "stop"}]}).to_string(),
     );
 
-    let provider = build("mine", &config(ProviderKind::Ollama, server.base_url()))
-        .expect("a base URL and a key are all it needs");
+    let provider = build(
+        "mine",
+        &config(ProviderKind::Ollama, server.base_url()),
+        &NoKeychain,
+    )
+    .expect("a base URL and a key are all it needs");
     let completion = provider
         .complete(CompletionRequest::new("", vec![ChatMessage::user("hello")]))
         .await

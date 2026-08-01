@@ -512,12 +512,22 @@ and requires `max_tokens`. A `CompletionRequest` knows none of that.
 
 ## Keys
 
-A `ProviderConfig` names the environment variable that holds a key. It never
-holds the key, so a settings file can be copied into a bug report. A provider
-can also be handed a key directly — `with_api_key` — for an embedder that
-reads the operating system's keychain instead.
+A `ProviderConfig` names a `KeySource` — an environment variable, or the
+operating system's keychain — and never the key itself. There is no field
+that could hold one, so a settings file can be copied into a bug report.
 
-A variable that is named but unset is an error when the provider is built,
+`hyperlab-ai` cannot open a keychain and does not try. It declares the
+`Keychain` trait; the desktop shell implements it over Keychain Services, the
+Credential Manager or the Secret Service, in
+[`keys.rs`](../apps/desktop/src-tauri/src/keys.rs) — the one module in
+HyperLab that ever holds a key. `build` is given one and hands what it finds
+to `with_api_key`, which is the only way a client ever learns a secret.
+
+The key travels one way. `keys::holds` answers whether a provider has one;
+nothing returns it to the interface, so the settings panel can show that a key
+is saved and cannot show what it is.
+
+A place that is named and found empty is an error when the provider is built,
 not a puzzling refusal later.
 
 ---
@@ -998,7 +1008,8 @@ language can be tested, forked or reused on its own.
 | The renderer cannot mutate | It is given a `StackView`, a serialized snapshot, not an object |
 | A script can wait for a person | Commands run off the message loop, so `Host::ask` may block while the window stays alive |
 | No provider is special | `hyperlab-ai` does not depend on `hyperlab-ai-providers`; the arrow runs the other way |
-| A key is never written to disk | `ProviderConfig` has no field for one — only the name of an environment variable |
+| A key is never written to disk | `ProviderConfig` holds a `KeySource` — a place to look — and has no field for a key |
+| The interface cannot read a key back | Nothing in `keys.rs` returns one except the `Keychain` impl the provider layer calls |
 | A caller over a pipe is not the user | Every MCP call crosses `Policy`, which is read-only until told otherwise |
 | A stack cannot build a shell command | `Launch` keeps the program and its arguments in separate fields; no shell is involved |
 

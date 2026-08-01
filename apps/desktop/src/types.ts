@@ -173,16 +173,36 @@ export interface AiView {
   busy: boolean;
 }
 
-/** One configured provider. Never holds a key — only the name of a variable. */
+/**
+ * Where a provider's key is kept.
+ *
+ * A place to go and look, never the key. The keychain arm carries no second
+ * field, so there is nowhere for one to end up in the settings file.
+ */
+export type KeySource = { in: 'environment'; name: string } | { in: 'keychain' };
+
+/** One configured provider. Never holds a key — only where to find one. */
 export interface ProviderConfig {
   kind: string;
   model: string;
   baseUrl?: string;
-  apiKeyEnv?: string;
+  key?: KeySource;
 }
 
 /** The provider settings, as they are stored. */
 export interface AiSettings {
   defaultProvider?: string;
   providers: Record<string, ProviderConfig>;
+}
+
+/**
+ * What the panel may know about saved keys.
+ *
+ * Which providers have one, and never which key: there is no command that
+ * reads one back out.
+ */
+export interface KeychainView {
+  available: boolean;
+  problem?: string;
+  holding: string[];
 }

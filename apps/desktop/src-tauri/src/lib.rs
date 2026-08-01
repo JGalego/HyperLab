@@ -17,6 +17,7 @@ mod ai_commands;
 pub mod assistant;
 mod commands;
 pub mod dialogs;
+pub mod keys;
 pub mod settings;
 pub mod state;
 pub mod view;
@@ -112,6 +113,9 @@ pub fn run() {
             ai_commands::ai_set_may_edit,
             ai_commands::ai_settings,
             ai_commands::ai_save_settings,
+            ai_commands::ai_keychain,
+            ai_commands::ai_set_key,
+            ai_commands::ai_forget_key,
         ])
         .run(tauri::generate_context!())
         .expect("HyperLab could not open a window");

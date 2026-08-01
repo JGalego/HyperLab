@@ -30,7 +30,7 @@ export const PROVIDER = {
   kind: 'openAiCompatible',
   model: process.env.GROQ_MODEL ?? 'openai/gpt-oss-120b',
   baseUrl: process.env.GROQ_BASE_URL ?? 'https://api.groq.com/openai/v1',
-  apiKeyEnv: 'GROQ_API_KEY',
+  key: { in: 'environment', name: 'GROQ_API_KEY' },
 };
 
 /**

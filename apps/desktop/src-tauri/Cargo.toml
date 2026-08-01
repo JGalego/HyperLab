@@ -31,6 +31,12 @@ hyperlab-persistence = { path = "../../../crates/persistence" }
 hyperlab-runtime = { path = "../../../crates/runtime" }
 hyperlab-stack = { path = "../../../crates/stack" }
 
+# The operating system's own secret store: Keychain Services on macOS, the
+# Credential Manager on Windows, the Secret Service on Linux. This is the only
+# crate in HyperLab that ever holds a key, and it is in the shell rather than
+# in a library on purpose — the core has no business knowing what a keychain
+# is, and an embedder may have a better one.
+keyring = "4"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tauri = { version = "2", features = [] }

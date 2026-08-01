@@ -10,8 +10,9 @@
 //! 1. **No provider is special.** Nothing switches on
 //!    [`ProviderKind`]; it exists only so that settings files have stable
 //!    names.
-//! 2. **No secrets live here.** A [`ProviderConfig`] names the environment
-//!    variable holding a key. It never holds the key.
+//! 2. **No secrets live here.** A [`ProviderConfig`] names the *place* a key
+//!    is kept — an environment variable, or the operating system's keychain.
+//!    It never holds the key, and there is nowhere in it that could.
 //! 3. **The runtime does not know about any of this.** Context is built by
 //!    reading the object model ([`context`]), and changes are made by
 //!    calling MCP tools — never by reaching into a stack.
@@ -35,7 +36,7 @@ mod provider;
 mod registry;
 mod tool;
 
-pub use config::{AiSettings, ProviderConfig, ProviderKind};
+pub use config::{AiSettings, KeySource, Keychain, NoKeychain, ProviderConfig, ProviderKind};
 pub use context::{ContextOptions, describe_card, describe_stack_outline};
 pub use message::{
     ChatMessage, Completion, CompletionRequest, Embedding, FinishReason, Role, ToolCall, Usage,
