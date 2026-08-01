@@ -43,9 +43,15 @@ Still to come in this phase:
 
 ## Phase 4 — AI sidebar
 
-The interfaces exist ([`hyperlab-ai`](../crates/ai)); no provider does yet.
+The interfaces exist ([`hyperlab-ai`](../crates/ai)), and two providers
+implement them ([`hyperlab-ai-providers`](../crates/ai-providers)): a client
+for the OpenAI chat-completions protocol — which also reaches OpenRouter,
+Ollama and any local server that speaks it — and one for Anthropic's Messages
+API. Writing the second one was the point: it is what keeps the interface
+honest.
 
-- A first provider, then a second, to keep the interface honest.
+Still to come in this phase:
+
 - A sidebar that can answer *explain this script*, *refactor this*, *add a
   search button*, *make this prettier*.
 - It edits the stack through MCP tools, never by reaching into it — so

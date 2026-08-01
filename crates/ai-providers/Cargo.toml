@@ -1,0 +1,29 @@
+[package]
+name = "hyperlab-ai-providers"
+description = "Implementations of HyperLab's AI provider interface: an OpenAI-compatible client and an Anthropic client."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+hyperlab-ai.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+# The one HTTP client, with no default features: HyperLab does not need
+# cookies, compression or a system TLS stack, and rustls keeps the build the
+# same on every platform.
+reqwest = { version = "0.12", default-features = false, features = [
+    "json",
+    "rustls-tls",
+] }
+
+[dev-dependencies]
+# Only the tests need a runtime of their own; the application brings its own.
+tokio = { version = "1", features = ["macros", "rt"] }
+
+[lints]
+workspace = true

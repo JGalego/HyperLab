@@ -14,8 +14,9 @@ changeable while it runs — and adds language models as a first-class part of
 the programming model rather than a panel bolted on the side.
 
 > **Status: 0.1, and honest about it.** The runtime, the language and the
-> editor work and are covered by 240-odd tests. The AI layer is interfaces and
-> a mock: no provider ships yet. See the [roadmap](docs/roadmap.md).
+> editor work and are covered by 300-odd tests. Two providers ship — an
+> OpenAI-compatible client and an Anthropic one — but the sidebar that would
+> use them does not. See the [roadmap](docs/roadmap.md).
 
 ![HyperLab: a card with a button and a field, the object inspector showing
 the button's script](docs/screenshot.png)
@@ -84,6 +85,8 @@ crates/
                     the interpreter       — what it means
     persistence/    the .hl bundle        — where it is kept
     ai/             provider interfaces   — who is asked
+    ai-providers/   OpenAI and Anthropic
+                    clients               — how they are reached
     mcp/            tools                 — what may be done
 
 apps/desktop/       the Tauri shell and the React renderer
@@ -127,7 +130,12 @@ good intentions:
 1. **No provider is special.** A provider implements
    [`AiProvider`](crates/ai/src/provider.rs) and nothing in HyperLab switches
    on which one it is. OpenAI, Anthropic, Google, Ollama, OpenRouter and local
-   models are names in a settings file, not branches in the runtime.
+   models are names in a settings file, not branches in the runtime. The
+   clients live in [their own crate](crates/ai-providers), which the rest of
+   HyperLab does not depend on; one of them speaks the OpenAI chat-completions
+   protocol, so pointing a `baseUrl` at Ollama or a local server is all it
+   takes to run with no network at all. A key is read from an environment
+   variable you name, and is never written to a settings file.
 2. **An assistant can do exactly what you can do.** It works through
    [MCP tools](crates/mcp) that wrap runtime commands, so everything it does
    is undoable and visible. There is no private back door into a stack.
@@ -141,7 +149,7 @@ good intentions:
 
 Please do — see [CONTRIBUTING.md](CONTRIBUTING.md) and the
 [Code of Conduct](CODE_OF_CONDUCT.md). Good places to start are listed in the
-roadmap: a debugger, a real provider, `find` and `sort`, a second theme.
+roadmap: a debugger, the AI sidebar, `find` and `sort`, a second theme.
 
 ## Licence
 
