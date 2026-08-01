@@ -789,3 +789,69 @@ Developers should feel like they are working inside a living system rather than 
 Every design decision should answer one question:
 
         > **Would this make HyperCard's original creators smile if they were designing it today?**
+
+---
+
+# Implementation Map
+
+> Everything above is the design. This section says where it actually lives,
+> and is kept honest by the fact that it names files you can open.
+
+```
+crates/
+    stack/          the object model      — what a stack is
+    parser/         lexer, parser, AST    — what the author wrote
+    runtime/        commands, dispatch,
+                    the interpreter       — what it means
+    persistence/    the .hl bundle        — where it is kept
+    ai/             provider interfaces   — who is asked
+    mcp/            tools                 — what may be done
+
+apps/desktop/
+    src-tauri/      the shell: state, commands, view model
+    src/            React: renderer, inspector, editors, theme
+```
+
+The dependency graph runs one way, and is enforced by Cargo:
+
+```
+        stack ←── persistence
+          ↑  ↖
+          │    ai
+          │     ↑
+   parser │     │
+       ↘  │     │
+        runtime ←── mcp
+           ↑
+        desktop
+```
+
+`parser` depends on nothing at all — not even on the object model — so the
+language can be tested, forked or reused on its own.
+
+## Where each rule is enforced
+
+| Rule | Enforced by |
+| --- | --- |
+| The UI never touches stack data | `Runtime` exposes `stack()` but no `stack_mut()`; the only way in is `execute` |
+| Every mutation is undoable | `Command::apply` returns the command that reverses it; there is no other write path |
+| Scripts and people take the same path | The interpreter calls `Runtime::execute`, exactly as the menus do |
+| AI can do no more than a person | `hyperlab-mcp` tools are wrappers around commands |
+| Nothing is evaluated while parsing | `hyperlab-parser` has no dependency it could evaluate against |
+| The renderer cannot mutate | It is given a `StackView`, a serialized snapshot, not an object |
+
+## What is deliberately not built yet
+
+Naming these is part of the design: an architecture is as much about the
+seams left open as about the code written.
+
+- **Suspending a handler.** `ask` records the question and the script carries
+  on. Returning an answer mid-handler needs the interpreter to be resumable;
+  the `Effect`/`Host` split is the seam where that will go.
+- **Parsed-script caching.** Scripts are parsed on every dispatch. This is
+  fast enough for stacks of any size a person will write by hand, and the
+  moment it is not, the cache belongs in `Runtime` behind `script_of`.
+- **Grouped undo.** A script that changes twenty fields leaves twenty entries
+  in the history. Grouping them is a change to `History`, not to any command.
+- **Plugins.** Renderers, themes, providers and exporters are all already
+  behind traits or data. Nothing loads code at run time yet.
