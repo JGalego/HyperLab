@@ -125,15 +125,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # The five that `install.sh` and `install.ps1` know how to ask for.
+        # A platform missing here is a platform whose install one-liner
+        # stops with "no build for this yet", which is at least honest.
         include:
           - os: macos-latest
             name: macos-arm64
+            suffix: ''
+          - os: macos-13
+            name: macos-x64
             suffix: ''
           - os: windows-latest
             name: windows-x64
             suffix: '.exe'
           - os: ubuntu-22.04
             name: linux-x64
+            suffix: ''
+          - os: ubuntu-22.04-arm
+            name: linux-arm64
             suffix: ''
 
     steps:

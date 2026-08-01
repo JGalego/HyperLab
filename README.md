@@ -39,30 +39,43 @@ card back](docs/demo.gif)
 
 <h2 id="getting-started">🚀 Getting Started</h2>
 
-Installers for macOS, Windows and Linux are attached to every
-[release](https://github.com/JGalego/HyperLab/releases) — a `.dmg`, an
-`.msi`, and a `.deb`, `.rpm` or `.AppImage`. Nothing phones home, and
-HyperLab works with no AI provider configured.
+🖥️ **The application** — a `.dmg`, an `.msi`, and a `.deb`, `.rpm` or
+`.AppImage`, on the
+[releases page](https://github.com/JGalego/HyperLab/releases). Nothing phones
+home, and HyperLab works with no AI provider configured.
 
-To build it yourself you will need 🦀 [Rust](https://rustup.rs) 1.88 or
-newer and 🟢 [Node](https://nodejs.org) 20 or newer, plus
-[Tauri's system dependencies](https://tauri.app/start/prerequisites/) for
-your platform.
+📦 **Prebuilt tools** — detects your OS/architecture automatically and
+installs both `hyperlab-mcp` (serves a stack over MCP, so Claude Desktop or
+any other client can drive it) and `hyperlab-graph` (draws a stack, or reports
+what is wrong with it):
 
-Clone the repository:
+```sh
+# 🐧 Linux / 🍎 macOS (x86_64 or arm64)
+curl -fsSL https://raw.githubusercontent.com/JGalego/HyperLab/main/install.sh | sh
+
+# 🪟 Windows (x86_64), in PowerShell
+irm https://raw.githubusercontent.com/JGalego/HyperLab/main/install.ps1 | iex
+```
+
+🦀 **From source** (needs [Rust](https://rustup.rs) 1.88):
+
+```sh
+cargo install --git https://github.com/JGalego/HyperLab hyperlab-mcp
+cargo install --git https://github.com/JGalego/HyperLab hyperlab-graph
+```
+
+🔨 **Building the application** — needs 🦀 Rust 1.88, 🟢
+[Node](https://nodejs.org) 20, and
+[Tauri's system dependencies](https://tauri.app/start/prerequisites/):
 
 ```sh
 git clone https://github.com/JGalego/hyperlab
 cd hyperlab
 ```
 
-Run the core — runtime, language, persistence. No GUI toolchain needed:
-
 ```sh
 cargo test
 ```
-
-Run the desktop application:
 
 ```sh
 cd apps/desktop
