@@ -1,6 +1,13 @@
-# HyperLab
+<p align="center">
+  <img src="docs/banner.svg" alt="HyperLab: an open-source, AI-native successor to HyperCard" width="100%">
+</p>
 
-**An open-source, AI-native successor to HyperCard.**
+<p align="center">
+  <a href="https://github.com/JGalego/HyperLab/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/JGalego/HyperLab/ci.yml?branch=main&label=CI&style=flat-square&color=000000" alt="CI status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-000000?style=flat-square" alt="Licence: MIT"></a>
+  <img src="https://img.shields.io/badge/rust-1.85%2B-000000?style=flat-square&logo=rust&logoColor=white" alt="Rust 1.85+">
+  <img src="https://img.shields.io/badge/status-0.1-000000?style=flat-square" alt="Status: 0.1">
+</p>
 
 Build a desktop application the way you would build a stack of index cards:
 draw a card, put a button on it, write two lines of script, and you have
