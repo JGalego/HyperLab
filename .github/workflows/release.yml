@@ -44,9 +44,28 @@ jobs:
           fi
           echo "building v$configured"
 
+  # Eight build jobs upload to one release. If each of them is allowed to
+  # create-it-if-missing, several will decide it is missing at the same
+  # moment and GitHub will happily keep every draft they make. So the draft
+  # is made once, here, and the builders only ever attach to it.
+  draft:
+    name: Open the draft
+    needs: check-version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.check-version.outputs.version }}
+          name: HyperLab v${{ needs.check-version.outputs.version }}
+          draft: true
+          prerelease: false
+          body: |
+            Install the file for your platform below. Nothing phones home,
+            and HyperLab works with no AI provider configured.
+
   desktop:
     name: ${{ matrix.name }}
-    needs: check-version
+    needs: [check-version, draft]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -107,11 +126,10 @@ jobs:
         with:
           projectPath: apps/desktop
           args: --target ${{ matrix.target }}
+          # The draft already exists; matching the tag attaches to it
+          # rather than opening a second one.
           tagName: v${{ needs.check-version.outputs.version }}
           releaseName: HyperLab v${{ needs.check-version.outputs.version }}
-          releaseBody: |
-            Install the file for your platform below. Nothing phones home,
-            and HyperLab works with no AI provider configured.
           releaseDraft: true
           prerelease: false
 
@@ -120,7 +138,7 @@ jobs:
   # they ship as plain executables next to the installers.
   tools:
     name: Command-line tools (${{ matrix.name }})
-    needs: check-version
+    needs: [check-version, draft]
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
