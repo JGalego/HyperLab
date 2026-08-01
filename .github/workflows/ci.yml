@@ -138,3 +138,10 @@ jobs:
       - name: Check the shell
         working-directory: apps/desktop/src-tauri
         run: cargo clippy --all-targets
+
+      # The shell has tests of its own — settings, the view model, the
+      # window's security policy — and being outside the main workspace
+      # meant none of them had ever run here.
+      - name: Test the shell
+        working-directory: apps/desktop/src-tauri
+        run: cargo test
