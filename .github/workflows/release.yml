@@ -1,0 +1,163 @@
+name: Release
+
+# Tag a commit and this builds something people can install:
+#
+#     git tag v0.2.0 && git push origin v0.2.0
+#
+# It leaves a *draft* release with the installers and the command-line tools
+# attached. A person writes the notes and presses publish, because a build
+# succeeding is not the same as a release being ready.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build (must already exist)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  # A tag that disagrees with the version in the bundle produces installers
+  # that lie about what they are, and nothing downstream would notice.
+  check-version:
+    name: The tag matches the version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - id: read
+        run: |
+          tag="${{ inputs.tag || github.ref_name }}"
+          configured=$(jq -r .version apps/desktop/src-tauri/tauri.conf.json)
+          echo "version=$configured" >> "$GITHUB_OUTPUT"
+          if [ "$tag" != "v$configured" ]; then
+            echo "::error::tag $tag does not match tauri.conf.json version $configured."
+            echo "::error::Set the version in apps/desktop/{package.json,src-tauri/Cargo.toml,src-tauri/tauri.conf.json} and re-tag."
+            exit 1
+          fi
+          echo "building v$configured"
+
+  desktop:
+    name: ${{ matrix.name }}
+    needs: check-version
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Universal, so one download covers Apple Silicon and Intel.
+          - os: macos-latest
+            name: macOS (universal)
+            target: universal-apple-darwin
+            rust-targets: aarch64-apple-darwin,x86_64-apple-darwin
+          - os: windows-latest
+            name: Windows
+            target: x86_64-pc-windows-msvc
+            rust-targets: x86_64-pc-windows-msvc
+          # Not `ubuntu-latest`: a bundle built against a newer glibc will
+          # not start on an older distribution, and the runner keeps moving.
+          - os: ubuntu-22.04
+            name: Linux
+            target: x86_64-unknown-linux-gnu
+            rust-targets: x86_64-unknown-linux-gnu
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust-targets }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/desktop/src-tauri
+
+      - name: Install Tauri's system dependencies
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libssl-dev
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: apps/desktop/package-lock.json
+
+      - run: npm ci
+        working-directory: apps/desktop
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: apps/desktop
+          args: --target ${{ matrix.target }}
+          tagName: v${{ needs.check-version.outputs.version }}
+          releaseName: HyperLab v${{ needs.check-version.outputs.version }}
+          releaseBody: |
+            Install the file for your platform below. Nothing phones home,
+            and HyperLab works with no AI provider configured.
+          releaseDraft: true
+          prerelease: false
+
+  # `hyperlab-mcp` is how you plug a stack into Claude Desktop or any other
+  # MCP client, and `hyperlab-graph` draws one. Neither needs a window, so
+  # they ship as plain executables next to the installers.
+  tools:
+    name: Command-line tools (${{ matrix.name }})
+    needs: check-version
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            name: macos-arm64
+            suffix: ''
+          - os: windows-latest
+            name: windows-x64
+            suffix: '.exe'
+          - os: ubuntu-22.04
+            name: linux-x64
+            suffix: ''
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Build
+        run: cargo build --release --bin hyperlab-mcp --bin hyperlab-graph
+
+      - name: Gather
+        shell: bash
+        run: |
+          mkdir -p dist
+          for tool in hyperlab-mcp hyperlab-graph; do
+            cp "target/release/$tool${{ matrix.suffix }}" \
+               "dist/$tool-${{ matrix.name }}${{ matrix.suffix }}"
+          done
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.check-version.outputs.version }}
+          draft: true
+          files: dist/*

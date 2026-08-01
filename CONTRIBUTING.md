@@ -91,3 +91,14 @@ usually attach the one card that goes wrong.
 Contributions are made under the [MIT licence](LICENSE). Please do not
 contribute code or artwork you do not have the right to license, and in
 particular no assets from HyperCard or any other Apple software.
+
+## Pinned versions, and why
+
+- **TypeScript is held at 6.** `typescript-eslint` does not support 7 yet
+  ([#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940)),
+  and linting is worth more than a newer compiler. Move both together.
+- **`quick-xml`** carries two denial-of-service advisories that cannot be
+  fixed from here: `plist`, which Tauri uses, requires a version older than
+  the fix. The reasoning is in
+  [`apps/desktop/src-tauri/.cargo/audit.toml`](apps/desktop/src-tauri/.cargo/audit.toml),
+  and `cargo audit` runs in CI so it cannot rot quietly.

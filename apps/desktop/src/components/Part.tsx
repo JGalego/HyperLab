@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import type { PartView, Tool } from '../types';
+import { useMirror } from '../mirror';
 
 interface Props {
   part: PartView;
@@ -38,11 +39,7 @@ export function Part({
   const [left, top, width, height] = part.rect;
   const [offset, setOffset] = useState<{ dx: number; dy: number } | null>(null);
   const origin = useRef({ x: 0, y: 0 });
-  const [draft, setDraft] = useState(part.text);
-
-  // The snapshot is the truth: if the runtime changed the text underneath us
-  // — a script, an undo, a different card — the draft follows it.
-  useEffect(() => setDraft(part.text), [part.text]);
+  const [draft, setDraft] = useMirror(part.text);
 
   useEffect(() => {
     if (offset === null) return undefined;

@@ -10,7 +10,7 @@ exclude = ["apps/desktop/src-tauri"]
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.88"
 license = "MIT"
 repository = "https://github.com/JGalego/hyperlab"
 authors = ["HyperLab contributors"]
@@ -35,3 +35,11 @@ unsafe_code = "forbid"
 
 [workspace.lints.clippy]
 all = { level = "warn", priority = -1 }
+
+# Shipped binaries. Slower to build and meaningfully smaller to download;
+# `panic` is deliberately left as unwind, because a command that panics is
+# caught and reported rather than taking the window down with it.
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

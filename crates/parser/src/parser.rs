@@ -654,13 +654,13 @@ impl Parser {
         // a parenthesised first argument, so we put the tokens back.
         if self.peek().is_symbol("(") {
             let saved = self.position;
-            if let Ok(args) = self.parse_parenthesised_arguments() {
-                if self.peek().is_end_of_line() {
-                    return Ok(StatementKind::Command {
-                        name,
-                        arguments: args,
-                    });
-                }
+            if let Ok(args) = self.parse_parenthesised_arguments()
+                && self.peek().is_end_of_line()
+            {
+                return Ok(StatementKind::Command {
+                    name,
+                    arguments: args,
+                });
             }
             self.position = saved;
         }

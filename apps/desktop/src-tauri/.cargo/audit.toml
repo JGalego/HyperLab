@@ -1,0 +1,23 @@
+# What `cargo audit` is allowed to pass over, and why.
+#
+# Nothing goes in this list because it is inconvenient. Each entry is an
+# advisory that cannot be fixed from here, with the thing to watch for so it
+# can be removed.
+
+[advisories]
+ignore = [
+  # Two denial-of-service advisories in quick-xml, reachable only through
+  # `plist`, which Tauri uses to read bundle metadata. `plist 1.8.0` requires
+  # quick-xml ^0.38 and the fix landed in 0.41, so this cannot move until
+  # plist does. Nothing in HyperLab parses XML or property lists from
+  # anywhere a stranger controls.
+  #
+  # Remove both when `plist` releases against quick-xml >= 0.41.
+  "RUSTSEC-2026-0194",
+  "RUSTSEC-2026-0195",
+]
+
+# The GTK3 bindings Tauri uses on Linux are unmaintained, and will be until
+# Tauri moves off webkit2gtk. They are warnings rather than vulnerabilities,
+# and this build does not promote warnings to failures.
+informational_warnings = []

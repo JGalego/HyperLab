@@ -35,11 +35,35 @@ const MAX_NAME: usize = 120;
 /// The name is also its file name inside the bundle, which is why it is
 /// checked rather than trusted: a name is data, and data that becomes a path
 /// is a path traversal waiting to happen.
+///
+/// Reading one back goes through [`Image::new`] as well, by way of
+/// `try_from`. A derived `Deserialize` would have walked straight past every
+/// check in it, which makes the checks decoration: the interesting input is
+/// exactly the input that did not come from this program.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(try_from = "Wire")]
 pub struct Image {
     name: String,
     #[serde(with = "base64_bytes")]
     bytes: Vec<u8>,
+}
+
+/// What an [`Image`] looks like in JSON, before it has been checked.
+///
+/// The same shape the derived `Serialize` writes, so a round trip is exact.
+#[derive(Deserialize)]
+struct Wire {
+    name: String,
+    #[serde(with = "base64_bytes")]
+    bytes: Vec<u8>,
+}
+
+impl TryFrom<Wire> for Image {
+    type Error = ImageError;
+
+    fn try_from(wire: Wire) -> Result<Self, Self::Error> {
+        Self::new(wire.name, wire.bytes)
+    }
 }
 
 impl Image {
@@ -403,6 +427,24 @@ mod tests {
         let json = serde_json::to_string(&image).unwrap();
         let back: Image = serde_json::from_str(&json).unwrap();
         assert_eq!(back, image);
+    }
+
+    #[test]
+    fn json_cannot_smuggle_past_the_checks() {
+        // Deserializing is the interesting input: it is the one that did not
+        // come from this program. A derived impl would accept all of these.
+        let bad = [
+            r#"{"name":"../escape.png","bytes":"iVBORw0KGgo="}"#,
+            r#"{"name":"board.bmp","bytes":"iVBORw0KGgo="}"#,
+            r#"{"name":"board.png","bytes":"PHNjcmlwdD4="}"#,
+            r#"{"name":"board.png","bytes":""}"#,
+        ];
+        for json in bad {
+            assert!(
+                serde_json::from_str::<Image>(json).is_err(),
+                "{json} was accepted"
+            );
+        }
     }
 
     #[test]

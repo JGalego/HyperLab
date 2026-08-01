@@ -216,17 +216,16 @@ impl Interpreter<'_> {
                 };
 
                 let mut total = 0;
-                if matches!(layer, Layer::Card | Layer::Unspecified) {
-                    if let Some(card) = card.and_then(|id| self.runtime.stack().card(id)) {
-                        total += card.parts_of_kind(kind).len();
-                    }
+                if matches!(layer, Layer::Card | Layer::Unspecified)
+                    && let Some(card) = card.and_then(|id| self.runtime.stack().card(id))
+                {
+                    total += card.parts_of_kind(kind).len();
                 }
-                if matches!(layer, Layer::Background | Layer::Unspecified) {
-                    if let Some(background) =
+                if matches!(layer, Layer::Background | Layer::Unspecified)
+                    && let Some(background) =
                         background.and_then(|id| self.runtime.stack().background(id))
-                    {
-                        total += background.parts_of_kind(kind).len();
-                    }
+                {
+                    total += background.parts_of_kind(kind).len();
                 }
                 total
             }

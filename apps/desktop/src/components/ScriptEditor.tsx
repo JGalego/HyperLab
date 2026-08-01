@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { checkScript } from '../api';
+import { useMirror } from '../mirror';
 
 interface Props {
   title: string;
@@ -18,10 +19,8 @@ interface Props {
  * one definition of HyperTalk in HyperLab and it lives in Rust.
  */
 export function ScriptEditor({ title, source, onSave }: Props) {
-  const [draft, setDraft] = useState(source);
+  const [draft, setDraft] = useMirror(source);
   const [problem, setProblem] = useState<string | null>(null);
-
-  useEffect(() => setDraft(source), [source]);
 
   // Checking is debounced: nobody wants an error message about the code they
   // are halfway through typing.
