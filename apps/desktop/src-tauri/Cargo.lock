@@ -1370,6 +1370,7 @@ dependencies = [
  "hyperlab-ai-providers",
  "hyperlab-assistant",
  "hyperlab-mcp",
+ "hyperlab-parser",
  "hyperlab-persistence",
  "hyperlab-runtime",
  "hyperlab-stack",

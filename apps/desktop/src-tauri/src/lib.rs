@@ -9,13 +9,17 @@
 
 #![warn(missing_docs)]
 
+// Public so that the development bridge in `src/bin/` can drive the same
+// runtime, host and snapshot the window does, rather than a second copy of
+// them. This is an application, not a library: there is no API here for
+// anyone else to depend on.
 mod ai_commands;
-mod assistant;
+pub mod assistant;
 mod commands;
-mod dialogs;
-mod settings;
-mod state;
-mod view;
+pub mod dialogs;
+pub mod settings;
+pub mod state;
+pub mod view;
 
 use std::sync::Arc;
 

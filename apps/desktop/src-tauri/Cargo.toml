@@ -25,6 +25,7 @@ hyperlab-ai = { path = "../../../crates/ai" }
 hyperlab-ai-providers = { path = "../../../crates/ai-providers" }
 hyperlab-assistant = { path = "../../../crates/assistant" }
 hyperlab-mcp = { path = "../../../crates/mcp" }
+hyperlab-parser = { path = "../../../crates/parser" }
 hyperlab-persistence = { path = "../../../crates/persistence" }
 hyperlab-runtime = { path = "../../../crates/runtime" }
 hyperlab-stack = { path = "../../../crates/stack" }
