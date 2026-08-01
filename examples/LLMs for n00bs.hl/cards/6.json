@@ -1,0 +1,75 @@
+{
+  "id": 6,
+  "name": "The context is everything it knows",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 21,
+      "name": "Title",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "shadow",
+        "text": "The context is everything it knows",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 12,
+        "width": 592,
+        "height": 30
+      }
+    },
+    {
+      "id": 22,
+      "name": "Body",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Nothing carries over between conversations. Whatever it seems to remember about you was sent again, in the text.\n\nThe window holding that text has a size, and the oldest of it falls out.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 50,
+        "width": 592,
+        "height": 78
+      }
+    },
+    {
+      "id": 23,
+      "name": "The context is everything it knows",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "context.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 24,
+        "top": 134,
+        "width": 592,
+        "height": 200
+      }
+    }
+  ]
+}

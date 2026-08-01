@@ -1,0 +1,75 @@
+{
+  "id": 4,
+  "name": "It predicts the next token",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 15,
+      "name": "Title",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "shadow",
+        "text": "It predicts the next token",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 12,
+        "width": 592,
+        "height": 30
+      }
+    },
+    {
+      "id": 16,
+      "name": "Body",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Given some text, it scores every token that could come next, picks one, sticks it on the end, and starts again.\n\nThat is the whole mechanic. Everything on the slides after this one is a consequence of it.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 50,
+        "width": 592,
+        "height": 78
+      }
+    },
+    {
+      "id": 17,
+      "name": "It predicts the next token",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "next-token.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 24,
+        "top": 134,
+        "width": 592,
+        "height": 200
+      }
+    }
+  ]
+}

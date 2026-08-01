@@ -1,0 +1,3 @@
+on mouseUp
+  go to previous card
+end mouseUp

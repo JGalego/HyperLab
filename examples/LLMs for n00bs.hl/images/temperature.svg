@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 592 200" width="592" height="200">
+  <title>The same probabilities, sampled timidly and boldly</title>
+  <defs>
+    <pattern id="d50t" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#fff"/>
+      <rect width="2" height="2"/><rect x="2" y="2" width="2" height="2"/>
+    </pattern>
+  </defs>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="13" text-anchor="middle">
+    <g stroke="#000" stroke-width="2.5" fill="url(#d50t)">
+      <rect x="46" y="40" width="26" height="108"/>
+      <rect x="80" y="126" width="26" height="22"/>
+      <rect x="114" y="136" width="26" height="12"/>
+      <rect x="148" y="142" width="26" height="6"/>
+      <rect x="182" y="145" width="26" height="3"/>
+    </g>
+    <path d="M36 148 h182" stroke="#000" stroke-width="2.5" fill="none"/>
+    <text x="127" y="172" font-size="15">temperature 0.2</text>
+    <text x="127" y="190" font-style="italic">the same answer every time</text>
+
+    <path d="M296 24 v152" stroke="#000" stroke-width="2.5" fill="none"/>
+
+    <g stroke="#000" stroke-width="2.5" fill="url(#d50t)">
+      <rect x="376" y="72" width="26" height="76"/>
+      <rect x="410" y="86" width="26" height="62"/>
+      <rect x="444" y="98" width="26" height="50"/>
+      <rect x="478" y="112" width="26" height="36"/>
+      <rect x="512" y="124" width="26" height="24"/>
+    </g>
+    <path d="M366 148 h182" stroke="#000" stroke-width="2.5" fill="none"/>
+    <text x="457" y="172" font-size="15">temperature 1.2</text>
+    <text x="457" y="190" font-style="italic">surprising, and wrong more often</text>
+  </g>
+</svg>

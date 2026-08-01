@@ -144,6 +144,10 @@ export function Part({
       style={style}
       value={draft}
       readOnly={part.locked || !part.enabled}
+      // A field is a box of text with nothing beside it saying what the text
+      // is for. Its name is that, and without this a screen reader — and
+      // anything else driving the window — sees only unlabelled boxes.
+      aria-label={part.name}
       spellCheck={false}
       onChange={(event) => setDraft(event.target.value)}
       onBlur={() => {

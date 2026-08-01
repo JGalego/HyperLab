@@ -1,0 +1,75 @@
+{
+  "id": 10,
+  "name": "Tools: it asks, something else does",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 33,
+      "name": "Title",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "shadow",
+        "text": "Tools: it asks, something else does",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 12,
+        "width": 592,
+        "height": 30
+      }
+    },
+    {
+      "id": 34,
+      "name": "Body",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "A model can only emit text. It cannot open a file or call anything. So it emits a request, a program outside it does the work, and the result comes back as more text.\n\nHyperLab's assistant works this way, which is why you can undo what it does.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 50,
+        "width": 592,
+        "height": 78
+      }
+    },
+    {
+      "id": 35,
+      "name": "Tools: it asks, something else does",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "tools.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 24,
+        "top": 134,
+        "width": 592,
+        "height": 200
+      }
+    }
+  ]
+}

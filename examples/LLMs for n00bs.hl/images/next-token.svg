@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 592 200" width="592" height="200">
+  <title>The likeliest next token, and the ones it beat</title>
+  <defs>
+    <pattern id="d50" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#fff"/>
+      <rect width="2" height="2"/><rect x="2" y="2" width="2" height="2"/>
+    </pattern>
+  </defs>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="14">
+    <text x="24" y="34" font-size="17">The cat sat on the</text>
+    <rect x="176" y="18" width="13" height="21"/>
+
+    <g stroke="#000" stroke-width="2.5" fill="url(#d50)">
+      <rect x="96" y="56" width="286" height="20"/>
+      <rect x="96" y="82" width="57" height="20"/>
+      <rect x="96" y="108" width="38" height="20"/>
+      <rect x="96" y="134" width="24" height="20"/>
+      <rect x="96" y="160" width="5" height="20"/>
+    </g>
+
+    <g text-anchor="end">
+      <text x="84" y="71">mat</text>
+      <text x="84" y="97">floor</text>
+      <text x="84" y="123">rug</text>
+      <text x="84" y="149">table</text>
+      <text x="84" y="175">moon</text>
+    </g>
+    <g font-size="13">
+      <text x="392" y="71">61%</text>
+      <text x="163" y="97">12%</text>
+      <text x="144" y="123">8%</text>
+      <text x="130" y="149">5%</text>
+      <text x="111" y="175">0.1%</text>
+    </g>
+
+    <g stroke="#000" stroke-width="2.5" fill="none">
+      <path d="M96 48 v140"/>
+    </g>
+    <g font-size="13" font-style="italic" text-anchor="end">
+      <text x="568" y="130">every token it knows gets a number.</text>
+      <text x="568" y="150">then one of them is picked, added to</text>
+      <text x="568" y="170">the end, and the question asked again.</text>
+    </g>
+  </g>
+</svg>

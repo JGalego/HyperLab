@@ -51,12 +51,20 @@ fn click(runtime: &mut Runtime, name: &str) {
         .unwrap_or_else(|error| panic!("clicking \"{name}\" failed: {error}"));
 }
 
+/// The text of `field "name"`, looked up the way the language looks it up:
+/// this card first, then the background behind it.
 fn field_text(runtime: &Runtime, name: &str) -> String {
     let card = runtime.current_card();
     runtime
         .stack()
         .card(card)
         .and_then(|card| card.part_named(PartKind::Field, name))
+        .or_else(|| {
+            runtime
+                .stack()
+                .background_of(card)
+                .and_then(|background| background.part_named(PartKind::Field, name))
+        })
         .unwrap_or_else(|| panic!("there is no field named \"{name}\""))
         .property("text")
         .unwrap_or(Value::Empty)
@@ -87,10 +95,9 @@ fn every_example_loads_and_every_script_in_it_parses() {
         checked += 1;
     }
 
-    assert!(
-        checked >= 3,
-        "expected the three example stacks, found {checked}"
-    );
+    // Every bundle the builder writes, so adding an example to `examples/`
+    // without adding it here cannot quietly leave it unchecked.
+    assert_eq!(checked, 6, "one of the example stacks did not load");
 }
 
 /// Every script in a stack, with a description of where it came from.
@@ -381,5 +388,76 @@ fn myst_is_a_hub_with_one_way_in_and_no_way_out() {
             .iter()
             .all(|part| part.part_kind() != PartKind::Button),
         "D'ni has no way out, so it has no buttons"
+    );
+}
+
+// ------------------------------------------------------------------ the deck
+
+#[test]
+fn the_deck_numbers_its_own_slides() {
+    let mut runtime = open("LLMs for n00bs");
+    let slides = runtime.stack().card_count();
+    assert_eq!(slides, 9);
+    assert_eq!(runtime.stack().images().len(), 8, "one diagram per slide");
+
+    // The first card is numbered on opening, not on the first click: the
+    // window sends `openCard` when a stack opens, and the counter is drawn
+    // before anyone has pressed anything.
+    assert_eq!(field_text(&runtime, "Where"), "1 of 9");
+
+    click(&mut runtime, "Next");
+    assert_eq!(field_text(&runtime, "Where"), "2 of 9");
+    click(&mut runtime, "Back");
+    assert_eq!(field_text(&runtime, "Where"), "1 of 9");
+
+    // Paging to the end and pressing Start Over gets back to the beginning
+    // from anywhere, which is the only way out of the last slide.
+    for _ in 1..slides {
+        click(&mut runtime, "Next");
+    }
+    assert_eq!(field_text(&runtime, "Where"), "9 of 9");
+    click(&mut runtime, "Start Over");
+    assert_eq!(field_text(&runtime, "Where"), "1 of 9");
+}
+
+#[test]
+fn the_last_slide_says_so_when_no_model_is_set_up() {
+    let mut runtime = open("LLMs for n00bs");
+    go_to(&mut runtime, "Now ask a real one");
+
+    // `SilentHost` is what the tests run with, and what a fresh install is:
+    // nothing answers. The slide has to explain that rather than fail, which
+    // is why it uses `ask assistant` and not `ai(…)`.
+    click(&mut runtime, "Ask");
+
+    // Whatever refused says why, and that sentence is what the slide shows:
+    // wrapping it in one of our own only stutters.
+    let answer = field_text(&runtime, "Answer");
+    assert!(
+        answer.contains("set up"),
+        "the slide should explain itself, got {answer:?}"
+    );
+}
+
+#[test]
+fn the_last_slide_refuses_an_empty_question() {
+    let mut runtime = open("LLMs for n00bs");
+    go_to(&mut runtime, "Now ask a real one");
+
+    let card = ObjectId::new(hyperlab_stack::ObjectKind::Card, runtime.current_card());
+    runtime
+        .run_script("put empty into field \"Question\"", card)
+        .expect("emptying a field is an ordinary edit");
+    runtime.take_effects();
+    click(&mut runtime, "Ask");
+
+    // Nothing was asked of anything, and the answer box is left alone.
+    assert!(field_text(&runtime, "Answer").is_empty());
+    assert!(
+        runtime
+            .take_effects()
+            .iter()
+            .all(|effect| !matches!(effect, hyperlab_runtime::Effect::Assistant { .. })),
+        "an empty question must not reach a model"
     );
 }

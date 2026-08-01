@@ -78,18 +78,26 @@ fn run() -> Result<(), String> {
     if let Some(path) = &stack {
         let opened = hyperlab_persistence::load(path)
             .map_err(|error| format!("could not open {path}: {error}"))?;
-        lock(&app.session()).runtime.open(opened);
+        let session = app.session();
+        let mut held = lock(&session);
+        held.runtime.open(opened);
+        // The window sends these on opening, so the bridge has to as well:
+        // a stack whose `openStack` or `openCard` handler sets something up
+        // is a different stack without them, and the whole point of this
+        // binary is that the interface cannot tell the difference.
+        let _ = held.runtime.open_stack();
     }
-
-    let dialogs = Arc::new(Pending::default());
-    app.install_host(Box::new(BridgeHost {
-        pending: Arc::clone(&dialogs),
-    }));
 
     // No settings file: the demo passes providers in over the wire, so a
     // machine that has HyperLab configured does not have its own settings
     // quietly picked up by a script.
     let ai = AiState::new(Default::default(), Default::default(), Vec::new());
+
+    let dialogs = Arc::new(Pending::default());
+    app.install_host(Box::new(BridgeHost {
+        pending: Arc::clone(&dialogs),
+        assistant: ai.handle(),
+    }));
 
     let listener = TcpListener::bind(("127.0.0.1", port))
         .map_err(|error| format!("could not listen on {port}: {error}"))?;
@@ -161,6 +169,7 @@ impl Pending {
 /// the answer comes back.
 struct BridgeHost {
     pending: Arc<Pending>,
+    assistant: AiState,
 }
 
 impl BridgeHost {
@@ -187,8 +196,19 @@ impl Host for BridgeHost {
     }
 
     fn ai(&mut self, request: &AiRequest) -> Result<String, String> {
-        let _ = request;
-        Err("the bridge does not answer scripts; use the sidebar".to_string())
+        // On a thread with a deadline, as the window does it: a provider
+        // that never answers must not hold the session lock for ever. A
+        // script asking the assistant is a thing stacks do, so a bridge that
+        // refused it would be filming a different application.
+        let (sender, receiver) = sync_channel(1);
+        let assistant = self.assistant.clone();
+        let prompt = request.prompt.clone();
+        std::thread::spawn(move || {
+            let _ = sender.send(assistant.answer(&prompt));
+        });
+        receiver
+            .recv_timeout(PATIENCE)
+            .unwrap_or_else(|_| Err("the assistant did not answer in time".to_string()))
     }
 }
 

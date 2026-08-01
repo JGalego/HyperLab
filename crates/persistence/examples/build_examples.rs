@@ -40,6 +40,7 @@ fn main() {
         ("Todo", todo()),
         ("Cluedo", cluedo()),
         ("Myst", myst()),
+        ("LLMs for n00bs", deck()),
     ] {
         freeze_timestamps(&mut stack);
         let path = examples.join(format!("{name}.hl"));
@@ -51,8 +52,9 @@ fn main() {
 /// The time every object in an example claims to have been made.
 ///
 /// Real objects are stamped with the clock. The examples are stamped with a
-/// constant so that regenerating them produces byte-identical files, which is
-/// what lets CI check that `examples/` still matches this program.
+/// constant, so regenerating one changes nothing unless the program did —
+/// which is what lets CI check that `examples/` still matches this file. The
+/// bundle's own `savedAt` is the exception, and CI excludes it.
 const EXAMPLE_TIME: u64 = 1_735_689_600_000; // 2025-01-01T00:00:00Z
 
 /// Gives every object in the stack the same timestamps.
@@ -430,9 +432,30 @@ fn add_card_image(stack: &mut Stack, card: Id, name: &str, rect: Rect, source: &
         .add_part(part);
 }
 
-/// A caption on one card.
+/// A caption on one card, named after what it says.
 fn add_card_label(stack: &mut Stack, card: Id, text: &str, rect: Rect) {
-    let mut part = stack.new_part(PartKind::Field, format!("{text} Caption"), rect);
+    add_card_caption(stack, card, &format!("{text} Caption"), text, rect);
+}
+
+/// A slide's heading: the same text a caption would hold, in a box.
+///
+/// HyperLab has no `textSize`, so a title cannot be set in larger type. A
+/// shadowed box is what HyperCard would have done anyway, and it separates
+/// the heading from the paragraph under it, which is the whole job.
+fn add_card_title(stack: &mut Stack, card: Id, text: &str, rect: Rect) {
+    let mut part = stack.new_part(PartKind::Field, "Title", rect);
+    set(&mut part, "text", text);
+    set(&mut part, "locked", true);
+    set(&mut part, "style", "shadow");
+    stack
+        .card_mut(card)
+        .expect("the card exists")
+        .add_part(part);
+}
+
+/// A caption on one card with a name of its own, for text too long to be one.
+fn add_card_caption(stack: &mut Stack, card: Id, name: &str, text: &str, rect: Rect) {
+    let mut part = stack.new_part(PartKind::Field, name, rect);
     set(&mut part, "text", text);
     set(&mut part, "locked", true);
     set(&mut part, "style", "transparent");
@@ -1112,5 +1135,235 @@ fn myst_art() -> [(&'static str, &'static [u8]); 11] {
         ("selenitic.svg", include_bytes!("myst-art/selenitic.svg")),
         ("stoneship.svg", include_bytes!("myst-art/stoneship.svg")),
         ("dni.svg", include_bytes!("myst-art/dni.svg")),
+    ]
+}
+
+// --------------------------------------------------------------- the deck
+
+/// One slide: its title, what it says, and the diagram under it.
+///
+/// The last slide has no diagram, because what goes there is a question box
+/// and a real model's answer.
+struct Slide {
+    title: &'static str,
+    body: &'static str,
+    picture: &'static str,
+}
+
+/// Nine slides on what a language model does, in the order they are shown.
+const SLIDES: [Slide; 9] = [
+    Slide {
+        title: "LLMs for n00bs",
+        body: "Nine slides on what a language model actually does, and what it cannot. \
+               No maths.\n\n\
+               The last one asks a real one, if you have set one up. \
+               Press Next.",
+        picture: "pipeline.svg",
+    },
+    Slide {
+        title: "It predicts the next token",
+        body: "Given some text, it scores every token that could come next, picks one, \
+               sticks it on the end, and starts again.\n\n\
+               That is the whole mechanic. Everything on the slides after this one is a \
+               consequence of it.",
+        picture: "next-token.svg",
+    },
+    Slide {
+        title: "A token is not a word",
+        body: "Text is chopped up before the model ever sees it. Common words survive \
+               whole; rarer ones become several pieces.\n\n\
+               Which is why it is bad at questions about spelling. It was never shown \
+               the letters.",
+        picture: "tokens.svg",
+    },
+    Slide {
+        title: "The context is everything it knows",
+        body: "Nothing carries over between conversations. Whatever it seems to remember \
+               about you was sent again, in the text.\n\n\
+               The window holding that text has a size, and the oldest of it falls out.",
+        picture: "context.svg",
+    },
+    Slide {
+        title: "Temperature is how boldly it picks",
+        body: "The scores do not change. What changes is how far down the list it is \
+               willing to reach.\n\n\
+               Low repeats itself. High invents, and is wrong more often. Neither one is \
+               a truth setting.",
+        picture: "temperature.svg",
+    },
+    Slide {
+        title: "It is not looking anything up",
+        body: "No index, no database, no search. The answer is computed from a great many \
+               numbers, so it reads exactly as fluently when it is wrong as when it is \
+               right.\n\n\
+               If it has to be right about something, put the something in the prompt.",
+        picture: "weights.svg",
+    },
+    Slide {
+        title: "Prompting is just more context",
+        body: "There are no magic words. Telling it to be accurate does nothing; showing \
+               it one worked example does a great deal.\n\n\
+               Say what you want, show it once, hand over the material, then ask.",
+        picture: "prompt.svg",
+    },
+    Slide {
+        title: "Tools: it asks, something else does",
+        body: "A model can only emit text. It cannot open a file or call anything. So it \
+               emits a request, a program outside it does the work, and the result comes \
+               back as more text.\n\n\
+               HyperLab's assistant works this way, which is why you can undo what it does.",
+        picture: "tools.svg",
+    },
+    Slide {
+        title: "Now ask a real one",
+        body: "Everything above was written in advance. This is not. Set a model up under \
+               AI \u{25b8} Show Assistant \u{25b8} Settings, then press Ask.\n\n\
+               With none set up it says so and the stack keeps working, which is the rule \
+               the runtime enforces.",
+        picture: "",
+    },
+];
+
+/// A slide deck about language models, driven by one on the last card.
+fn deck() -> Stack {
+    let mut stack = Stack::new("LLMs for n00bs");
+    stack.set_size(Size::new(640, 400));
+    stack.set_script("on openStack\n  go to first card\nend openStack");
+
+    for (name, bytes) in deck_art() {
+        let image = Image::new(name, bytes.to_vec()).expect("the artwork is checked at build time");
+        stack.set_image(name, Some(image));
+    }
+
+    let background = stack.backgrounds()[0].id();
+    rename_background(&mut stack, background, "Slide");
+
+    let first = stack.cards()[0].id();
+    let mut cards = vec![first];
+    for _ in 1..SLIDES.len() {
+        let card = stack.new_card(background).expect("the background exists");
+        let id = card.id();
+        stack.add_card(card);
+        cards.push(id);
+    }
+
+    for (index, (card, slide)) in cards.iter().zip(SLIDES.iter()).enumerate() {
+        rename_card(&mut stack, *card, slide.title);
+        add_card_title(&mut stack, *card, slide.title, Rect::new(24, 12, 592, 30));
+        add_card_caption(
+            &mut stack,
+            *card,
+            "Body",
+            slide.body,
+            Rect::new(24, 50, 592, 78),
+        );
+
+        if slide.picture.is_empty() {
+            build_ask_slide(&mut stack, *card);
+        } else {
+            add_card_image(
+                &mut stack,
+                *card,
+                slide.title,
+                Rect::new(24, 134, 592, 200),
+                slide.picture,
+                "",
+            );
+        }
+
+        // Each card says where it is. The total is counted rather than
+        // written down, so adding a slide cannot make the deck lie.
+        stack
+            .card_mut(*card)
+            .expect("the card exists")
+            .set_script(&format!(
+                "on openCard\n  \
+                   put \"{} of \" & the number of cards into field \"Where\"\n\
+                 end openCard",
+                index + 1
+            ));
+    }
+
+    add_button(
+        &mut stack,
+        background,
+        "Back",
+        Rect::new(24, 346, 84, 26),
+        "on mouseUp\n  go to previous card\nend mouseUp",
+    );
+    add_button(
+        &mut stack,
+        background,
+        "Next",
+        Rect::new(116, 346, 84, 26),
+        "on mouseUp\n  go to next card\nend mouseUp",
+    );
+    add_button(
+        &mut stack,
+        background,
+        "Start Over",
+        Rect::new(208, 346, 100, 26),
+        "on mouseUp\n  go to first card\nend mouseUp",
+    );
+
+    let mut where_are_we = stack.new_part(PartKind::Field, "Where", Rect::new(500, 348, 116, 22));
+    set(&mut where_are_we, "locked", true);
+    set(&mut where_are_we, "style", "transparent");
+    background_of(&mut stack, background).add_part(where_are_we);
+
+    stack
+}
+
+/// The last slide: a question, a button, and room for whatever comes back.
+///
+/// `ask assistant` rather than `ai(…)` on purpose. A refused `ai(…)` stops the
+/// handler; a refused `ask assistant` leaves the reason in `the result`, so
+/// the slide explains itself on a machine with no model set up instead of
+/// reporting a script error.
+fn build_ask_slide(stack: &mut Stack, card: Id) {
+    add_card_field(
+        stack,
+        card,
+        "Question",
+        Rect::new(24, 134, 592, 40),
+        "Explain a context window to someone who has never heard of one.",
+    );
+    add_card_button(
+        stack,
+        card,
+        "Ask",
+        Rect::new(24, 182, 96, 26),
+        "on mouseUp\n  \
+           put field \"Question\" into asked\n  \
+           if asked is empty then\n    \
+             answer \"Type a question first.\"\n    \
+             exit mouseUp\n  \
+           end if\n  \
+           ask assistant asked\n  \
+           if the result is not empty then\n    \
+             put the result into field \"Answer\"\n  \
+           else\n    \
+             put it into field \"Answer\"\n  \
+           end if\n\
+         end mouseUp",
+        false,
+    );
+    add_card_field(stack, card, "Answer", Rect::new(24, 216, 592, 118), "");
+}
+
+/// The diagrams, by the name they are known by inside the stack.
+fn deck_art() -> [(&'static str, &'static [u8]); 8] {
+    [
+        ("pipeline.svg", include_bytes!("deck-art/pipeline.svg")),
+        ("next-token.svg", include_bytes!("deck-art/next-token.svg")),
+        ("tokens.svg", include_bytes!("deck-art/tokens.svg")),
+        ("context.svg", include_bytes!("deck-art/context.svg")),
+        (
+            "temperature.svg",
+            include_bytes!("deck-art/temperature.svg"),
+        ),
+        ("weights.svg", include_bytes!("deck-art/weights.svg")),
+        ("prompt.svg", include_bytes!("deck-art/prompt.svg")),
+        ("tools.svg", include_bytes!("deck-art/tools.svg")),
     ]
 }

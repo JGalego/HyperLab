@@ -19,6 +19,7 @@ shoot everything else and say so.
 | `film` | Recipe Box | cards, scripts, undo, the message box, the assistant |
 | `cluedo` | Cluedo | pictures, and a model reading the game off the card |
 | `myst` | Myst | what **Go ▸ Map** knows about a stack it never ran |
+| `deck` | LLMs for n00bs | a slide deck whose last slide asks a real model |
 
 ## What is actually being filmed
 
@@ -46,6 +47,7 @@ nothing to know: same components, same `api.ts`, same snapshot type, same
 | `film.mjs` | the tour — what gets done, and in what order |
 | `cluedo.mjs` | the game |
 | `myst.mjs` | the island, and the map of it |
+| `deck.mjs` | the slides, and the question at the end of them |
 | `shim.js` | makes a browser look like the Tauri window |
 | `cursor.js` | draws the pointer, which Playwright records but does not paint |
 | `record.sh` | starts the two servers, films, converts, stops them |
