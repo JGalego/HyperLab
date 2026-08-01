@@ -21,24 +21,24 @@ Cards, stacks, fields, buttons, scripts and message passing are all still
 here, and a stack stays inspectable and editable while it runs — the two
 qualities that made the original worth learning in the first place.
 
+🕯️ **Bill Atkinson (1951–2025)** wrote QuickDraw, MacPaint and HyperCard, and
+insisted the last of them ship free with every Mac. Millions of people built
+something with it, and a great many of them never thought of themselves as
+programmers at all. HyperLab is dedicated to his memory.
+
 ![The assistant is asked for a button that halves the ingredients; it calls
 create_button, the button appears, clicking it halves them, and undo puts the
 card back](docs/demo.gif)
-
----
 
 ## 📑 Contents
 
 - [✨ Features](#features)
 - [🚀 Getting Started](#getting-started)
 - [🃏 Examples](#examples)
-- [🏗️ How It Is Put Together](#how-it-is-put-together)
-- [🤖 Where the AI Goes](#where-the-ai-goes)
+- [🏗️ Architecture](#architecture)
+- [🤖 AI](#ai)
 - [🤝 Contributing](#contributing)
 - [📄 Licence](#licence)
-- [🕯️ In Memoriam](#in-memoriam)
-
----
 
 <h2 id="features">✨ Features</h2>
 
@@ -64,8 +64,6 @@ card back](docs/demo.gif)
 - **Local first.** No provider configured is a working HyperLab. When one is,
   the key goes in your operating system's keychain and the sidebar shows the
   exact text it sent.
-
----
 
 <h2 id="getting-started">🚀 Getting Started</h2>
 
@@ -123,8 +121,6 @@ npm run tauri dev
 
 Then open one of the [examples](#examples).
 
----
-
 <h2 id="examples">🃏 Examples</h2>
 
 <p align="center">
@@ -165,9 +161,7 @@ cargo run -p hyperlab-persistence --example build_examples
 cargo run -p hyperlab-export --example export_examples
 ```
 
----
-
-<h2 id="how-it-is-put-together">🏗️ How It Is Put Together</h2>
+<h2 id="architecture">🏗️ Architecture</h2>
 
 ```
 UI  →  Commands  →  Runtime  →  Model  →  Renderer
@@ -212,11 +206,9 @@ reused on its own. The desktop shell contains no logic worth the name.
 Read [`docs/architecture.md`](docs/architecture.md) for the reasoning, and
 [`docs/hypertalk.md`](docs/hypertalk.md) for the language.
 
----
+<h2 id="ai">🤖 AI</h2>
 
-<h2 id="where-the-ai-goes">🤖 Where the AI Goes</h2>
-
-The code is arranged so these hold on their own:
+Three claims, and the code is arranged so each of them holds on its own:
 
 - **No provider is special.** A provider implements
   [`AiProvider`](crates/ai/src/provider.rs) and nothing in HyperLab switches
@@ -242,8 +234,6 @@ the sidebar, and [MCP](crates/mcp) — `hyperlab-mcp --stack Todo.hl` hands the
 same tools to any client that speaks the protocol, read-only until you say
 otherwise.
 
----
-
 <h2 id="contributing">🤝 Contributing</h2>
 
 Please do — see [CONTRIBUTING.md](CONTRIBUTING.md) and the
@@ -258,11 +248,3 @@ HyperLab is an original work inspired by HyperCard. It contains no Apple code
 and no Apple artwork, and the Neo Classic theme is drawn from scratch in the
 spirit of the era.
 
-<h2 id="in-memoriam">🕯️ In Memoriam</h2>
-
-**Bill Atkinson (1951–2025)** wrote QuickDraw, MacPaint and HyperCard, and
-insisted the last of them ship free with every Mac. Millions of people built
-something with it, and a great many of them never thought of themselves as
-programmers at all.
-
-HyperLab is dedicated to his memory.
