@@ -167,20 +167,17 @@ impl Interpreter<'_> {
         let search_card = matches!(layer, Layer::Card | Layer::Unspecified);
         let search_background = matches!(layer, Layer::Background | Layer::Unspecified);
 
-        if search_card {
-            if let Some(card) = card.and_then(|id| self.runtime.stack().card(id)) {
-                if let Some(part) = find_part(card, kind, &resolved) {
-                    return Ok(ObjectId::new(kind.object_kind(), part));
-                }
-            }
+        if search_card
+            && let Some(card) = card.and_then(|id| self.runtime.stack().card(id))
+            && let Some(part) = find_part(card, kind, &resolved)
+        {
+            return Ok(ObjectId::new(kind.object_kind(), part));
         }
-        if search_background {
-            if let Some(background) = background.and_then(|id| self.runtime.stack().background(id))
-            {
-                if let Some(part) = find_part(background, kind, &resolved) {
-                    return Ok(ObjectId::new(kind.object_kind(), part));
-                }
-            }
+        if search_background
+            && let Some(background) = background.and_then(|id| self.runtime.stack().background(id))
+            && let Some(part) = find_part(background, kind, &resolved)
+        {
+            return Ok(ObjectId::new(kind.object_kind(), part));
         }
         Err(RuntimeError::new(format!(
             "I cannot find {kind_name} {description}",
@@ -342,10 +339,10 @@ impl Interpreter<'_> {
             return Ok(value);
         }
         // Fields answer to `contents` as well as `text`, as HyperCard's do.
-        if name == "contents" {
-            if let Some(value) = target.property("text") {
-                return Ok(value);
-            }
+        if name == "contents"
+            && let Some(value) = target.property("text")
+        {
+            return Ok(value);
         }
         Err(RuntimeError::new(format!(
             "{object} has no property called \"{name}\""

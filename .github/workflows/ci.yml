@@ -57,6 +57,24 @@ jobs:
             exit 1
           }
 
+  audit:
+    # A dependency with a published advisory is a bug that arrived without
+    # anyone touching the code, so it has to be checked on a schedule rather
+    # than noticed. `apps/desktop/src-tauri/.cargo/audit.toml` says what is
+    # deliberately passed over, and why.
+    name: Dependency advisories
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install cargo-audit --locked
+      - name: Core crates
+        run: cargo audit
+      - name: Desktop shell
+        working-directory: apps/desktop/src-tauri
+        run: cargo audit
+
   frontend:
     name: Desktop frontend
     runs-on: ubuntu-latest
@@ -72,6 +90,7 @@ jobs:
           cache-dependency-path: apps/desktop/package-lock.json
 
       - run: npm ci
+      - run: npm audit --audit-level=high
       - run: npm run format:check
       - run: npm run lint
       - run: npm run typecheck

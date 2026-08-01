@@ -39,7 +39,9 @@ export function App() {
   const [tool, setTool] = useState<Tool>('browse');
   const [error, setError] = useState<string | null>(null);
   const [dialog, setDialog] = useState<DialogRequest | null>(null);
-  const [ready, setReady] = useState(false);
+  // Whether the shell is behind us never changes while we are running, so
+  // a browser is ready to show its notice on the first render.
+  const [ready, setReady] = useState(!api.inDesktopApp());
   const [ai, setAi] = useState<AiView | null>(null);
   const [aiOpen, setAiOpen] = useState(false);
   const [aiSettings, setAiSettings] = useState(false);
@@ -87,10 +89,7 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    if (!api.inDesktopApp()) {
-      setReady(true);
-      return;
-    }
+    if (!api.inDesktopApp()) return;
     // Read up front, but not shown: the panel costs 300px, and someone with
     // no model configured should never have to close it.
     api.aiView().then(setAi, () => setAi(null));

@@ -5,7 +5,7 @@
 <p align="center">
   <a href="https://github.com/JGalego/HyperLab/actions/workflows/ci.yml"><img src="https://github.com/JGalego/HyperLab/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-000000?style=flat-square" alt="Licence: MIT"></a>
-  <img src="https://img.shields.io/badge/rust-1.85%2B-000000?style=flat-square&logo=rust&logoColor=white" alt="Rust 1.85+">
+  <img src="https://img.shields.io/badge/rust-1.88%2B-000000?style=flat-square&logo=rust&logoColor=white" alt="Rust 1.88+">
   <img src="https://img.shields.io/badge/tauri-2-000000?style=flat-square&logo=tauri&logoColor=white" alt="Tauri 2">
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-000000?style=flat-square" alt="PRs welcome"></a>
 </p>
@@ -39,8 +39,13 @@ card back](docs/demo.gif)
 
 <h2 id="getting-started">🚀 Getting Started</h2>
 
-You will need 🦀 [Rust](https://rustup.rs) 1.85 or newer and 🟢
-[Node](https://nodejs.org) 20 or newer, plus
+Installers for macOS, Windows and Linux are attached to every
+[release](https://github.com/JGalego/HyperLab/releases) — a `.dmg`, an
+`.msi`, and a `.deb`, `.rpm` or `.AppImage`. Nothing phones home, and
+HyperLab works with no AI provider configured.
+
+To build it yourself you will need 🦀 [Rust](https://rustup.rs) 1.88 or
+newer and 🟢 [Node](https://nodejs.org) 20 or newer, plus
 [Tauri's system dependencies](https://tauri.app/start/prerequisites/) for
 your platform.
 

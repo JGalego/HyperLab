@@ -1,8 +1,7 @@
 /** The bottom strip: navigation, the message box, and anything that failed. */
 
-import { useEffect, useState } from 'react';
-
 import type { StackView, Tool } from '../types';
+import { useMirror } from '../mirror';
 
 interface Props {
   view: StackView;
@@ -28,9 +27,7 @@ export function StatusBar({
   onRunMessage,
   onDismissError,
 }: Props) {
-  const [draft, setDraft] = useState(view.messageBox);
-
-  useEffect(() => setDraft(view.messageBox), [view.messageBox]);
+  const [draft, setDraft] = useMirror(view.messageBox);
 
   return (
     <div className="statusbar">
