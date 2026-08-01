@@ -19,6 +19,7 @@ authors = ["HyperLab contributors"]
 hyperlab-ai = { path = "crates/ai", version = "0.1.0" }
 hyperlab-ai-providers = { path = "crates/ai-providers", version = "0.1.0" }
 hyperlab-assistant = { path = "crates/assistant", version = "0.1.0" }
+hyperlab-export = { path = "crates/export", version = "0.1.0" }
 hyperlab-graph = { path = "crates/graph", version = "0.1.0" }
 hyperlab-mcp = { path = "crates/mcp", version = "0.1.0" }
 hyperlab-parser = { path = "crates/parser", version = "0.1.0" }

@@ -1,0 +1,27 @@
+[package]
+name = "hyperlab-export"
+description = "A stack as a document: one page per card, with the artwork intact."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+hyperlab-stack.workspace = true
+
+# `pdf-writer` builds the document; `svg2pdf` turns each picture into an
+# XObject the document can place, and hands it back as `pdf-writer` types.
+# So this has to be the same `pdf-writer` svg2pdf itself uses — 0.12, not the
+# newest — or the two produce structurally identical types that will not meet.
+# Cargo says so at compile time rather than writing a broken file, which is
+# the only reason this is a comment and not a bug.
+pdf-writer = "0.12"
+svg2pdf = { version = "0.13", features = ["text", "image"] }
+
+[dev-dependencies]
+hyperlab-persistence.workspace = true
+
+[lints]
+workspace = true

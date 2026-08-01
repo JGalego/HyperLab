@@ -507,6 +507,21 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
         }
         // The settings panel asks on the way up, so a film that opens it
         // would draw nothing without these three.
+        "export_pdf" => {
+            // `held` above already has the session; locking it again here is a
+            // deadlock, not a second reader.
+            let pdf = hyperlab_export::to_pdf(runtime.stack()).map_err(|error| error.to_string())?;
+            let path = text("path")?;
+            std::fs::write(&path, pdf).map_err(|error| error.to_string())?;
+            json!(path)
+        }
+        "export_png" => {
+            let path = text("path")?;
+            let bytes: Vec<u8> = serde_json::from_value(arguments["bytes"].clone())
+                .map_err(|error| error.to_string())?;
+            std::fs::write(&path, bytes).map_err(|error| error.to_string())?;
+            json!(path)
+        }
         "ai_keychain" => keychain(bridge),
         "ai_set_key" => {
             hyperlab_desktop::keys::set(&text("provider")?, &text("key")?)?;

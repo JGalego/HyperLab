@@ -20,6 +20,7 @@
 //! The single exception is [`dialog_reply`]: it is the message that unblocks
 //! a waiting script, so it must never queue behind one.
 
+use hyperlab_export::to_pdf;
 use hyperlab_graph::Graph;
 use hyperlab_persistence::{load, save};
 use hyperlab_runtime::{Command, Effect, Message, PartOwner, Runtime, messages};
@@ -762,4 +763,51 @@ mod tests {
         let error = read_at_most(std::path::Path::new("/nowhere/at/all.png"), 1024).unwrap_err();
         assert!(error.contains("all.png"), "unhelpful: {error}");
     }
+}
+
+// ------------------------------------------------------------------ exports
+
+/// Writes the whole stack as a PDF, one page per card.
+///
+/// The document is built from the object model rather than from the window,
+/// so what comes out does not depend on how big the window happened to be, or
+/// on the card you were looking at.
+#[tauri::command]
+pub async fn export_pdf(state: State<'_, AppState>, path: String) -> CommandResult<String> {
+    let session = state.session();
+    // Slow for a stack of artwork — every picture is converted — so it goes on
+    // a blocking thread like everything else that might take a moment.
+    let (pdf, target) = tauri::async_runtime::spawn_blocking(move || {
+        let held = lock(&session);
+        let pdf = to_pdf(held.runtime.stack()).map_err(|error| error.to_string())?;
+        Ok::<_, String>((pdf, std::path::PathBuf::from(path)))
+    })
+    .await
+    .map_err(|_| "the export stopped unexpectedly".to_string())??;
+
+    std::fs::write(&target, pdf)
+        .map_err(|error| format!("could not write {}: {error}", target.display()))?;
+    Ok(target.display().to_string())
+}
+
+/// Writes bytes the window has already made — the map, as a PNG.
+///
+/// The map's shape is a layout the renderer worked out, and nothing in the
+/// core knows it, so the picture is drawn there and only saved here. That is
+/// the whole of this command's job: it does not look at what it is given
+/// beyond checking there is something, and it writes exactly where it is told.
+#[tauri::command]
+pub async fn export_png(path: String, bytes: Vec<u8>) -> CommandResult<String> {
+    // A PNG and nothing else. The window is the only caller and always sends
+    // one, so a mismatch here is a bug rather than an attack — but writing
+    // whatever arrives under a name ending in .png would be a worse habit.
+    const SIGNATURE: [u8; 8] = [0x89, b'P', b'N', b'G', 0x0d, 0x0a, 0x1a, 0x0a];
+    if !bytes.starts_with(&SIGNATURE) {
+        return Err("that is not a PNG".to_string());
+    }
+
+    let target = std::path::PathBuf::from(path);
+    std::fs::write(&target, bytes)
+        .map_err(|error| format!("could not write {}: {error}", target.display()))?;
+    Ok(target.display().to_string())
 }

@@ -218,6 +218,18 @@ export const aiSettings = (): Promise<AiSettings> => call('ai_settings');
 export const aiSaveSettings = (settings: AiSettings): Promise<AiView> =>
   call('ai_save_settings', { settings });
 
+/** Writes the whole stack as a PDF, and answers with where it went. */
+export const exportPdf = (path: string): Promise<string> => call('export_pdf', { path });
+
+/**
+ * Saves a picture the window drew.
+ *
+ * The bytes travel as an array because that is what Tauri's bridge carries;
+ * the shell checks they really are a PNG before writing them.
+ */
+export const exportPng = (path: string, bytes: Uint8Array): Promise<string> =>
+  call('export_png', { path, bytes: Array.from(bytes) });
+
 /** Whether there is a keychain, and which providers have a key in it. */
 export const aiKeychain = (): Promise<KeychainView> => call('ai_keychain');
 

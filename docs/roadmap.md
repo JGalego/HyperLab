@@ -190,6 +190,17 @@ with `stackimport` and a hand-written parser.
 
 [myst]: https://glthr.com/myst-graph-1
 
+## Getting out ✅
+
+A stack that cannot leave HyperLab is a stack you cannot show anyone.
+
+**File ▸ Export as PDF…** writes a page per card. The pictures go in as vector
+graphics and the words as words, so a printed card is as sharp as the paper
+and a reader can search it. **Go ▸ Map ▸ Save as PNG…** saves the drawing.
+
+Still to come: one card rather than all of them, and a page size that is a
+page rather than the card.
+
 ## Phase 7 — Plugins
 
 Renderers, themes, providers, persistence formats, importers, exporters and

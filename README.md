@@ -153,6 +153,7 @@ crates/
                     and client            — what may be done
     graph/          the routes between
                     cards                 — where it all leads
+    export/         a stack as a PDF      — how it leaves
 
 apps/desktop/       the Tauri shell and the React renderer
 docs/               architecture, roadmap, HyperTalk reference
@@ -169,6 +170,9 @@ reused on its own. The desktop shell contains no logic worth the name.
 - **A stack is a directory.** One `.json` per card and scripts kept as plain
   `.hypertalk` files rather than escaped inside JSON, so a stack diffs,
   merges and greps like source code.
+- **A stack can leave.** **File ▸ Export as PDF…** writes a page per card,
+  with the artwork as vector graphics and the text as text you can select.
+  **Go ▸ Map** saves itself as a PNG.
 - **A stack is also a graph.** Owning the parser means every `go` can be read
   back out, so **Go ▸ Map** draws the whole thing and names the cards nothing
   leads to, the cards with no way out, and the links pointing at a card that

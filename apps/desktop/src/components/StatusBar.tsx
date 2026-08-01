@@ -7,10 +7,12 @@ interface Props {
   view: StackView;
   tool: Tool;
   error: string | null;
+  /** Something that went right and is worth saying, such as where a file went. */
+  notice: string | null;
   onGoTo: (position: number) => void;
   onSetTool: (tool: Tool) => void;
   onRunMessage: (source: string) => void;
-  onDismissError: () => void;
+  onDismiss: () => void;
 }
 
 /**
@@ -22,10 +24,11 @@ export function StatusBar({
   view,
   tool,
   error,
+  notice,
   onGoTo,
   onSetTool,
   onRunMessage,
-  onDismissError,
+  onDismiss,
 }: Props) {
   const [draft, setDraft] = useMirror(view.messageBox);
 
@@ -90,7 +93,11 @@ export function StatusBar({
         </button>
       </div>
 
-      {error === null ? (
+      {error === null && notice !== null ? (
+        <button type="button" className="statusbar__notice" onClick={onDismiss}>
+          {notice}
+        </button>
+      ) : error === null ? (
         <input
           className="statusbar__message"
           value={draft}
@@ -102,7 +109,7 @@ export function StatusBar({
           }}
         />
       ) : (
-        <button type="button" className="statusbar__error" onClick={onDismissError}>
+        <button type="button" className="statusbar__error" onClick={onDismiss}>
           {error}
         </button>
       )}
