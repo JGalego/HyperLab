@@ -283,6 +283,7 @@ name = "hyperlab-mcp"
 version = "0.1.0"
 dependencies = [
  "hyperlab-ai",
+ "hyperlab-persistence",
  "hyperlab-runtime",
  "hyperlab-stack",
  "serde",

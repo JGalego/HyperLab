@@ -12,9 +12,12 @@
 //! * everything an assistant does is undoable;
 //! * the UI updates the same way it does for any other change.
 //!
-//! There is deliberately no transport here — no stdio server, no sockets.
-//! What a tool *is* and how it is *delivered* are separate problems, and only
-//! the first one belongs next to the runtime.
+//! What a tool *is* and how it is *delivered* stay separate problems.
+//! [`ToolRegistry`] is the answer to the first and needs no transport at all;
+//! [`Server`] is the answer to the second, speaking MCP over any pair of
+//! streams, and [`Client`] is the same protocol pointed the other way, so a
+//! stack can reach tools HyperLab did not write. Between the two sits
+//! [`Policy`], which is the only thing that decides whether a call runs.
 //!
 //! ```
 //! use hyperlab_mcp::ToolRegistry;
@@ -48,10 +51,19 @@
 
 #![warn(missing_docs)]
 
+mod client;
 mod error;
+pub mod jsonrpc;
+mod permission;
 mod registry;
+mod server;
 mod tools;
 
+pub use client::{Client, ExternalTool, Launch, MAX_LINE, PATIENCE, SHUTDOWN_GRACE};
 pub use error::{ToolError, ToolResult};
+pub use permission::{
+    Access, AllowAll, Approval, Approver, Consent, Decision, DenyAll, Policy, Verdict,
+};
 pub use registry::ToolRegistry;
+pub use server::{PROTOCOL_VERSION, Server, ServerInfo, serve_stdio, serve_stdio_unattended};
 pub use tools::{TOOLS, Tool};

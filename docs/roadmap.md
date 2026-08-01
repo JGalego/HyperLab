@@ -59,14 +59,38 @@ Still to come in this phase:
 - A visible, reviewable account of what is sent: the context builder already
   leaves field contents out unless asked.
 
-## Phase 5 — MCP
+## Phase 5 — MCP ✅
 
-The tools exist ([`hyperlab-mcp`](../crates/mcp)); the transport does not.
+The tools ([`hyperlab-mcp`](../crates/mcp)) now have a transport, in both
+directions, with one thing standing between them.
 
-- Expose them over stdio so any MCP client can drive HyperLab.
-- Consume external MCP servers, so a stack can call out to the rest of the
-  world.
-- Permissions: which stacks, which tools, and what the user was asked.
+- **Out.** `hyperlab-mcp --stack Todo.hl` speaks MCP over stdin and stdout,
+  so anything that talks to an MCP server can drive HyperLab. The server
+  itself reads and writes ordinary streams, which is why it can be tested
+  over a pair of buffers as well as over a pipe.
+- **In.** `Client` starts an external server and calls its tools, so a stack
+  can reach the rest of the world. It is treated as hostile on purpose: the
+  program and its arguments are handed to the operating system separately so
+  there is no shell to escape from, every reply is read on its own thread
+  with a timeout, over-long lines end the conversation rather than filling
+  memory, and a server that has no business reading this process's
+  environment can be given a fresh one.
+- **Permissions**, which every call goes through:
+  - *Which stacks* — a policy can name the stacks it covers.
+  - *Which tools* — an allowlist, plus a read-only mode enforced by each
+    tool's own declared `Access` rather than by a list of names kept in step
+    by hand. A tool a caller may never use is not offered to it either.
+  - *What the user was asked* — consent is recorded as the decision it is:
+    every `Decision` says whether a person was actually consulted and what
+    they said, and the whole sequence can be shown afterwards.
+
+Read-only unless told otherwise. The server is started by other software,
+usually with nobody watching, and nobody can be asked.
+
+Still to come in this phase:
+
+- Choosing external servers from the interface rather than in code.
+- Serving more than one stack from a single connection.
 
 ## Phase 6 — AI-native HyperTalk ✅
 

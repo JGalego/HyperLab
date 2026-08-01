@@ -540,9 +540,46 @@ run_script()
 search_stack()
 ```
 
-Future AI assistants interact through these tools.
+AI assistants interact through these tools.
 
 Never allow direct mutation.
+
+## Transport
+
+What a tool *is* and how it is *delivered* stay separate, which is why the
+tool table needed no changes to gain a transport.
+
+```
+    another MCP client ──► Server ──► Policy ──► ToolRegistry ──► Command
+                                        │
+    a stack ──────────────► Client ─────┘──► somebody else's MCP server
+```
+
+`Server` reads from any `BufRead` and writes to any `Write`, so the stdio
+binary is four lines and the tests run over a pair of in-memory buffers.
+`Client` is the same protocol pointed outwards.
+
+Everything crosses `Policy`, and that is the point of it being a type rather
+than a few `if`s: a caller at the far end of a pipe is not the user. It
+decides three separate things, because they fail differently — which stacks a
+connection may touch, which tools it may use, and whether a person was asked.
+Each tool declares its own `Access`, so "read only" is checked against the
+tool table and cannot drift out of step with a list of names.
+
+## What an external server is assumed to be
+
+A program someone else wrote, which may be a mistake or worse:
+
+| Risk | What prevents it |
+| --- | --- |
+| A stack builds a command line | There is no command line. A program and its arguments are separate fields, handed to the operating system as they stand, so no shell ever sees them |
+| A server hangs | Replies are read on their own thread, with a timeout; one call is lost, not the application |
+| A server floods the pipe | A line over 16 MiB ends the conversation instead of being buffered |
+| A server reads API keys | It inherits this process's environment only if it is not given a clean one |
+| A tool description gives instructions | Descriptions and results are carried as data. They are never merged into HyperLab's own tool table, and `ExternalTool` keeps the server's name attached, so it is always clear whose tool is whose |
+
+A server is told the session is over by closing the pipe, and then left alone
+for a few seconds before it is killed — long enough to save what it was doing.
 
 ---
 
@@ -850,7 +887,8 @@ crates/
     ai/             provider interfaces   — who is asked
     ai-providers/   OpenAI and Anthropic
                     clients               — how they are reached
-    mcp/            tools                 — what may be done
+    mcp/            tools, MCP server
+                    and client            — what may be done
 
 apps/desktop/
     src-tauri/      the shell: state, commands, view model
@@ -887,6 +925,8 @@ language can be tested, forked or reused on its own.
 | A script can wait for a person | Commands run off the message loop, so `Host::ask` may block while the window stays alive |
 | No provider is special | `hyperlab-ai` does not depend on `hyperlab-ai-providers`; the arrow runs the other way |
 | A key is never written to disk | `ProviderConfig` has no field for one — only the name of an environment variable |
+| A caller over a pipe is not the user | Every MCP call crosses `Policy`, which is read-only until told otherwise |
+| A stack cannot build a shell command | `Launch` keeps the program and its arguments in separate fields; no shell is involved |
 
 ## What is deliberately not built yet
 

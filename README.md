@@ -112,7 +112,8 @@ crates/
     ai/             provider interfaces   — who is asked
     ai-providers/   OpenAI and Anthropic
                     clients               — how they are reached
-    mcp/            tools                 — what may be done
+    mcp/            tools, MCP server
+                    and client            — what may be done
 
 apps/desktop/       the Tauri shell and the React renderer
 docs/               architecture, roadmap, HyperTalk reference

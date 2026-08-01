@@ -12,7 +12,10 @@ use hyperlab_stack::{
 };
 use serde_json::{Value as Json, json};
 
-use crate::error::{ToolError, ToolResult};
+use crate::{
+    error::{ToolError, ToolResult},
+    permission::Access,
+};
 
 /// One tool: how to describe it, and what to do when it is called.
 pub struct Tool {
@@ -20,6 +23,12 @@ pub struct Tool {
     pub name: &'static str,
     /// What it does, and when to use it.
     pub description: &'static str,
+    /// Whether calling it can change the stack.
+    ///
+    /// Declared here rather than worked out from the name, so that a
+    /// [`Policy`](crate::Policy) enforcing "read only" is held in step by the
+    /// compiler: a new tool cannot be added without saying which it is.
+    pub access: Access,
     /// A JSON Schema for its arguments.
     pub schema: fn() -> Json,
     /// What it does.
@@ -38,6 +47,7 @@ impl Tool {
 pub const TOOLS: &[Tool] = &[
     Tool {
         name: "current_card",
+        access: Access::Read,
         description: "Describe the card the user is looking at: its name, id, position, \
                       and the buttons and fields on it and on its background.",
         schema: || json!({ "type": "object", "properties": {}, "additionalProperties": false }),
@@ -45,12 +55,14 @@ pub const TOOLS: &[Tool] = &[
     },
     Tool {
         name: "list_cards",
+        access: Access::Read,
         description: "List every card in the stack, in order, with its id and name.",
         schema: || json!({ "type": "object", "properties": {}, "additionalProperties": false }),
         run: list_cards,
     },
     Tool {
         name: "read_field",
+        access: Access::Read,
         description: "Read the text of a field on the current card or its background. \
                       Give either a name or an id.",
         schema: field_locator_schema,
@@ -58,6 +70,7 @@ pub const TOOLS: &[Tool] = &[
     },
     Tool {
         name: "write_field",
+        access: Access::Write,
         description: "Replace the text of a field. This is undoable, exactly as if the \
                       user had typed it.",
         schema: || {
@@ -71,6 +84,7 @@ pub const TOOLS: &[Tool] = &[
     },
     Tool {
         name: "create_card",
+        access: Access::Write,
         description: "Add a new card after the current one, on the same background.",
         schema: || {
             json!({
@@ -85,18 +99,21 @@ pub const TOOLS: &[Tool] = &[
     },
     Tool {
         name: "create_button",
+        access: Access::Write,
         description: "Add a button to the current card.",
         schema: || part_schema("button"),
         run: |runtime, arguments| create_part(runtime, arguments, PartKind::Button),
     },
     Tool {
         name: "create_field",
+        access: Access::Write,
         description: "Add a field to the current card.",
         schema: || part_schema("field"),
         run: |runtime, arguments| create_part(runtime, arguments, PartKind::Field),
     },
     Tool {
         name: "set_property",
+        access: Access::Write,
         description: "Set a property of an object: visible, enabled, style, width, left, \
                       script, name, and so on. Use current_card to see what exists.",
         schema: || {
@@ -121,6 +138,7 @@ pub const TOOLS: &[Tool] = &[
     },
     Tool {
         name: "run_script",
+        access: Access::Write,
         description: "Run a fragment of HyperTalk as if it were a handler on the current \
                       card. Use this for anything the other tools do not cover.",
         schema: || {
@@ -140,6 +158,7 @@ pub const TOOLS: &[Tool] = &[
     },
     Tool {
         name: "send_message",
+        access: Access::Write,
         description: "Send a message such as mouseUp to an object, exactly as clicking it \
                       would.",
         schema: || {
@@ -161,6 +180,7 @@ pub const TOOLS: &[Tool] = &[
     },
     Tool {
         name: "find_cards",
+        access: Access::Read,
         description: "Find cards whose name, field contents or script contain some text. \
                       Returns the cards that matched and where the text was found.",
         schema: || {
@@ -178,6 +198,7 @@ pub const TOOLS: &[Tool] = &[
     },
     Tool {
         name: "go_to_card",
+        access: Access::Write,
         description: "Show a different card, by id or by position.",
         schema: || {
             json!({
@@ -193,6 +214,7 @@ pub const TOOLS: &[Tool] = &[
     },
     Tool {
         name: "undo",
+        access: Access::Write,
         description: "Undo the last change, whoever made it.",
         schema: || json!({ "type": "object", "properties": {}, "additionalProperties": false }),
         run: |runtime, _| {
