@@ -83,6 +83,15 @@ const CLAUSE_WORDS: &[&str] = &[
     "contains", "starts", "ends", "div", "mod", "else", "end", "down", "times", "while", "until",
 ];
 
+/// Commands whose name is two words.
+///
+/// Only the *shape* is grammar. `ask assistant "…"` would otherwise read as
+/// `ask` applied to a variable called `assistant`, and then fall over on the
+/// string after it; joining the two words here hands the runtime an ordinary
+/// command whose name happens to contain a space, and leaves the runtime to
+/// decide what it means.
+const TWO_WORD_COMMANDS: &[(&str, &str)] = &[("ask", "assistant")];
+
 /// Adjectives that may precede a function name, as in `the long date`.
 const QUALIFIERS: &[&str] = &[
     "long",
@@ -608,8 +617,16 @@ impl Parser {
     /// Anything that is not built-in syntax: `answer "hi"`, `beep`, or a call
     /// to a handler defined somewhere in the message path.
     fn parse_command(&mut self) -> ParseResult<StatementKind> {
-        let name = self.expect_word("a command")?;
+        let mut name = self.expect_word("a command")?;
         let mut arguments = Vec::new();
+
+        if TWO_WORD_COMMANDS
+            .iter()
+            .any(|(first, second)| name.eq_ignore_ascii_case(first) && self.peek().is(second))
+        {
+            let second = self.expect_word("a command")?;
+            name = format!("{name} {second}");
+        }
 
         // `doThing(1, 2)` is accepted alongside `doThing 1, 2`. If the
         // parenthesised reading does not consume the whole line it was really

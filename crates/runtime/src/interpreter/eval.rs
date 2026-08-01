@@ -7,6 +7,7 @@ use super::{Interpreter, builtins};
 use crate::{
     chunk,
     error::{RuntimeError, RuntimeResult},
+    host::AiRequest,
 };
 
 impl Interpreter<'_> {
@@ -155,8 +156,28 @@ impl Interpreter<'_> {
         if name.eq_ignore_ascii_case("result") {
             return Ok(self.runtime.result().clone());
         }
+        // `ai` is not in the built-in table because everything there is a
+        // pure function of its arguments. This one has to reach the host.
+        if name.eq_ignore_ascii_case("ai") {
+            return self.evaluate_ai(arguments);
+        }
         builtins::call(name, arguments)?
             .ok_or_else(|| RuntimeError::new(format!("I do not know a function called \"{name}\"")))
+    }
+
+    /// `ai("…")`: asks a language model, and evaluates to what it says.
+    ///
+    /// Unlike `ask assistant`, a refusal is an error rather than a value.
+    /// This sits in the middle of an expression, and there is no honest
+    /// answer to `ai("…") + 1` when nothing answered.
+    fn evaluate_ai(&mut self, arguments: &[Value]) -> RuntimeResult<Value> {
+        let prompt = arguments.first().map(Value::as_text).unwrap_or_default();
+        if prompt.trim().is_empty() {
+            return Err(RuntimeError::new("\"ai\" needs something to ask"));
+        }
+        self.ask_assistant(&AiRequest::answer(prompt))
+            .map(Value::text)
+            .map_err(RuntimeError::new)
     }
 
     fn evaluate_count(&mut self, target: &CountTarget) -> RuntimeResult<Value> {

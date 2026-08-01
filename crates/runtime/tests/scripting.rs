@@ -1,6 +1,8 @@
 //! End-to-end tests: HyperTalk in, changed stack out.
 
-use hyperlab_runtime::{Command, Effect, Host, Message, PartOwner, Runtime, RuntimeResult};
+use hyperlab_runtime::{
+    AiIntent, AiRequest, Command, Effect, Host, Message, PartOwner, Runtime, RuntimeResult,
+};
 use hyperlab_stack::{Id, Object, ObjectId, ObjectKind, PartKind, Rect, Stack, Value};
 
 /// A stack with one button and two fields on its only card, plus a second
@@ -571,6 +573,223 @@ fn wait_is_reported_rather_than_blocking_the_runtime() {
     let mut fixture = Fixture::new();
     fixture.run("wait 2 seconds");
     assert_eq!(fixture.effects(), vec![Effect::Wait { ticks: 120.0 }]);
+}
+
+// ---------------------------------------------------------- the AI language
+
+/// A host standing in for a language model: it answers with a fixed reply,
+/// and remembers what it was asked so a test can check the runtime added
+/// nothing to the script's own words.
+struct Model {
+    reply: Result<String, String>,
+    asked: std::sync::Arc<std::sync::Mutex<Vec<AiRequest>>>,
+}
+
+impl Model {
+    fn saying(reply: &str) -> Self {
+        Self {
+            reply: Ok(reply.to_string()),
+            asked: std::sync::Arc::new(std::sync::Mutex::new(Vec::new())),
+        }
+    }
+
+    fn refusing(reason: &str) -> Self {
+        Self {
+            reply: Err(reason.to_string()),
+            asked: std::sync::Arc::new(std::sync::Mutex::new(Vec::new())),
+        }
+    }
+
+    fn log(&self) -> std::sync::Arc<std::sync::Mutex<Vec<AiRequest>>> {
+        std::sync::Arc::clone(&self.asked)
+    }
+}
+
+impl Host for Model {
+    fn ai(&mut self, request: &AiRequest) -> Result<String, String> {
+        self.asked.lock().unwrap().push(request.clone());
+        self.reply.clone()
+    }
+}
+
+#[test]
+fn ai_evaluates_to_what_the_model_said() {
+    let mut fixture = Fixture::with_host(Box::new(Model::saying("Two overdue items")));
+    fixture.run(r#"put ai("Summarize this card") into field "Name""#);
+    assert_eq!(fixture.text_of(fixture.name_field), "Two overdue items");
+}
+
+#[test]
+fn ai_is_an_ordinary_expression_and_composes_like_one() {
+    let mut fixture = Fixture::with_host(Box::new(Model::saying("yes")));
+    fixture.run(
+        r#"if ai("Should this customer receive a discount?") is "yes" then
+             put "discounted" into field "Name"
+           end if"#,
+    );
+    assert_eq!(fixture.text_of(fixture.name_field), "discounted");
+}
+
+#[test]
+fn the_runtime_passes_the_scripts_words_through_untouched() {
+    // The runtime must not know what a prompt looks like. Whatever framing a
+    // model needs is added on the far side of the host, so what arrives here
+    // is exactly what the author wrote.
+    let model = Model::saying("fine");
+    let asked = model.log();
+    let mut fixture = Fixture::with_host(Box::new(model));
+
+    fixture.run(r#"get ai("Summarize this card")"#);
+
+    let asked = asked.lock().unwrap();
+    assert_eq!(asked.len(), 1);
+    assert_eq!(asked[0].prompt, "Summarize this card");
+    assert_eq!(asked[0].intent, AiIntent::Answer);
+}
+
+#[test]
+fn ask_assistant_may_change_the_stack_and_ai_may_not() {
+    let model = Model::saying("done");
+    let asked = model.log();
+    let mut fixture = Fixture::with_host(Box::new(model));
+
+    fixture.run(
+        r#"get ai("just asking")
+           ask assistant "Generate five cards""#,
+    );
+
+    let asked = asked.lock().unwrap();
+    assert_eq!(
+        asked
+            .iter()
+            .map(|request| request.intent)
+            .collect::<Vec<_>>(),
+        vec![AiIntent::Answer, AiIntent::Edit]
+    );
+}
+
+#[test]
+fn ask_assistant_puts_the_reply_into_it() {
+    let mut fixture = Fixture::with_host(Box::new(Model::saying("Five cards added")));
+    fixture.run(
+        r#"ask assistant "Generate five cards"
+           put it into field "Name""#,
+    );
+    assert_eq!(fixture.text_of(fixture.name_field), "Five cards added");
+}
+
+#[test]
+fn ask_assistant_says_why_in_the_result_rather_than_stopping_the_handler() {
+    // The same shape as a cancelled `ask`: a stack must still run where no
+    // model is set up, so the handler carries on and can check.
+    let mut fixture = Fixture::with_host(Box::new(Model::refusing("no assistant is set up")));
+    fixture.run(
+        r#"ask assistant "Generate five cards"
+           put the result into field "Name"
+           put it into field "Notes""#,
+    );
+    assert_eq!(
+        fixture.text_of(fixture.name_field),
+        "no assistant is set up"
+    );
+    assert_eq!(fixture.text_of(fixture.notes_field), "");
+}
+
+#[test]
+fn ai_stops_the_handler_when_nothing_answers() {
+    // Unlike `ask assistant`, this one is in the middle of an expression:
+    // there is no value it could sensibly evaluate to.
+    let mut fixture = Fixture::with_host(Box::new(Model::refusing("no assistant is set up")));
+    let error = fixture
+        .click(r#"put ai("Summarize this card") into field "Name""#)
+        .expect_err("a refused ai() should fail the handler");
+    assert!(
+        error.message.contains("no assistant is set up"),
+        "got {}",
+        error.message
+    );
+}
+
+#[test]
+fn a_script_with_no_assistant_configured_still_runs() {
+    let mut fixture = Fixture::new();
+    fixture.run(
+        r#"ask assistant "Tidy this up"
+           put "carried on" into field "Name""#,
+    );
+    assert_eq!(fixture.text_of(fixture.name_field), "carried on");
+}
+
+#[test]
+fn asking_the_assistant_for_nothing_is_an_error() {
+    let mut fixture = Fixture::with_host(Box::new(Model::saying("...")));
+    let error = fixture
+        .click(r#"ask assistant """#)
+        .expect_err("an empty prompt should be refused");
+    assert!(
+        error.message.contains("something to ask"),
+        "got {}",
+        error.message
+    );
+}
+
+#[test]
+fn every_question_put_to_a_model_is_recorded_as_an_effect() {
+    // A caller with no window — a test, an MCP tool, an audit — finds out
+    // what was sent this way.
+    let mut fixture = Fixture::with_host(Box::new(Model::saying("ok")));
+    fixture.run(
+        r#"get ai("What is on this card?")
+           ask assistant "Add a search button""#,
+    );
+    assert_eq!(
+        fixture.effects(),
+        vec![
+            Effect::Assistant {
+                prompt: "What is on this card?".into(),
+                intent: AiIntent::Answer,
+            },
+            Effect::Assistant {
+                prompt: "Add a search button".into(),
+                intent: AiIntent::Edit,
+            },
+        ]
+    );
+}
+
+#[test]
+fn a_refused_question_is_still_recorded() {
+    let mut fixture = Fixture::with_host(Box::new(Model::refusing("nothing is set up")));
+    fixture.run(r#"ask assistant "Do something""#);
+    assert_eq!(
+        fixture.effects(),
+        vec![Effect::Assistant {
+            prompt: "Do something".into(),
+            intent: AiIntent::Edit,
+        }]
+    );
+}
+
+#[test]
+fn a_handler_of_your_own_beats_both_of_them() {
+    // The rule that holds everywhere else holds here: write `function ai` or
+    // `on ask assistant` and it is yours.
+    let mut fixture = Fixture::with_host(Box::new(Model::saying("from the model")));
+    let card = ObjectId::new(ObjectKind::Card, fixture.first_card);
+    fixture.script(
+        card,
+        r#"function ai question
+             return "from the stack"
+           end ai"#,
+    );
+
+    fixture.run(r#"put ai("anything") into field "Name""#);
+
+    assert_eq!(fixture.text_of(fixture.name_field), "from the stack");
+    assert!(
+        fixture.effects().is_empty(),
+        "a handler that answered should not have troubled the model"
+    );
 }
 
 // ------------------------------------------------------------------- errors

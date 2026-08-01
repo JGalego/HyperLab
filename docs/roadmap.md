@@ -68,23 +68,36 @@ The tools exist ([`hyperlab-mcp`](../crates/mcp)); the transport does not.
   world.
 - Permissions: which stacks, which tools, and what the user was asked.
 
-## Phase 6 — AI-native HyperTalk
+## Phase 6 — AI-native HyperTalk ✅
 
 The language extensions the architecture was shaped for:
 
 ```hypertalk
 put ai("Summarize this card") into field "Summary"
 
-ask assistant
-  "Generate five cards"
+ask assistant "Generate five cards"
 
-if ai("Should this customer receive a discount?") then
+if ai("Should this customer receive a discount?") is "yes" then
   …
 end if
 ```
 
-This should be new parser nodes and new runtime commands — not a new runtime.
-If it turns out to need one, something earlier was wrong.
+It did not need a new runtime, and it needed less grammar than expected.
+`ai("…")` already parsed as a function call, so it is an arm in the
+interpreter and nothing else; `ask assistant` is two words joined in the
+parser so that `assistant` is not read as a variable, and is otherwise an
+ordinary command.
+
+The seam is [`Host::ai`](../crates/runtime/src/host.rs), alongside `answer`
+and `ask` — a blocking call the runtime makes while a script runs. The
+runtime passes the author's words through untouched and hands back the reply;
+it does not know what a prompt looks like, and cannot, because it does not
+depend on any AI crate. Every question is recorded as an `Effect`, whether or
+not anything answered.
+
+The two differ in one way, and it is the one that matters: `ai(…)` answers in
+words, and `ask assistant` may change the stack — through commands, so its
+edits are undoable like anyone else's.
 
 ## Phase 7 — Plugins
 

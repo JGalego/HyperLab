@@ -461,6 +461,49 @@ fn ask_takes_a_trailing_with_argument() {
     );
 }
 
+#[test]
+fn ask_assistant_is_one_command_and_not_a_variable_called_assistant() {
+    assert_eq!(
+        statement(r#"ask assistant "Generate five cards""#),
+        StatementKind::Command {
+            name: "ask assistant".into(),
+            arguments: vec![Expr::Text("Generate five cards".into())],
+        }
+    );
+}
+
+#[test]
+fn ask_assistant_is_recognised_however_it_is_capitalised() {
+    let StatementKind::Command { name, .. } = statement(r#"Ask Assistant "tidy up""#) else {
+        panic!("expected a command");
+    };
+    // The runtime lower-cases before it dispatches, as it does for every
+    // other command; the parser only has to join the two words.
+    assert_eq!(name.to_ascii_lowercase(), "ask assistant");
+}
+
+#[test]
+fn a_plain_ask_is_left_alone() {
+    assert_eq!(
+        statement(r#"ask "Name?""#),
+        StatementKind::Command {
+            name: "ask".into(),
+            arguments: vec![Expr::Text("Name?".into())],
+        }
+    );
+}
+
+#[test]
+fn ai_needs_no_grammar_of_its_own_because_it_is_a_call() {
+    assert_eq!(
+        expression(r#"ai("Summarize this card")"#),
+        Expr::Call {
+            name: "ai".into(),
+            arguments: vec![Expr::Text("Summarize this card".into())],
+        }
+    );
+}
+
 // --------------------------------------------------------------- expressions
 
 #[test]

@@ -237,6 +237,7 @@ Constants: `empty`, `true`, `false`, `quote`, `return`, `space`, `tab`,
 | `send <message> to <object>` | Send a message elsewhere |
 | `answer <text>` | Show a message |
 | `ask <question> [with <default>]` | Ask for a line of text; the answer lands in `it` |
+| `ask assistant <request>` | Ask a language model, which may change the stack |
 | `beep` | Make a noise |
 | `wait <n> [ticks\|seconds]` | Pause |
 | `hide`/`show <object>` | Set `visible` |
@@ -268,7 +269,7 @@ A handler always wins over a built-in: write `on beep` and `beep` is yours.
 
 `length`, `abs`, `sqrt`, `trunc`, `round`, `exp`, `ln`, `sin`, `cos`, `tan`,
 `min`, `max`, `sum`, `average`, `random`, `charToNum`, `numToChar`, `offset`,
-`value`.
+`value`, `ai`.
 
 They can be written either way:
 
@@ -296,12 +297,70 @@ runtime.
 
 ---
 
+## Asking a language model
+
+Two things, and they differ in exactly one way: whether the assistant is
+allowed to change the stack.
+
+`ai(…)` is a function. It answers in words and touches nothing, so it goes
+wherever any other value goes:
+
+```hypertalk
+put ai("Summarize this card") into field "Summary"
+
+if ai("Is this address in Portugal?") is "yes" then
+  put "EU" into field "Region"
+end if
+```
+
+`ask assistant` is a command. The assistant may edit the stack while it
+answers — through the same commands a person uses, so everything it does is
+undoable and shows up in the history like anyone else's change:
+
+```hypertalk
+ask assistant "Add a search button to this card"
+put it into field "Notes"
+```
+
+The reply lands in `it`, exactly as with `ask`. And exactly as with `ask`,
+the failure is a value rather than a stop: if no provider is configured, `it`
+is empty and `the result` says why, so a stack that uses the assistant still
+runs on a machine that has none.
+
+```hypertalk
+ask assistant "Tidy up this card"
+if the result is not empty then answer "No assistant: " & the result
+```
+
+`ai(…)` cannot do that, because it sits in the middle of an expression and
+there is no honest value for it to be. A refused `ai(…)` stops the handler
+with the reason.
+
+Both are ordinary names, so a handler of your own wins:
+
+```hypertalk
+function ai question
+  return "not today"
+end ai
+```
+
+What is sent is never more than what you asked plus the context the shell
+decided to include, and the shell shows you that before it goes. The runtime
+itself does not know what a prompt looks like — it passes your words through
+and hands back the reply.
+
+---
+
 ## Reserved words
 
 `char`, `chars`, `character`, `characters`, `word`, `words`, `item`, `items`,
 `line` and `lines` introduce chunks, and `card`, `cd`, `background`, `bg`,
 `bkgnd`, `stack`, `button`, `btn`, `field`, `fld`, `me` and `this` introduce
 objects. None of them can be used as a variable name.
+
+`assistant` is reserved only where it follows `ask`, so `ask assistant "…"`
+is one command rather than `ask` applied to a variable. Everywhere else it is
+an ordinary name.
 
 ---
 
@@ -312,6 +371,3 @@ Named so that you find out here rather than at the wrong moment:
 - **`is a number`, `is a date`** and the other type tests.
 - **`find`, `sort`, `the selection`, `visual effect`, `do`,
   `the clickLoc`,** and painting of any kind.
-- **The AI extensions** — `put ai("…") into …`, `ask assistant` — which are
-  Phase 6, and which the architecture is shaped for but the parser does not
-  yet accept.
