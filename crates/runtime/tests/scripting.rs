@@ -631,3 +631,45 @@ fn an_unhandled_message_is_not_an_error() {
         .unwrap();
     assert_eq!(value, Value::Empty);
 }
+
+#[test]
+fn a_host_sees_dialogs_in_the_order_the_script_showed_them() {
+    use std::sync::{Arc, Mutex};
+
+    /// A host that writes down what it was asked, and answers.
+    struct Recorder {
+        seen: Arc<Mutex<Vec<String>>>,
+    }
+
+    impl Host for Recorder {
+        fn answer(&mut self, message: &str) {
+            self.seen.lock().unwrap().push(format!("answer: {message}"));
+        }
+
+        fn ask(&mut self, prompt: &str, default: &str) -> Option<String> {
+            self.seen.lock().unwrap().push(format!("ask: {prompt}"));
+            Some(default.to_string())
+        }
+    }
+
+    let seen = Arc::new(Mutex::new(Vec::new()));
+    let mut fixture = Fixture::with_host(Box::new(Recorder {
+        seen: Arc::clone(&seen),
+    }));
+
+    fixture.run(
+        r#"answer "first"
+           ask "second" with "typed"
+           put it into field "Name"
+           answer "third""#,
+    );
+
+    // The host is called as each statement runs, not replayed once the
+    // handler has finished. That is what lets a dialog block until it is
+    // answered, and what lets the answer reach the very next line.
+    assert_eq!(
+        *seen.lock().unwrap(),
+        vec!["answer: first", "ask: second", "answer: third"]
+    );
+    assert_eq!(fixture.text_of(fixture.name_field), "typed");
+}

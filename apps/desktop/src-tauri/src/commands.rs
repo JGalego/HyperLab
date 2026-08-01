@@ -4,17 +4,30 @@
 //! function here does one of three things: take a snapshot, run a
 //! [`Command`], or send a [`Message`]. There is no fourth kind, which is what
 //! keeps the promise that the UI cannot touch stack data.
+//!
+//! # Why they are all `async`
+//!
+//! Tauri runs a synchronous command on the thread that pumps the window's
+//! messages. A script that shows a dialog has to wait for an answer, and a
+//! script that loops has to be interruptible by *something* — neither is
+//! possible on the thread that draws the window.
+//!
+//! So each command hands its work to [`with_session`], which runs it on a
+//! blocking thread. The window stays responsive while a script runs, which is
+//! what lets [`DesktopHost`](crate::dialogs::DesktopHost) block until the
+//! person answers.
+//!
+//! The single exception is [`dialog_reply`]: it is the message that unblocks
+//! a waiting script, so it must never queue behind one.
 
 use hyperlab_persistence::{load, save};
 use hyperlab_runtime::{Command, Effect, Message, PartOwner, Runtime, messages};
-use hyperlab_stack::{
-    Id, Object, ObjectId, ObjectKind, PartKind, Point, Rect, Size, Stack, Value,
-};
+use hyperlab_stack::{Id, Object, ObjectId, ObjectKind, PartKind, Point, Rect, Size, Stack, Value};
 use serde::{Deserialize, Serialize};
 use tauri::State;
 
 use crate::{
-    state::{AppState, Session},
+    state::{AppState, Session, lock},
     view::{PropertyView, StackView, properties_of, snapshot},
 };
 
@@ -25,7 +38,8 @@ use crate::{
 pub struct Outcome {
     /// The snapshot to draw.
     pub view: StackView,
-    /// Dialogs, beeps and the like, in the order they happened.
+    /// Beeps, pauses and the like, in the order they happened. Dialogs are
+    /// not here: they were shown while the script ran.
     pub effects: Vec<Effect>,
 }
 
@@ -42,6 +56,19 @@ pub enum Layer {
     Background,
 }
 
+/// Runs `work` against the session, on a thread that may block.
+async fn with_session<T, F>(state: &State<'_, AppState>, work: F) -> CommandResult<T>
+where
+    F: FnOnce(&mut Session) -> CommandResult<T> + Send + 'static,
+    T: Send + 'static,
+{
+    let session = state.session();
+    tauri::async_runtime::spawn_blocking(move || work(&mut lock(&session)))
+        .await
+        .map_err(|_| "the runtime stopped unexpectedly".to_string())?
+}
+
+/// Takes a snapshot, and collects whatever scripts left behind.
 fn finish(session: &mut Session) -> Outcome {
     let effects = session.runtime.take_effects();
     let path = session.path_string();
@@ -51,30 +78,42 @@ fn finish(session: &mut Session) -> Outcome {
     }
 }
 
+// ------------------------------------------------------------------ dialogs
+
+/// Answers the dialog a script is waiting on. `None` means cancelled.
+///
+/// Returns whether anything was waiting, so a window that dismissed the same
+/// dialog twice can tell.
+#[tauri::command]
+pub fn dialog_reply(state: State<'_, AppState>, text: Option<String>) -> bool {
+    state.dialogs().reply(text)
+}
+
 // ------------------------------------------------------------------ reading
 
 /// Returns the current state without changing anything.
 #[tauri::command]
-pub fn get_view(state: State<'_, AppState>) -> Outcome {
-    let mut session = state.session();
-    finish(&mut session)
+pub async fn get_view(state: State<'_, AppState>) -> CommandResult<Outcome> {
+    with_session(&state, |session| Ok(finish(session))).await
 }
 
 /// Returns every property of one object, for the inspector.
 #[tauri::command]
-pub fn get_properties(
+pub async fn get_properties(
     state: State<'_, AppState>,
     kind: String,
     id: u64,
 ) -> CommandResult<Vec<PropertyView>> {
-    let session = state.session();
-    let object = object_id(&kind, id)?;
-    let object = session
-        .runtime
-        .stack()
-        .object(object.kind, object.id)
-        .ok_or_else(|| format!("there is no {kind} with id {id}"))?;
-    Ok(properties_of(object))
+    with_session(&state, move |session| {
+        let object = object_id(&kind, id)?;
+        let object = session
+            .runtime
+            .stack()
+            .object(object.kind, object.id)
+            .ok_or_else(|| format!("there is no {kind} with id {id}"))?;
+        Ok(properties_of(object))
+    })
+    .await
 }
 
 /// Checks whether a script parses, for the editor's error line.
@@ -87,165 +126,186 @@ pub fn check_script(source: String) -> CommandResult<()> {
 
 /// Sends `mouseUp` to a part, exactly as clicking it does.
 #[tauri::command]
-pub fn click_part(state: State<'_, AppState>, id: u64) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    let part = find_part(&session.runtime, Id::new(id))?;
-    session
-        .runtime
-        .send_message(&Message::new(messages::MOUSE_UP), part)
-        .map_err(|error| error.to_string())?;
-    Ok(finish(&mut session))
+pub async fn click_part(state: State<'_, AppState>, id: u64) -> CommandResult<Outcome> {
+    with_session(&state, move |session| {
+        let part = find_part(&session.runtime, Id::new(id))?;
+        session
+            .runtime
+            .send_message(&Message::new(messages::MOUSE_UP), part)
+            .map_err(|error| error.to_string())?;
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Types into a field, which is a change like any other.
 #[tauri::command]
-pub fn set_field_text(state: State<'_, AppState>, id: u64, text: String) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    let field = ObjectId::new(ObjectKind::Field, Id::new(id));
-    session
-        .runtime
-        .execute(Command::SetProperty {
-            object: field,
-            property: "text".into(),
-            value: Some(Value::text(text)),
-        })
-        .map_err(|error| error.to_string())?;
-    session.touch();
-    let _ = session
-        .runtime
-        .send_message(&Message::new(messages::FIELD_CHANGED), field);
-    Ok(finish(&mut session))
+pub async fn set_field_text(
+    state: State<'_, AppState>,
+    id: u64,
+    text: String,
+) -> CommandResult<Outcome> {
+    with_session(&state, move |session| {
+        let field = ObjectId::new(ObjectKind::Field, Id::new(id));
+        session
+            .runtime
+            .execute(Command::SetProperty {
+                object: field,
+                property: "text".into(),
+                value: Some(Value::text(text)),
+            })
+            .map_err(|error| error.to_string())?;
+        session.touch();
+        let _ = session
+            .runtime
+            .send_message(&Message::new(messages::FIELD_CHANGED), field);
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Goes to a card by position, counting from one, wrapping at the ends.
 #[tauri::command]
-pub fn go_to_card(state: State<'_, AppState>, position: i64) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    let index = isize::try_from(position - 1).map_err(|_| "that card is out of range")?;
-    session
-        .runtime
-        .go_to_index(index)
-        .map_err(|error| error.to_string())?;
-    Ok(finish(&mut session))
+pub async fn go_to_card(state: State<'_, AppState>, position: i64) -> CommandResult<Outcome> {
+    with_session(&state, move |session| {
+        let index = isize::try_from(position - 1).map_err(|_| "that card is out of range")?;
+        session
+            .runtime
+            .go_to_index(index)
+            .map_err(|error| error.to_string())?;
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Runs whatever is in the message box.
 #[tauri::command]
-pub fn run_message_box(state: State<'_, AppState>, source: String) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    let card = ObjectId::new(ObjectKind::Card, session.runtime.current_card());
-    let result = session.runtime.run_script(&source, card);
-    session.touch();
-    match result {
-        Ok(_) => Ok(finish(&mut session)),
-        Err(error) => Err(error.to_string()),
-    }
+pub async fn run_message_box(state: State<'_, AppState>, source: String) -> CommandResult<Outcome> {
+    with_session(&state, move |session| {
+        let card = ObjectId::new(ObjectKind::Card, session.runtime.current_card());
+        session
+            .runtime
+            .run_script(&source, card)
+            .map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 // ------------------------------------------------------------------ editing
 
 /// Adds a card after the current one.
 #[tauri::command]
-pub fn new_card(state: State<'_, AppState>) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    let after = session.runtime.current_card_index();
-    let created = session
-        .runtime
-        .execute(Command::CreateCard {
-            after,
-            background: None,
-        })
-        .map_err(|error| error.to_string())?;
-    session.touch();
-    if let Some(card) = created {
-        session
+pub async fn new_card(state: State<'_, AppState>) -> CommandResult<Outcome> {
+    with_session(&state, |session| {
+        let after = session.runtime.current_card_index();
+        let created = session
             .runtime
-            .go_to_card(card.id)
+            .execute(Command::CreateCard {
+                after,
+                background: None,
+            })
             .map_err(|error| error.to_string())?;
-    }
-    Ok(finish(&mut session))
+        session.touch();
+        if let Some(card) = created {
+            session
+                .runtime
+                .go_to_card(card.id)
+                .map_err(|error| error.to_string())?;
+        }
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Deletes the current card.
 #[tauri::command]
-pub fn delete_card(state: State<'_, AppState>) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    let card = session.runtime.current_card();
-    session
-        .runtime
-        .execute(Command::DeleteCard { id: card })
-        .map_err(|error| error.to_string())?;
-    session.touch();
-    Ok(finish(&mut session))
+pub async fn delete_card(state: State<'_, AppState>) -> CommandResult<Outcome> {
+    with_session(&state, |session| {
+        let card = session.runtime.current_card();
+        session
+            .runtime
+            .execute(Command::DeleteCard { id: card })
+            .map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Adds a button or a field to the card or its background.
 #[tauri::command]
-pub fn new_part(
+pub async fn new_part(
     state: State<'_, AppState>,
     kind: String,
     layer: Layer,
     name: Option<String>,
 ) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    let part_kind = match kind.as_str() {
-        "button" => PartKind::Button,
-        "field" => PartKind::Field,
-        other => return Err(format!("\"{other}\" is not a kind of part")),
-    };
+    with_session(&state, move |session| {
+        let part_kind = match kind.as_str() {
+            "button" => PartKind::Button,
+            "field" => PartKind::Field,
+            other => return Err(format!("\"{other}\" is not a kind of part")),
+        };
 
-    let card = session.runtime.current_card();
-    let owner = match layer {
-        Layer::Card => PartOwner::Card { id: card },
-        Layer::Background => PartOwner::Background {
-            id: session
-                .runtime
-                .stack()
-                .background_of(card)
-                .map(Object::id)
-                .ok_or("this card has no background")?,
-        },
-    };
+        let card = session.runtime.current_card();
+        let owner = match layer {
+            Layer::Card => PartOwner::Card { id: card },
+            Layer::Background => PartOwner::Background {
+                id: session
+                    .runtime
+                    .stack()
+                    .background_of(card)
+                    .map(Object::id)
+                    .ok_or("this card has no background")?,
+            },
+        };
 
-    // The cascade counts *every* part on show, not just this kind, so a new
-    // button and a new field do not land exactly on top of each other. The
-    // name still counts its own kind, so they are "Button 1" and "Field 1".
-    let placed = count_parts(session.runtime.stack(), card, None);
-    let same_kind = count_parts(session.runtime.stack(), card, Some(part_kind));
-    let geometry = session
-        .runtime
-        .stack()
-        .default_part_geometry(part_kind, placed);
-    let name = name.unwrap_or_else(|| format!("{} {}", title_case(&kind), same_kind + 1));
+        // The cascade counts *every* part on show, not just this kind, so a
+        // new button and a new field do not land exactly on top of each
+        // other. The name still counts its own kind, so they are "Button 1"
+        // and "Field 1".
+        let placed = count_parts(session.runtime.stack(), card, None);
+        let same_kind = count_parts(session.runtime.stack(), card, Some(part_kind));
+        let geometry = session
+            .runtime
+            .stack()
+            .default_part_geometry(part_kind, placed);
+        let name = name.unwrap_or_else(|| format!("{} {}", title_case(&kind), same_kind + 1));
 
-    session
-        .runtime
-        .execute(Command::CreatePart {
-            owner,
-            kind: part_kind,
-            name,
-            geometry,
-        })
-        .map_err(|error| error.to_string())?;
-    session.touch();
-    Ok(finish(&mut session))
+        session
+            .runtime
+            .execute(Command::CreatePart {
+                owner,
+                kind: part_kind,
+                name,
+                geometry,
+            })
+            .map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Removes a part.
 #[tauri::command]
-pub fn delete_part(state: State<'_, AppState>, id: u64) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    session
-        .runtime
-        .execute(Command::DeletePart { id: Id::new(id) })
-        .map_err(|error| error.to_string())?;
-    session.touch();
-    Ok(finish(&mut session))
+pub async fn delete_part(state: State<'_, AppState>, id: u64) -> CommandResult<Outcome> {
+    with_session(&state, move |session| {
+        session
+            .runtime
+            .execute(Command::DeletePart { id: Id::new(id) })
+            .map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Moves or resizes a part, as dragging it does.
 #[tauri::command]
-pub fn set_geometry(
+pub async fn set_geometry(
     state: State<'_, AppState>,
     id: u64,
     left: i32,
@@ -253,163 +313,203 @@ pub fn set_geometry(
     width: i32,
     height: i32,
 ) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    session
-        .runtime
-        .execute(Command::SetGeometry {
-            id: Id::new(id),
-            geometry: Rect::new(left, top, width, height),
-        })
-        .map_err(|error| error.to_string())?;
-    session.touch();
-    Ok(finish(&mut session))
+    with_session(&state, move |session| {
+        session
+            .runtime
+            .execute(Command::SetGeometry {
+                id: Id::new(id),
+                geometry: Rect::new(left, top, width, height),
+            })
+            .map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Sets a property from the inspector.
 #[tauri::command]
-pub fn set_property(
+pub async fn set_property(
     state: State<'_, AppState>,
     kind: String,
     id: u64,
     property: String,
     value: serde_json::Value,
 ) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    let object = object_id(&kind, id)?;
-    let value = match value {
-        serde_json::Value::Bool(flag) => Value::Bool(flag),
-        serde_json::Value::Number(number) => Value::Number(number.as_f64().unwrap_or_default()),
-        serde_json::Value::Null => Value::Empty,
-        serde_json::Value::String(text) => Value::text(text),
-        other => Value::text(other.to_string()),
-    };
-    session
-        .runtime
-        .execute(Command::SetProperty {
-            object,
-            property,
-            value: Some(value),
-        })
-        .map_err(|error| error.to_string())?;
-    session.touch();
-    Ok(finish(&mut session))
+    with_session(&state, move |session| {
+        let object = object_id(&kind, id)?;
+        session
+            .runtime
+            .execute(Command::SetProperty {
+                object,
+                property,
+                value: Some(json_to_value(value)),
+            })
+            .map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Replaces an object's script.
+///
+/// A script that does not parse is still stored — half-written code is
+/// normal, and losing it would be worse than keeping it. The editor checks
+/// separately, with [`check_script`], and says so.
 #[tauri::command]
-pub fn set_script(
+pub async fn set_script(
     state: State<'_, AppState>,
     kind: String,
     id: u64,
     script: String,
 ) -> CommandResult<Outcome> {
-    // A script that does not parse is still worth keeping — half-written code
-    // is normal — but the editor is told about it so it can say so.
-    let mut session = state.session();
-    let object = object_id(&kind, id)?;
-    session
-        .runtime
-        .execute(Command::SetScript { object, script })
-        .map_err(|error| error.to_string())?;
-    session.touch();
-    Ok(finish(&mut session))
+    with_session(&state, move |session| {
+        let object = object_id(&kind, id)?;
+        session
+            .runtime
+            .execute(Command::SetScript { object, script })
+            .map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Renames an object.
 #[tauri::command]
-pub fn rename(
+pub async fn rename(
     state: State<'_, AppState>,
     kind: String,
     id: u64,
     name: String,
 ) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    let object = object_id(&kind, id)?;
-    session
-        .runtime
-        .execute(Command::Rename { object, name })
-        .map_err(|error| error.to_string())?;
-    session.touch();
-    Ok(finish(&mut session))
+    with_session(&state, move |session| {
+        let object = object_id(&kind, id)?;
+        session
+            .runtime
+            .execute(Command::Rename { object, name })
+            .map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Resizes every card in the stack.
 #[tauri::command]
-pub fn set_stack_size(
+pub async fn set_stack_size(
     state: State<'_, AppState>,
     width: i32,
     height: i32,
 ) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    session
-        .runtime
-        .execute(Command::SetStackSize {
-            size: Size::new(width, height),
-        })
-        .map_err(|error| error.to_string())?;
-    session.touch();
-    Ok(finish(&mut session))
+    with_session(&state, move |session| {
+        session
+            .runtime
+            .execute(Command::SetStackSize {
+                size: Size::new(width, height),
+            })
+            .map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Undoes the last change.
 #[tauri::command]
-pub fn undo(state: State<'_, AppState>) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    session.runtime.undo().map_err(|error| error.to_string())?;
-    session.touch();
-    Ok(finish(&mut session))
+pub async fn undo(state: State<'_, AppState>) -> CommandResult<Outcome> {
+    with_session(&state, |session| {
+        session.runtime.undo().map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Redoes the last undone change.
 #[tauri::command]
-pub fn redo(state: State<'_, AppState>) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    session.runtime.redo().map_err(|error| error.to_string())?;
-    session.touch();
-    Ok(finish(&mut session))
+pub async fn redo(state: State<'_, AppState>) -> CommandResult<Outcome> {
+    with_session(&state, |session| {
+        session.runtime.redo().map_err(|error| error.to_string())?;
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
 }
 
 // ------------------------------------------------------------------- files
 
 /// Starts a new, empty stack.
 #[tauri::command]
-pub fn new_stack(state: State<'_, AppState>, name: Option<String>) -> Outcome {
-    let mut session = state.session();
-    session
-        .runtime
-        .open(Stack::new(name.unwrap_or_else(|| "Untitled".into())));
-    session.path = None;
-    session.dirty = false;
-    let _ = session.runtime.open_stack();
-    finish(&mut session)
+pub async fn new_stack(state: State<'_, AppState>, name: Option<String>) -> CommandResult<Outcome> {
+    with_session(&state, move |session| {
+        session
+            .runtime
+            .open(Stack::new(name.unwrap_or_else(|| "Untitled".into())));
+        session.path = None;
+        session.dirty = false;
+        let _ = session.runtime.open_stack();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Opens a `.hl` bundle.
 #[tauri::command]
-pub fn open_stack(state: State<'_, AppState>, path: String) -> CommandResult<Outcome> {
-    let stack = load(&path).map_err(|error| error.to_string())?;
-    let mut session = state.session();
-    session.runtime.open(stack);
-    session.path = Some(path.into());
-    session.dirty = false;
-    // `openStack` runs on open, which is how a stack sets itself up.
-    let _ = session.runtime.open_stack();
-    Ok(finish(&mut session))
+pub async fn open_stack(state: State<'_, AppState>, path: String) -> CommandResult<Outcome> {
+    with_session(&state, move |session| {
+        let stack = load(&path).map_err(|error| error.to_string())?;
+        session.runtime.open(stack);
+        session.path = Some(path.into());
+        session.dirty = false;
+        // `openStack` runs on open, which is how a stack sets itself up.
+        let _ = session.runtime.open_stack();
+        Ok(finish(session))
+    })
+    .await
 }
 
 /// Saves the stack, to `path` if one is given and to where it came from
 /// otherwise.
 #[tauri::command]
-pub fn save_stack(state: State<'_, AppState>, path: Option<String>) -> CommandResult<Outcome> {
-    let mut session = state.session();
-    let target = match path.map(std::path::PathBuf::from).or_else(|| session.path.clone()) {
-        Some(target) => target,
-        None => return Err("this stack has never been saved; choose where to put it".into()),
-    };
-    save(&target, session.runtime.stack()).map_err(|error| error.to_string())?;
-    session.path = Some(target);
-    session.dirty = false;
-    Ok(finish(&mut session))
+pub async fn save_stack(
+    state: State<'_, AppState>,
+    path: Option<String>,
+) -> CommandResult<Outcome> {
+    with_session(&state, move |session| {
+        let target = path
+            .map(std::path::PathBuf::from)
+            .or_else(|| session.path.clone())
+            .ok_or("this stack has never been saved; choose where to put it")?;
+        save(&target, session.runtime.stack()).map_err(|error| error.to_string())?;
+        session.path = Some(target);
+        session.dirty = false;
+        Ok(finish(session))
+    })
+    .await
+}
+
+/// Which part is under a point, for hit testing done in Rust rather than in
+/// the renderer.
+#[tauri::command]
+pub async fn part_at(state: State<'_, AppState>, x: i32, y: i32) -> CommandResult<Option<u64>> {
+    use hyperlab_stack::PartContainer;
+    with_session(&state, move |session| {
+        let stack = session.runtime.stack();
+        let card = session.runtime.current_card();
+        let point = Point::new(x, y);
+        Ok(stack
+            .card(card)
+            .and_then(|card| card.part_at(point))
+            .or_else(|| {
+                stack
+                    .background_of(card)
+                    .and_then(|background| background.part_at(point))
+            })
+            .map(|part| part.id().get()))
+    })
+    .await
 }
 
 // ------------------------------------------------------------------ helpers
@@ -424,6 +524,18 @@ fn object_id(kind: &str, id: u64) -> CommandResult<ObjectId> {
         other => return Err(format!("\"{other}\" is not a kind of object")),
     };
     Ok(ObjectId::new(kind, Id::new(id)))
+}
+
+/// Turns what the inspector sent into a property value, keeping booleans and
+/// numbers as themselves rather than as their spelling.
+fn json_to_value(value: serde_json::Value) -> Value {
+    match value {
+        serde_json::Value::Bool(flag) => Value::Bool(flag),
+        serde_json::Value::Number(number) => Value::Number(number.as_f64().unwrap_or_default()),
+        serde_json::Value::Null => Value::Empty,
+        serde_json::Value::String(text) => Value::text(text),
+        other => Value::text(other.to_string()),
+    }
 }
 
 /// Works out whether an id belongs to a button or a field.
@@ -456,24 +568,4 @@ fn title_case(word: &str) -> String {
     characters.next().map_or_else(String::new, |first| {
         first.to_uppercase().collect::<String>() + characters.as_str()
     })
-}
-
-/// Which part is under a point, for hit testing done in Rust rather than in
-/// the renderer.
-#[tauri::command]
-pub fn part_at(state: State<'_, AppState>, x: i32, y: i32) -> Option<u64> {
-    use hyperlab_stack::PartContainer;
-    let session = state.session();
-    let stack = session.runtime.stack();
-    let card = session.runtime.current_card();
-    let point = Point::new(x, y);
-    stack
-        .card(card)
-        .and_then(|card| card.part_at(point))
-        .or_else(|| {
-            stack
-                .background_of(card)
-                .and_then(|background| background.part_at(point))
-        })
-        .map(|part| part.id().get())
 }

@@ -236,11 +236,25 @@ Constants: `empty`, `true`, `false`, `quote`, `return`, `space`, `tab`,
 | `go [to] <card>`, `go back` | Navigate |
 | `send <message> to <object>` | Send a message elsewhere |
 | `answer <text>` | Show a message |
-| `ask <question> [with <default>]` | Ask for a line of text |
+| `ask <question> [with <default>]` | Ask for a line of text; the answer lands in `it` |
 | `beep` | Make a noise |
 | `wait <n> [ticks\|seconds]` | Pause |
 | `hide`/`show <object>` | Set `visible` |
 | `pass`, `return`, `exit`, `global` | Control |
+
+`answer` and `ask` are modal: the script stops until the dialog is dismissed.
+Cancelling `ask` leaves `it` empty and sets `the result` to `"Cancel"`, so a
+handler can tell the difference between an empty answer and no answer:
+
+```hypertalk
+ask "What needs doing?" with ""
+if the result is "Cancel" then exit mouseUp
+put it & return after field "Items"
+```
+
+A caller with no window — a test, or an MCP tool — has no way to answer, so
+every question is cancelled. A script that checks `the result` therefore works
+unattended as well as on screen.
 
 `choose`, `doMenu`, `play`, `visual`, `lock` and `unlock` are accepted and do
 nothing, so scripts written for HyperCard do not fall over on a line that only
@@ -295,10 +309,6 @@ objects. None of them can be used as a variable name.
 
 Named so that you find out here rather than at the wrong moment:
 
-- **`ask` cannot return an answer.** The question is shown, but the script has
-  already finished by then: `it` is empty and `the result` is `"Cancel"`.
-  Suspending a handler mid-flight is Phase 2 work — see the
-  [roadmap](roadmap.md).
 - **`is a number`, `is a date`** and the other type tests.
 - **`find`, `sort`, `the selection`, `visual effect`, `do`,
   `the clickLoc`,** and painting of any kind.

@@ -193,10 +193,7 @@ fn part_view(part: &hyperlab_stack::Part, layer: &str) -> PartView {
         rect: [rect.left, rect.top, rect.width, rect.height],
         visible: flag("visible", true),
         enabled: flag("enabled", true),
-        style: part
-            .property("style")
-            .unwrap_or(Value::Empty)
-            .as_text(),
+        style: part.property("style").unwrap_or(Value::Empty).as_text(),
         locked: flag("locked", false),
         script: part.script().to_string(),
         properties: properties_of(part),

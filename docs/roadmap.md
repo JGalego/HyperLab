@@ -18,17 +18,15 @@ The object model, the command bus and message dispatch.
 - HyperCard-style message passing along `button → card → background → stack`.
 - `.hl` bundles: one JSON file per card, one `.hypertalk` file per script.
 
-## Phase 2 — Desktop editor ✅ *(with one thing outstanding)*
+## Phase 2 — Desktop editor ✅
 
 - Tauri shell, React renderer, the Neo Classic theme.
 - Browse and edit tools, drag to move, object inspector, property editor,
   script editor, card navigation, message box.
 - Open, save and save-as.
-
-Outstanding: **a handler cannot yet suspend**. `ask` records its question and
-the script carries on, so the answer never reaches `it`. Fixing this means
-making the interpreter resumable; the `Effect`/`Host` split already marks
-where it goes.
+- Modal `answer` and `ask`: a script stops until the dialog is dismissed, and
+  the answer reaches the next line. Commands run off the message loop, so the
+  window stays responsive while a script waits — or while it loops.
 
 ## Phase 3 — HyperTalk ✅ *(a working subset)*
 

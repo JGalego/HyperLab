@@ -156,6 +156,14 @@ impl Runtime {
         self.effects.push(effect);
     }
 
+    /// Replaces the host.
+    ///
+    /// A shell usually cannot build its host until it has a window to talk
+    /// to, which is later than it needs a runtime.
+    pub fn set_host(&mut self, host: Box<dyn Host>) {
+        self.host = host;
+    }
+
     /// The host, for the interpreter's `answer` and `ask`.
     pub(crate) fn host_mut(&mut self) -> &mut dyn Host {
         self.host.as_mut()
