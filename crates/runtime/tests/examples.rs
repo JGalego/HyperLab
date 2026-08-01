@@ -241,3 +241,117 @@ fn examples_keep_working_after_a_save_and_reload() {
     assert_eq!(reloaded, stack);
     let _: ObjectId = ObjectId::new(reloaded.kind(), reloaded.id());
 }
+
+// -------------------------------------------------------------- the mansion
+
+/// Goes to a card by name, the way a navigation button would.
+fn go_to(runtime: &mut Runtime, name: &str) {
+    let card = runtime
+        .stack()
+        .card_named(name)
+        .map(Object::id)
+        .unwrap_or_else(|| panic!("there is no card named \"{name}\""));
+    runtime.go_to_card(card).expect("the card was just found");
+}
+
+/// Clicks a part of any kind, so that a picture can be clicked too.
+fn click_part(runtime: &mut Runtime, kind: PartKind, name: &str) {
+    let card = runtime.current_card();
+    let part = runtime
+        .stack()
+        .card(card)
+        .and_then(|card| card.part_named(kind, name))
+        .map(Object::object_id)
+        .unwrap_or_else(|| panic!("there is no {kind:?} named \"{name}\" on this card"));
+    runtime
+        .send_message(&Message::new("mouseUp"), part)
+        .unwrap_or_else(|error| panic!("clicking \"{name}\" failed: {error}"));
+}
+
+#[test]
+fn cluedo_carries_its_own_artwork() {
+    let runtime = open("Cluedo");
+    let stack = runtime.stack();
+    assert_eq!(
+        stack.images().len(),
+        13,
+        "the board, six people, six weapons"
+    );
+    assert!(
+        stack.unused_images().is_empty(),
+        "every picture should be drawn by something: {:?}",
+        stack.unused_images()
+    );
+
+    // Every image part names a picture the stack actually has.
+    for part in stack
+        .parts()
+        .filter(|part| part.part_kind() == PartKind::Image)
+    {
+        let source = part.property("source").unwrap_or(Value::Empty).as_text();
+        assert!(
+            stack.image(&source).is_some(),
+            "image \"{}\" points at \"{source}\", which is not in the bundle",
+            part.name()
+        );
+    }
+}
+
+#[test]
+fn clicking_a_portrait_names_the_suspect() {
+    // The reason a picture is a part: the choice is the picture itself, with
+    // no invisible button laid over the top.
+    let mut runtime = open("Cluedo");
+    go_to(&mut runtime, "Suspects");
+    click_part(&mut runtime, PartKind::Image, "Professor Plum");
+
+    // Its script goes back to the board, which is where the answer lands.
+    assert_eq!(field_text(&runtime, "Suspect"), "Professor Plum");
+}
+
+#[test]
+fn the_game_scores_a_suggestion_and_closes_the_case() {
+    let mut runtime = open("Cluedo");
+
+    // Nothing chosen yet: it should say so rather than score an empty guess.
+    click(&mut runtime, "Ask");
+    assert!(
+        runtime
+            .take_effects()
+            .iter()
+            .any(|effect| format!("{effect:?}").contains("Name a suspect")),
+        "an empty suggestion should be refused"
+    );
+
+    go_to(&mut runtime, "Suspects");
+    click_part(&mut runtime, PartKind::Image, "Mrs White");
+    go_to(&mut runtime, "Weapons");
+    click_part(&mut runtime, PartKind::Image, "Lead Pipe");
+    click(&mut runtime, "Study");
+    click(&mut runtime, "Ask");
+    assert!(
+        field_text(&runtime, "Replies").contains("1 of 3"),
+        "only the weapon is right, got {:?}",
+        field_text(&runtime, "Replies")
+    );
+
+    go_to(&mut runtime, "Suspects");
+    click_part(&mut runtime, PartKind::Image, "Professor Plum");
+    click(&mut runtime, "Conservatory");
+    click(&mut runtime, "Ask");
+    assert!(
+        field_text(&runtime, "Replies")
+            .starts_with("Professor Plum, Lead Pipe, Conservatory — 3 of 3"),
+        "got {:?}",
+        field_text(&runtime, "Replies")
+    );
+
+    runtime.take_effects();
+    click(&mut runtime, "Accuse");
+    let said = format!("{:?}", runtime.take_effects());
+    assert!(said.contains("Case closed"), "got {said}");
+
+    click(&mut runtime, "Start Over");
+    assert_eq!(field_text(&runtime, "Suspect"), "");
+    assert_eq!(field_text(&runtime, "Replies"), "");
+}

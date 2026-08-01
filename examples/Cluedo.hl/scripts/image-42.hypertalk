@@ -1,0 +1,4 @@
+on mouseUp
+  put "Professor Plum" into field "Suspect" of card "The Mansion"
+  go to card "The Mansion"
+end mouseUp

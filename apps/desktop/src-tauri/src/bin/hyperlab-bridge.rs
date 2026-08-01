@@ -436,6 +436,19 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
         }
         "stack_graph" => serde_json::to_value(hyperlab_graph::Graph::of(runtime.stack()))
             .map_err(|error| error.to_string())?,
+        "stack_image" => {
+            let name = text("name")?;
+            let uri = runtime
+                .stack()
+                .image(&name)
+                .map(hyperlab_stack::data_uri)
+                .ok_or_else(|| format!("this stack has no picture called \"{name}\""))?;
+            Json::String(uri)
+        }
+        "stack_images" => {
+            serde_json::to_value(runtime.stack().images().keys().cloned().collect::<Vec<_>>())
+                .map_err(|error| error.to_string())?
+        }
         "get_properties" => {
             let object = object_id(&text("kind")?, number("id")? as u64)?;
             let described = runtime.object(object).map_err(|error| error.to_string())?;

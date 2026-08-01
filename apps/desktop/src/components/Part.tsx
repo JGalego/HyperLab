@@ -103,7 +103,7 @@ export function Part({
         }}
       >
         {part.kind === 'image' ? <Picture part={part} picture={picture} /> : null}
-        {part.kind === 'button' ? part.name : ''}
+        {part.kind === 'button' && part.showName ? part.name : ''}
         {part.kind === 'field' ? part.text : ''}
       </div>
     );
@@ -131,7 +131,7 @@ export function Part({
         disabled={!part.enabled}
         onClick={() => onClick(part)}
       >
-        {part.name}
+        {part.showName ? part.name : ''}
       </button>
     );
   }

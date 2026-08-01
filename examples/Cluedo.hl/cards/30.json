@@ -1,0 +1,285 @@
+{
+  "id": 30,
+  "name": "Suspects",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 31,
+      "name": "Click a suspect to name it. Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Click a suspect to name it.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 44,
+        "width": 400,
+        "height": 20
+      }
+    },
+    {
+      "id": 32,
+      "name": "Miss Scarlett",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "scarlett.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 73,
+        "top": 82,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 33,
+      "name": "Miss Scarlett Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Miss Scarlett",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 40,
+        "top": 184,
+        "width": 162,
+        "height": 20
+      }
+    },
+    {
+      "id": 34,
+      "name": "Colonel Mustard",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "mustard.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 263,
+        "top": 82,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 35,
+      "name": "Colonel Mustard Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Colonel Mustard",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 230,
+        "top": 184,
+        "width": 162,
+        "height": 20
+      }
+    },
+    {
+      "id": 36,
+      "name": "Mrs White",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "white.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 453,
+        "top": 82,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 37,
+      "name": "Mrs White Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Mrs White",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 420,
+        "top": 184,
+        "width": 162,
+        "height": 20
+      }
+    },
+    {
+      "id": 38,
+      "name": "Mr Green",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "green.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 73,
+        "top": 242,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 39,
+      "name": "Mr Green Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Mr Green",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 40,
+        "top": 344,
+        "width": 162,
+        "height": 20
+      }
+    },
+    {
+      "id": 40,
+      "name": "Mrs Peacock",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "peacock.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 263,
+        "top": 242,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 41,
+      "name": "Mrs Peacock Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Mrs Peacock",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 230,
+        "top": 344,
+        "width": 162,
+        "height": 20
+      }
+    },
+    {
+      "id": 42,
+      "name": "Professor Plum",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "plum.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 453,
+        "top": 242,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 43,
+      "name": "Professor Plum Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Professor Plum",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 420,
+        "top": 344,
+        "width": 162,
+        "height": 20
+      }
+    }
+  ]
+}

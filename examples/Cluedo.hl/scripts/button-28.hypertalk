@@ -1,0 +1,6 @@
+on mouseUp
+  put empty into field "Suspect"
+  put empty into field "Weapon"
+  put empty into field "Room"
+  put empty into field "Replies"
+end mouseUp

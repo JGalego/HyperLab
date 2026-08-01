@@ -1,0 +1,98 @@
+{
+  "id": 2,
+  "name": "Case",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "parts": [
+    {
+      "id": 4,
+      "name": "A body in the house, and nine rooms to explain it. Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "A body in the house, and nine rooms to explain it.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 16,
+        "top": 10,
+        "width": 500,
+        "height": 22
+      }
+    },
+    {
+      "id": 5,
+      "name": "The Mansion",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 16,
+        "top": 420,
+        "width": 100,
+        "height": 24
+      }
+    },
+    {
+      "id": 6,
+      "name": "Suspects",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 124,
+        "top": 420,
+        "width": 100,
+        "height": 24
+      }
+    },
+    {
+      "id": 7,
+      "name": "Weapons",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 232,
+        "top": 420,
+        "width": 100,
+        "height": 24
+      }
+    }
+  ]
+}

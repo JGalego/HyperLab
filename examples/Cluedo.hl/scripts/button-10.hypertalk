@@ -1,0 +1,3 @@
+on mouseUp
+  put "Ballroom" into field "Room"
+end mouseUp
