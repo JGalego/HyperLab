@@ -20,6 +20,7 @@
 //! The single exception is [`dialog_reply`]: it is the message that unblocks
 //! a waiting script, so it must never queue behind one.
 
+use hyperlab_decker::deck;
 use hyperlab_export::to_pdf;
 use hyperlab_graph::Graph;
 use hyperlab_hyperscript::page;
@@ -834,6 +835,34 @@ pub async fn export_web(state: State<'_, AppState>, path: String) -> CommandResu
     .map_err(|_| "the export stopped unexpectedly".to_string())?;
 
     std::fs::write(&target, html)
+        .map_err(|error| format!("could not write {}: {error}", target.display()))?;
+    Ok(Exported {
+        path: target.display().to_string(),
+        notes,
+    })
+}
+
+/// Writes the stack as a Decker deck.
+///
+/// The same shape as the web page: a file, and a line for everything Lil and
+/// a deck have no equivalent for.
+#[tauri::command]
+pub async fn export_deck(state: State<'_, AppState>, path: String) -> CommandResult<Exported> {
+    let session = state.session();
+    // Every picture is rendered to a bitmap, which is not quick.
+    let (source, notes, target) = tauri::async_runtime::spawn_blocking(move || {
+        let held = lock(&session);
+        let translated = deck(held.runtime.stack());
+        (
+            translated.source,
+            translated.notes,
+            std::path::PathBuf::from(path),
+        )
+    })
+    .await
+    .map_err(|_| "the export stopped unexpectedly".to_string())?;
+
+    std::fs::write(&target, source)
         .map_err(|error| format!("could not write {}: {error}", target.display()))?;
     Ok(Exported {
         path: target.display().to_string(),

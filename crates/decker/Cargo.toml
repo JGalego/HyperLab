@@ -1,0 +1,25 @@
+[package]
+name = "hyperlab-decker"
+description = "A stack as a Decker deck: cards, widgets, one-bit artwork and Lil."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+hyperlab-parser.workspace = true
+hyperlab-stack.workspace = true
+
+# Decker's card background is a bitmap, and HyperLab's artwork is SVG, so
+# something has to draw one into the other. `resvg` is the renderer `svg2pdf`
+# already uses under `hyperlab-export`, so this adds a name rather than a
+# dependency tree.
+resvg = "0.47"
+
+[dev-dependencies]
+hyperlab-persistence.workspace = true
+
+[lints]
+workspace = true

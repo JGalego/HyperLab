@@ -106,6 +106,7 @@ pub fn run() {
             commands::open_stack,
             commands::export_pdf,
             commands::export_web,
+            commands::export_deck,
             commands::export_png,
             commands::save_stack,
             commands::part_at,

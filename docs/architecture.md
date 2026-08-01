@@ -566,6 +566,37 @@ in `Translation::notes`, so a partial translation cannot be mistaken for a
 whole one. Five of the six examples come across with no notes at all; the
 sixth asks a language model on its last card.
 
+## Going somewhere older
+
+[`hyperlab-decker`](../crates/decker) writes a stack as a
+[Decker](https://beyondloom.com/decker/) deck. John Earnest's platform is
+another descendant of HyperCard, and where the web page was a change of
+address, this is a translation: Decker's language is Lil, and Lil is nothing
+like a HyperTalk. Assignment is `x:1`, a call is `f[a b]`, `if` takes no
+`then`, and expressions evaluate right to left with no precedence at all.
+
+Same discipline as the page — every line below was found by opening a
+generated deck in Decker rather than by reading about it.
+
+| HyperTalk | What it takes to get there |
+| --- | --- |
+| `field "Notes"` | `notes.text`. A field's contents are `value` in the file and `.text` in a script. |
+| `field "X" of card "Y"` | `deck.cards.y.widgets.x.text`. |
+| `line 2 of x` | Lil has no chunks: split, slice, and join again. |
+| `a mod b` | Lil's `%` divides its *right* operand by its left. |
+| `if x then next repeat` | Nothing in Lil jumps, so the guard is turned inside out and the rest of the loop becomes its `else`. The same rewrite handles `exit mouseUp`. |
+| a picture | Drawn into the card's bitmap, which must be the size of the whole deck. A picture with a script keeps an invisible button over it. |
+
+Artwork becomes an IMG0 record: two big-endian 16-bit numbers, then one bit a
+pixel, then base64 — with every forward slash escaped, because a slash begins
+a comment in the deck format and one left bare truncates the picture without
+a word.
+
+Two things have no room at all. A handler that asks a language model, and the
+moment a stack opens: a deck starts on its first card already, and its own
+`view` fires on every card's arrival rather than the deck's, so an `openStack`
+handler moved there would run again on every move.
+
 ## Keys
 
 A `ProviderConfig` names a `KeySource` — an environment variable, or the
@@ -1029,6 +1060,13 @@ crates/
                     loop, the transcript  — what is actually said
     mcp/            tools, MCP server
                     and client            — what may be done
+    graph/          the routes between
+                    cards                 — where it all leads
+    export/         a stack as a PDF      — how it leaves
+    hyperscript/    HyperTalk as
+                    _hyperscript          — where it goes next
+    decker/         a stack as a Decker
+                    deck                  — where else it goes
 
 apps/desktop/
     src-tauri/      the shell: state, commands, view model
