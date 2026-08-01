@@ -15,6 +15,10 @@ on:
       tag:
         description: 'Tag to build (must already exist)'
         required: true
+      publish:
+        description: 'Publish the draft that is already built, instead of building'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -51,6 +55,7 @@ jobs:
   draft:
     name: Open the draft
     needs: check-version
+    if: ${{ !inputs.publish }}
     runs-on: ubuntu-latest
     steps:
       - uses: softprops/action-gh-release@v2
@@ -69,6 +74,7 @@ jobs:
   desktop:
     name: ${{ matrix.name }}
     needs: [check-version, draft]
+    if: ${{ !inputs.publish }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -142,6 +148,7 @@ jobs:
   tools:
     name: Command-line tools (${{ matrix.name }})
     needs: [check-version, draft]
+    if: ${{ !inputs.publish }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -213,3 +220,29 @@ jobs:
           tag_name: v${{ needs.check-version.outputs.version }}
           draft: true
           files: dist/*
+
+  # The last step, and the only one that makes anything public. Kept apart
+  # from the builds because by the time it is worth doing they have already
+  # run: this attaches no files and rebuilds nothing, it just takes the draft
+  # off the shelf. Someone has to ask for it, which is the point — a build
+  # succeeding is not the same as a release being ready.
+  publish:
+    name: Publish the draft
+    needs: check-version
+    if: ${{ inputs.publish }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.check-version.outputs.version }}
+          name: HyperLab v${{ needs.check-version.outputs.version }}
+          draft: false
+          prerelease: false
+          # Written out again rather than left off, so publishing cannot
+          # depend on what the draft job happened to put there.
+          body: |
+            Install the file for your platform below. Nothing phones home,
+            and HyperLab works with no AI provider configured.
+
+            What is in this release, and what is not:
+            [CHANGELOG.md](https://github.com/JGalego/HyperLab/blob/v${{ needs.check-version.outputs.version }}/CHANGELOG.md).
