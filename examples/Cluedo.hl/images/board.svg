@@ -1,68 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 300" width="360" height="300">
   <title>A mansion, nine rooms and a cellar</title>
-  <rect width="360" height="300" fill="#cfc7b4"/>
-  <path d="M0 5 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 15 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 25 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 35 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 45 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 55 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 65 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 75 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 85 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 95 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 105 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 115 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 125 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 135 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 145 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 155 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 165 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 175 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 185 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 195 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 205 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 215 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 225 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 235 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 245 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 255 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 265 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 275 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 285 h360" stroke="#c3baa4" stroke-width="1"/>
-  <path d="M0 295 h360" stroke="#c3baa4" stroke-width="1"/>
-  <rect x="8" y="8" width="96" height="80" fill="#f2ede1" stroke="#1c1c1c" stroke-width="2.5"/>
-  <path d="M45 88 h22" stroke="#f2ede1" stroke-width="3.5"/>
-  <text x="56" y="52" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Kitchen</text>
-  <rect x="116" y="8" width="128" height="80" fill="#f2ede1" stroke="#1c1c1c" stroke-width="2.5"/>
-  <path d="M169 88 h22" stroke="#f2ede1" stroke-width="3.5"/>
-  <text x="180" y="52" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Ballroom</text>
-  <rect x="256" y="8" width="96" height="80" fill="#f2ede1" stroke="#1c1c1c" stroke-width="2.5"/>
-  <path d="M293 88 h22" stroke="#f2ede1" stroke-width="3.5"/>
-  <text x="304" y="52" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Conservatory</text>
-  <rect x="8" y="100" width="96" height="92" fill="#f2ede1" stroke="#1c1c1c" stroke-width="2.5"/>
-  <path d="M104 135 v22" stroke="#f2ede1" stroke-width="3.5"/>
-  <text x="56" y="145" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Dining</text>
-  <text x="56" y="158" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Room</text>
-  <rect x="124" y="100" width="112" height="92" fill="#2c2926" stroke="#1c1c1c" stroke-width="2.5"/>
-  <text x="180" y="150" fill="#efe9dc" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Cellar</text>
-  <rect x="163" y="114" width="34" height="22" fill="#efe9dc" stroke="#1c1c1c" stroke-width="1.5"/>
-  <path d="M163 114 l17 12 l17 -12" fill="none" stroke="#1c1c1c" stroke-width="1.5"/>
-  <rect x="256" y="100" width="96" height="54" fill="#f2ede1" stroke="#1c1c1c" stroke-width="2.5"/>
-  <path d="M256 116 v22" stroke="#f2ede1" stroke-width="3.5"/>
-  <text x="304" y="126" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Billiard</text>
-  <text x="304" y="139" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Room</text>
-  <rect x="256" y="166" width="96" height="42" fill="#f2ede1" stroke="#1c1c1c" stroke-width="2.5"/>
-  <path d="M293 166 h22" stroke="#f2ede1" stroke-width="3.5"/>
-  <text x="304" y="191" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Library</text>
-  <rect x="8" y="204" width="96" height="88" fill="#f2ede1" stroke="#1c1c1c" stroke-width="2.5"/>
-  <path d="M45 204 h22" stroke="#f2ede1" stroke-width="3.5"/>
-  <text x="56" y="252" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Lounge</text>
-  <rect x="124" y="204" width="112" height="88" fill="#f2ede1" stroke="#1c1c1c" stroke-width="2.5"/>
-  <path d="M169 204 h22" stroke="#f2ede1" stroke-width="3.5"/>
-  <text x="180" y="252" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Hall</text>
-  <rect x="256" y="220" width="96" height="72" fill="#f2ede1" stroke="#1c1c1c" stroke-width="2.5"/>
-  <path d="M293 220 h22" stroke="#f2ede1" stroke-width="3.5"/>
-  <text x="304" y="260" fill="#1c1c1c" font-family="Helvetica,Arial,sans-serif" font-size="11" text-anchor="middle">Study</text>
-  <rect x="1.5" y="1.5" width="357" height="297" fill="none" stroke="#1c1c1c" stroke-width="3"/>
+  <defs>
+    <pattern id="hall" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill="#fff"/>
+      <rect width="2" height="2"/><rect x="2" y="2" width="2" height="2"/>
+    </pattern>
+  </defs>
+  <rect width="360" height="300" fill="url(#hall)"/>
+  <rect x="8" y="8" width="96" height="80" fill="#fff" stroke="#000" stroke-width="4"/>
+  <path d="M44 88 h24" stroke="#fff" stroke-width="5"/>
+  <text x="56" y="52" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Kitchen</text>
+  <rect x="116" y="8" width="128" height="80" fill="#fff" stroke="#000" stroke-width="4"/>
+  <path d="M168 88 h24" stroke="#fff" stroke-width="5"/>
+  <text x="180" y="52" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Ballroom</text>
+  <rect x="256" y="8" width="96" height="80" fill="#fff" stroke="#000" stroke-width="4"/>
+  <path d="M292 88 h24" stroke="#fff" stroke-width="5"/>
+  <text x="304" y="52" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Conservatory</text>
+  <rect x="8" y="100" width="96" height="92" fill="#fff" stroke="#000" stroke-width="4"/>
+  <path d="M104 134 v24" stroke="#fff" stroke-width="5"/>
+  <text x="56" y="145" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Dining</text>
+  <text x="56" y="159" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Room</text>
+  <rect x="124" y="100" width="112" height="92" fill="#000" stroke="#000" stroke-width="4"/>
+  <text x="180" y="150" fill="#fff" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Cellar</text>
+  <rect x="161" y="112" width="38" height="24" fill="#fff" stroke="#000" stroke-width="2"/>
+  <path d="M161 112 l19 14 l19 -14" fill="none" stroke="#000" stroke-width="2"/>
+  <rect x="256" y="100" width="96" height="54" fill="#fff" stroke="#000" stroke-width="4"/>
+  <path d="M256 115 v24" stroke="#fff" stroke-width="5"/>
+  <text x="304" y="126" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Billiard</text>
+  <text x="304" y="140" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Room</text>
+  <rect x="256" y="166" width="96" height="42" fill="#fff" stroke="#000" stroke-width="4"/>
+  <path d="M292 166 h24" stroke="#fff" stroke-width="5"/>
+  <text x="304" y="191" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Library</text>
+  <rect x="8" y="204" width="96" height="88" fill="#fff" stroke="#000" stroke-width="4"/>
+  <path d="M44 204 h24" stroke="#fff" stroke-width="5"/>
+  <text x="56" y="252" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Lounge</text>
+  <rect x="124" y="204" width="112" height="88" fill="#fff" stroke="#000" stroke-width="4"/>
+  <path d="M168 204 h24" stroke="#fff" stroke-width="5"/>
+  <text x="180" y="252" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Hall</text>
+  <rect x="256" y="220" width="96" height="72" fill="#fff" stroke="#000" stroke-width="4"/>
+  <path d="M292 220 h24" stroke="#fff" stroke-width="5"/>
+  <text x="304" y="260" fill="#000" font-family="Chicago,ChicagoFLF,Geneva,Verdana,sans-serif" font-size="12" font-weight="bold" text-anchor="middle">Study</text>
+  <rect x="2" y="2" width="356" height="296" fill="none" stroke="#000" stroke-width="4"/>
 </svg>

@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Mr Green</title>
-  <defs><clipPath id="d"><circle cx="32" cy="32" r="29.5"/></clipPath></defs>
-  <circle cx="32" cy="32" r="30.5" fill="#256b45" stroke="#141414" stroke-width="2.5"/>
-  <g clip-path="url(#d)"><circle cx="32" cy="24" r="9.5" fill="#f4f1ea"/><path d="M12.5 58 a19.5 18 0 0 1 39 0 z" fill="#ddd6c9"/><circle cx="28.4" cy="23" r="1.35" fill="#0d3020"/><circle cx="35.6" cy="23" r="1.35" fill="#0d3020"/><path d="M18 18.5 h28 v3.2 h-28 z" fill="#0d3020"/><path d="M23.5 18 c0 -9.5 17 -9.5 17 0 z" fill="#0d3020"/><path d="M26.5 44 l5.5 3.2 l-5.5 3.2 z M37.5 44 l-5.5 3.2 l5.5 3.2 z" fill="#0d3020"/><circle cx="32" cy="47.2" r="1.6" fill="#0d3020"/></g>
+  <defs><pattern id="vert" width="5" height="5" patternUnits="userSpaceOnUse"><rect width="5" height="5" fill="#fff"/><rect width="2" height="5"/></pattern><clipPath id="d"><circle cx="32" cy="32" r="28"/></clipPath></defs>
+  <circle cx="32" cy="32" r="30" fill="#fff" stroke="#000" stroke-width="4"/>
+  <g clip-path="url(#d)" fill="#fff" stroke="#000" stroke-width="2.4"
+     stroke-linejoin="round"><path d="M13 60 a19 17 0 0 1 38 0 z" fill="url(#vert)"/><circle cx="32" cy="24" r="9"/><circle cx="28.6" cy="22.5" r="1.5" fill="#000" stroke="none"/><circle cx="35.4" cy="22.5" r="1.5" fill="#000" stroke="none"/><path d="M28.5 30.5 q3.5 2 7 0" fill="none" stroke-width="1.8"/><path d="M23.5 17.5 c0 -10 17 -10 17 0 z" fill="#000"/><path d="M17.5 17.5 h29 v3.5 h-29 z" fill="#000"/><path d="M26 42 l6 3.5 l-6 3.5 z M38 42 l-6 3.5 l6 3.5 z" fill="#000" stroke-width="1"/></g>
 </svg>

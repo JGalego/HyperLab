@@ -542,103 +542,6 @@ const ROOMS: [Room; 10] = [
     },
 ];
 
-/// The floor plan, drawn from [`ROOMS`].
-///
-/// Aged paper, ink walls, a doorway on the side of each room that faces the
-/// hallway, and floorboards in the space between. The cellar is dark and
-/// holds the envelope, which is why nothing happened in it.
-fn board_svg() -> String {
-    let mut out = String::from(
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 360 300\" \
-         width=\"360\" height=\"300\">\n\
-         \x20 <title>A mansion, nine rooms and a cellar</title>\n\
-         \x20 <rect width=\"360\" height=\"300\" fill=\"#cfc7b4\"/>\n",
-    );
-
-    // Floorboards in the hallways, so the gaps read as somewhere to walk
-    // rather than as nothing.
-    for line in 0..30 {
-        let y = line * 10 + 5;
-        let _ = writeln!(
-            out,
-            "  <path d=\"M0 {y} h360\" stroke=\"#c3baa4\" stroke-width=\"1\"/>"
-        );
-    }
-
-    for room in &ROOMS {
-        let cellar = room.name == "Cellar";
-        let (fill, ink) = if cellar {
-            ("#2c2926", "#efe9dc")
-        } else {
-            ("#f2ede1", "#1c1c1c")
-        };
-        let (right, bottom) = (room.left + room.width, room.top + room.height);
-        let _ = writeln!(
-            out,
-            "  <rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" fill=\"{fill}\" \
-             stroke=\"#1c1c1c\" stroke-width=\"2.5\"/>",
-            room.left, room.top, room.width, room.height
-        );
-
-        // A doorway: a gap in the wall nearest the middle of the board.
-        if !cellar {
-            let middle = room.left + room.width / 2;
-            let door = if bottom < 150 {
-                format!("M{} {bottom} h22", middle - 11)
-            } else if room.top > 150 {
-                format!("M{} {} h22", middle - 11, room.top)
-            } else if room.left < 120 {
-                format!("M{right} {} v22", room.top + room.height / 2 - 11)
-            } else {
-                format!("M{} {} v22", room.left, room.top + room.height / 2 - 11)
-            };
-            let _ = writeln!(
-                out,
-                "  <path d=\"{door}\" stroke=\"#f2ede1\" stroke-width=\"3.5\"/>"
-            );
-        }
-
-        let middle_x = room.left + room.width / 2;
-        let middle_y = room.top + room.height / 2;
-        let words: Vec<&str> = room.name.split(' ').collect();
-        let label = |out: &mut String, text: &str, y: i32| {
-            let _ = writeln!(
-                out,
-                "  <text x=\"{middle_x}\" y=\"{y}\" fill=\"{ink}\" \
-                 font-family=\"Helvetica,Arial,sans-serif\" font-size=\"11\" \
-                 text-anchor=\"middle\">{text}</text>"
-            );
-        };
-        if let [first, second] = words[..] {
-            label(&mut out, first, middle_y - 1);
-            label(&mut out, second, middle_y + 12);
-        } else {
-            label(&mut out, room.name, middle_y + 4);
-        }
-
-        if cellar {
-            // The envelope, face down in the middle of the house.
-            let _ = writeln!(
-                out,
-                "  <rect x=\"{}\" y=\"{}\" width=\"34\" height=\"22\" fill=\"#efe9dc\" \
-                 stroke=\"#1c1c1c\" stroke-width=\"1.5\"/>\n\
-                 \x20 <path d=\"M{} {} l17 12 l17 -12\" fill=\"none\" stroke=\"#1c1c1c\" \
-                 stroke-width=\"1.5\"/>",
-                middle_x - 17,
-                room.top + 14,
-                middle_x - 17,
-                room.top + 14
-            );
-        }
-    }
-
-    out.push_str(
-        "  <rect x=\"1.5\" y=\"1.5\" width=\"357\" height=\"297\" fill=\"none\" \
-                  stroke=\"#1c1c1c\" stroke-width=\"3\"/>\n</svg>\n",
-    );
-    out
-}
-
 /// Where the board picture sits on the card.
 const BOARD: Rect = Rect {
     left: 16,
@@ -646,6 +549,97 @@ const BOARD: Rect = Rect {
     width: 360,
     height: 300,
 };
+
+/// The floor plan, drawn from [`ROOMS`].
+///
+/// One bit deep, the way HyperCard was: there are no greys here, only ink,
+/// paper, and a dither where a tone is wanted. The hallways are a 50%
+/// checkerboard, the rooms are paper, every wall is solid, and the cellar is
+/// solid black with the envelope showing white inside it.
+fn board_svg() -> String {
+    let mut out = String::from(
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 360 300\" \
+         width=\"360\" height=\"300\">\n\
+         \x20 <title>A mansion, nine rooms and a cellar</title>\n\
+         \x20 <defs>\n\
+         \x20   <pattern id=\"hall\" width=\"4\" height=\"4\" patternUnits=\"userSpaceOnUse\">\n\
+         \x20     <rect width=\"4\" height=\"4\" fill=\"#fff\"/>\n\
+         \x20     <rect width=\"2\" height=\"2\"/><rect x=\"2\" y=\"2\" width=\"2\" height=\"2\"/>\n\
+         \x20   </pattern>\n\
+         \x20 </defs>\n\
+         \x20 <rect width=\"360\" height=\"300\" fill=\"url(#hall)\"/>\n",
+    );
+
+    for room in &ROOMS {
+        let cellar = room.name == "Cellar";
+        let (fill, ink) = if cellar {
+            ("#000", "#fff")
+        } else {
+            ("#fff", "#000")
+        };
+        let (right, bottom) = (room.left + room.width, room.top + room.height);
+        let _ = writeln!(
+            out,
+            "  <rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" fill=\"{fill}\" \
+             stroke=\"#000\" stroke-width=\"4\"/>",
+            room.left, room.top, room.width, room.height
+        );
+
+        // A doorway: a gap knocked in the wall nearest the hallway.
+        if !cellar {
+            let middle = room.left + room.width / 2;
+            let door = if bottom < 150 {
+                format!("M{} {bottom} h24", middle - 12)
+            } else if room.top > 150 {
+                format!("M{} {} h24", middle - 12, room.top)
+            } else if room.left < 120 {
+                format!("M{right} {} v24", room.top + room.height / 2 - 12)
+            } else {
+                format!("M{} {} v24", room.left, room.top + room.height / 2 - 12)
+            };
+            let _ = writeln!(
+                out,
+                "  <path d=\"{door}\" stroke=\"#fff\" stroke-width=\"5\"/>"
+            );
+        }
+
+        let middle_x = room.left + room.width / 2;
+        let middle_y = room.top + room.height / 2;
+        let words: Vec<&str> = room.name.split(' ').collect();
+        let mut label = |text: &str, y: i32| {
+            let _ = writeln!(
+                out,
+                "  <text x=\"{middle_x}\" y=\"{y}\" fill=\"{ink}\" \
+                 font-family=\"Chicago,ChicagoFLF,Geneva,Verdana,sans-serif\" \
+                 font-size=\"12\" font-weight=\"bold\" text-anchor=\"middle\">{text}</text>"
+            );
+        };
+        if let [first, second] = words[..] {
+            label(first, middle_y - 1);
+            label(second, middle_y + 13);
+        } else {
+            label(room.name, middle_y + 4);
+        }
+
+        if cellar {
+            // The envelope, face down in the middle of the house.
+            let (x, y) = (middle_x - 19, room.top + 12);
+            let _ = writeln!(
+                out,
+                "  <rect x=\"{x}\" y=\"{y}\" width=\"38\" height=\"24\" fill=\"#fff\" \
+                 stroke=\"#000\" stroke-width=\"2\"/>\n\
+                 \x20 <path d=\"M{x} {y} l19 14 l19 -14\" fill=\"none\" stroke=\"#000\" \
+                 stroke-width=\"2\"/>"
+            );
+        }
+    }
+
+    out.push_str(
+        "  <rect x=\"2\" y=\"2\" width=\"356\" height=\"296\" fill=\"none\" \
+         stroke=\"#000\" stroke-width=\"4\"/>\n</svg>\n",
+    );
+    out
+}
 
 const SUSPECTS: [(&str, &str); 6] = [
     ("Miss Scarlett", "scarlett.svg"),
