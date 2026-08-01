@@ -1,0 +1,75 @@
+{
+  "id": 13,
+  "name": "D'ni",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 63,
+      "name": "D'ni",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "dni.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 16,
+        "top": 16,
+        "width": 320,
+        "height": 200
+      }
+    },
+    {
+      "id": 64,
+      "name": "Place",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "D'ni",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 352,
+        "top": 16,
+        "width": 232,
+        "height": 24
+      }
+    },
+    {
+      "id": 65,
+      "name": "About",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Rock, and a long way down, a light.\n\nThe book you came through is not here, and neither is any other.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 352,
+        "top": 48,
+        "width": 232,
+        "height": 100
+      }
+    }
+  ]
+}

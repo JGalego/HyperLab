@@ -1,6 +1,6 @@
 {
-  "id": 30,
-  "name": "Suspects",
+  "id": 45,
+  "name": "Weapons",
   "script": "",
   "properties": {},
   "created_at": 1735689600000,
@@ -8,14 +8,14 @@
   "background": 2,
   "parts": [
     {
-      "id": 31,
-      "name": "Click a suspect to name it. Caption",
+      "id": 46,
+      "name": "Click a weapon to name it. Caption",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "Click a suspect to name it.",
+        "text": "Click a weapon to name it.",
         "visible": true,
         "wrap": true
       },
@@ -30,12 +30,12 @@
       }
     },
     {
-      "id": 32,
-      "name": "Miss Scarlett",
+      "id": 47,
+      "name": "Candlestick",
       "script": "",
       "properties": {
         "enabled": true,
-        "source": "scarlett.svg",
+        "source": "candlestick.svg",
         "style": "transparent",
         "visible": true
       },
@@ -50,14 +50,14 @@
       }
     },
     {
-      "id": 33,
-      "name": "Miss Scarlett Caption",
+      "id": 48,
+      "name": "Candlestick Caption",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "Miss Scarlett",
+        "text": "Candlestick",
         "visible": true,
         "wrap": true
       },
@@ -72,12 +72,12 @@
       }
     },
     {
-      "id": 34,
-      "name": "Colonel Mustard",
+      "id": 49,
+      "name": "Dagger",
       "script": "",
       "properties": {
         "enabled": true,
-        "source": "mustard.svg",
+        "source": "dagger.svg",
         "style": "transparent",
         "visible": true
       },
@@ -92,14 +92,14 @@
       }
     },
     {
-      "id": 35,
-      "name": "Colonel Mustard Caption",
+      "id": 50,
+      "name": "Dagger Caption",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "Colonel Mustard",
+        "text": "Dagger",
         "visible": true,
         "wrap": true
       },
@@ -114,12 +114,12 @@
       }
     },
     {
-      "id": 36,
-      "name": "Mrs White",
+      "id": 51,
+      "name": "Lead Pipe",
       "script": "",
       "properties": {
         "enabled": true,
-        "source": "white.svg",
+        "source": "lead-pipe.svg",
         "style": "transparent",
         "visible": true
       },
@@ -134,14 +134,14 @@
       }
     },
     {
-      "id": 37,
-      "name": "Mrs White Caption",
+      "id": 52,
+      "name": "Lead Pipe Caption",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "Mrs White",
+        "text": "Lead Pipe",
         "visible": true,
         "wrap": true
       },
@@ -156,12 +156,12 @@
       }
     },
     {
-      "id": 38,
-      "name": "Mr Green",
+      "id": 53,
+      "name": "Revolver",
       "script": "",
       "properties": {
         "enabled": true,
-        "source": "green.svg",
+        "source": "revolver.svg",
         "style": "transparent",
         "visible": true
       },
@@ -176,14 +176,14 @@
       }
     },
     {
-      "id": 39,
-      "name": "Mr Green Caption",
+      "id": 54,
+      "name": "Revolver Caption",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "Mr Green",
+        "text": "Revolver",
         "visible": true,
         "wrap": true
       },
@@ -198,12 +198,12 @@
       }
     },
     {
-      "id": 40,
-      "name": "Mrs Peacock",
+      "id": 55,
+      "name": "Rope",
       "script": "",
       "properties": {
         "enabled": true,
-        "source": "peacock.svg",
+        "source": "rope.svg",
         "style": "transparent",
         "visible": true
       },
@@ -218,14 +218,14 @@
       }
     },
     {
-      "id": 41,
-      "name": "Mrs Peacock Caption",
+      "id": 56,
+      "name": "Rope Caption",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "Mrs Peacock",
+        "text": "Rope",
         "visible": true,
         "wrap": true
       },
@@ -240,12 +240,12 @@
       }
     },
     {
-      "id": 42,
-      "name": "Professor Plum",
+      "id": 57,
+      "name": "Spanner",
       "script": "",
       "properties": {
         "enabled": true,
-        "source": "plum.svg",
+        "source": "spanner.svg",
         "style": "transparent",
         "visible": true
       },
@@ -260,14 +260,14 @@
       }
     },
     {
-      "id": 43,
-      "name": "Professor Plum Caption",
+      "id": 58,
+      "name": "Spanner Caption",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "Professor Plum",
+        "text": "Spanner",
         "visible": true,
         "wrap": true
       },

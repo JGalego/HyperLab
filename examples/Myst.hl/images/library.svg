@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+  <title>The library</title>
+  <defs>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b2620"/><stop offset="1" stop-color="#3d352b"/>
+    </linearGradient>
+    <clipPath id="f"><rect x="4" y="4" width="232" height="142"/></clipPath>
+  </defs>
+  <rect width="240" height="150" fill="#efe7d7"/>
+  <g clip-path="url(#f)">
+    <rect x="4" y="4" width="232" height="142" fill="url(#s)"/>
+    <rect x="0" y="118" width="240" height="32" fill="#4a3f31"/><rect x="12" y="26" width="52" height="92" fill="#3a3128" stroke="#23201c" stroke-width="2"/><rect x="17" y="34" width="5" height="20" fill="#9c5a3c"/><rect x="24" y="62" width="5" height="24" fill="#7d6a4a"/><rect x="31" y="90" width="5" height="20" fill="#5f7a5a"/><rect x="38" y="34" width="5" height="24" fill="#8a4a4a"/><rect x="45" y="62" width="5" height="20" fill="#6a5a7a"/><rect x="52" y="90" width="5" height="24" fill="#9c8a4a"/><rect x="74" y="26" width="52" height="92" fill="#3a3128" stroke="#23201c" stroke-width="2"/><rect x="79" y="34" width="5" height="20" fill="#9c5a3c"/><rect x="86" y="62" width="5" height="24" fill="#7d6a4a"/><rect x="93" y="90" width="5" height="20" fill="#5f7a5a"/><rect x="100" y="34" width="5" height="24" fill="#8a4a4a"/><rect x="107" y="62" width="5" height="20" fill="#6a5a7a"/><rect x="114" y="90" width="5" height="24" fill="#9c8a4a"/><rect x="176" y="26" width="52" height="92" fill="#3a3128" stroke="#23201c" stroke-width="2"/><rect x="181" y="34" width="5" height="20" fill="#9c5a3c"/><rect x="188" y="62" width="5" height="24" fill="#7d6a4a"/><rect x="195" y="90" width="5" height="20" fill="#5f7a5a"/><rect x="202" y="34" width="5" height="24" fill="#8a4a4a"/><rect x="209" y="62" width="5" height="20" fill="#6a5a7a"/><rect x="216" y="90" width="5" height="24" fill="#9c8a4a"/><rect x="98" y="86" width="62" height="8" fill="#6a5a42" stroke="#23201c" stroke-width="2"/><path d="M104 86 v-6 h48 v6 z" fill="#5a4c38"/><path d="M104 80 l24 -8 l24 8 z" fill="#d8cfb8" stroke="#23201c" stroke-width="1.5"/><path d="M128 72 v8" stroke="#23201c" stroke-width="1.5"/><circle cx="128" cy="34" r="9" fill="#f2d98a" opacity="0.85"/>
+  </g>
+  <rect x="4" y="4" width="232" height="142" fill="none" stroke="#23201c" stroke-width="3"/>
+</svg>

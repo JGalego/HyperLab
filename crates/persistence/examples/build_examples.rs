@@ -19,7 +19,10 @@
 //! text for the whole background, which is right for a caption and wrong for
 //! a person's name — so the address book's names are card fields.
 
-use std::path::{Path, PathBuf};
+use std::{
+    fmt::Write as _,
+    path::{Path, PathBuf},
+};
 
 use hyperlab_persistence::save;
 use hyperlab_stack::{
@@ -36,6 +39,7 @@ fn main() {
         ("Recipe Box", recipe_box()),
         ("Todo", todo()),
         ("Cluedo", cluedo()),
+        ("Myst", myst()),
     ] {
         freeze_timestamps(&mut stack);
         let path = examples.join(format!("{name}.hl"));
@@ -449,22 +453,191 @@ fn set(part: &mut Part, name: &str, value: impl Into<Value>) {
 
 // -------------------------------------------------------------- the mansion
 
-/// The nine rooms, and where each sits on `board.svg`.
+/// A room on the board: its name, and the rectangle it occupies.
+struct Room {
+    name: &'static str,
+    left: i32,
+    top: i32,
+    width: i32,
+    height: i32,
+}
+
+/// The nine rooms and the cellar, laid out like a house rather than a grid.
 ///
-/// The board is one picture and the rooms are transparent buttons laid over
-/// it, which is exactly how HyperCard stacks did this: the artwork says where
-/// things are and the buttons say what they do.
-const ROOMS: [(&str, i32, i32); 9] = [
-    ("Kitchen", 0, 0),
-    ("Ballroom", 120, 0),
-    ("Conservatory", 240, 0),
-    ("Dining Room", 0, 100),
-    ("Cellar", 120, 100),
-    ("Billiard Room", 240, 100),
-    ("Lounge", 0, 200),
-    ("Hall", 120, 200),
-    ("Study", 240, 200),
+/// One table, used twice: [`board_svg`] draws from it and the buttons are
+/// placed from it. The board is a picture with transparent buttons over its
+/// rooms, which is how a HyperCard stack did this — and the reason the
+/// picture is generated rather than drawn by hand is that a hand-drawn one
+/// drifts away from the buttons the first time a wall moves.
+const ROOMS: [Room; 10] = [
+    Room {
+        name: "Kitchen",
+        left: 8,
+        top: 8,
+        width: 96,
+        height: 80,
+    },
+    Room {
+        name: "Ballroom",
+        left: 116,
+        top: 8,
+        width: 128,
+        height: 80,
+    },
+    Room {
+        name: "Conservatory",
+        left: 256,
+        top: 8,
+        width: 96,
+        height: 80,
+    },
+    Room {
+        name: "Dining Room",
+        left: 8,
+        top: 100,
+        width: 96,
+        height: 92,
+    },
+    Room {
+        name: "Cellar",
+        left: 124,
+        top: 100,
+        width: 112,
+        height: 92,
+    },
+    Room {
+        name: "Billiard Room",
+        left: 256,
+        top: 100,
+        width: 96,
+        height: 54,
+    },
+    Room {
+        name: "Library",
+        left: 256,
+        top: 166,
+        width: 96,
+        height: 42,
+    },
+    Room {
+        name: "Lounge",
+        left: 8,
+        top: 204,
+        width: 96,
+        height: 88,
+    },
+    Room {
+        name: "Hall",
+        left: 124,
+        top: 204,
+        width: 112,
+        height: 88,
+    },
+    Room {
+        name: "Study",
+        left: 256,
+        top: 220,
+        width: 96,
+        height: 72,
+    },
 ];
+
+/// The floor plan, drawn from [`ROOMS`].
+///
+/// Aged paper, ink walls, a doorway on the side of each room that faces the
+/// hallway, and floorboards in the space between. The cellar is dark and
+/// holds the envelope, which is why nothing happened in it.
+fn board_svg() -> String {
+    let mut out = String::from(
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 360 300\" \
+         width=\"360\" height=\"300\">\n\
+         \x20 <title>A mansion, nine rooms and a cellar</title>\n\
+         \x20 <rect width=\"360\" height=\"300\" fill=\"#cfc7b4\"/>\n",
+    );
+
+    // Floorboards in the hallways, so the gaps read as somewhere to walk
+    // rather than as nothing.
+    for line in 0..30 {
+        let y = line * 10 + 5;
+        let _ = writeln!(
+            out,
+            "  <path d=\"M0 {y} h360\" stroke=\"#c3baa4\" stroke-width=\"1\"/>"
+        );
+    }
+
+    for room in &ROOMS {
+        let cellar = room.name == "Cellar";
+        let (fill, ink) = if cellar {
+            ("#2c2926", "#efe9dc")
+        } else {
+            ("#f2ede1", "#1c1c1c")
+        };
+        let (right, bottom) = (room.left + room.width, room.top + room.height);
+        let _ = writeln!(
+            out,
+            "  <rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" fill=\"{fill}\" \
+             stroke=\"#1c1c1c\" stroke-width=\"2.5\"/>",
+            room.left, room.top, room.width, room.height
+        );
+
+        // A doorway: a gap in the wall nearest the middle of the board.
+        if !cellar {
+            let middle = room.left + room.width / 2;
+            let door = if bottom < 150 {
+                format!("M{} {bottom} h22", middle - 11)
+            } else if room.top > 150 {
+                format!("M{} {} h22", middle - 11, room.top)
+            } else if room.left < 120 {
+                format!("M{right} {} v22", room.top + room.height / 2 - 11)
+            } else {
+                format!("M{} {} v22", room.left, room.top + room.height / 2 - 11)
+            };
+            let _ = writeln!(
+                out,
+                "  <path d=\"{door}\" stroke=\"#f2ede1\" stroke-width=\"3.5\"/>"
+            );
+        }
+
+        let middle_x = room.left + room.width / 2;
+        let middle_y = room.top + room.height / 2;
+        let words: Vec<&str> = room.name.split(' ').collect();
+        let label = |out: &mut String, text: &str, y: i32| {
+            let _ = writeln!(
+                out,
+                "  <text x=\"{middle_x}\" y=\"{y}\" fill=\"{ink}\" \
+                 font-family=\"Helvetica,Arial,sans-serif\" font-size=\"11\" \
+                 text-anchor=\"middle\">{text}</text>"
+            );
+        };
+        if let [first, second] = words[..] {
+            label(&mut out, first, middle_y - 1);
+            label(&mut out, second, middle_y + 12);
+        } else {
+            label(&mut out, room.name, middle_y + 4);
+        }
+
+        if cellar {
+            // The envelope, face down in the middle of the house.
+            let _ = writeln!(
+                out,
+                "  <rect x=\"{}\" y=\"{}\" width=\"34\" height=\"22\" fill=\"#efe9dc\" \
+                 stroke=\"#1c1c1c\" stroke-width=\"1.5\"/>\n\
+                 \x20 <path d=\"M{} {} l17 12 l17 -12\" fill=\"none\" stroke=\"#1c1c1c\" \
+                 stroke-width=\"1.5\"/>",
+                middle_x - 17,
+                room.top + 14,
+                middle_x - 17,
+                room.top + 14
+            );
+        }
+    }
+
+    out.push_str(
+        "  <rect x=\"1.5\" y=\"1.5\" width=\"357\" height=\"297\" fill=\"none\" \
+                  stroke=\"#1c1c1c\" stroke-width=\"3\"/>\n</svg>\n",
+    );
+    out
+}
 
 /// Where the board picture sits on the card.
 const BOARD: Rect = Rect {
@@ -511,6 +684,11 @@ fn cluedo() -> Stack {
     stack.set_size(Size::new(640, 460));
     stack.set_script("on openStack\n  go to first card\nend openStack");
 
+    let board = board_svg();
+    stack.set_image(
+        "board.svg",
+        Some(Image::new("board.svg", board.into_bytes()).expect("the floor plan is a valid SVG")),
+    );
     for (name, bytes) in cluedo_art() {
         let image = Image::new(name, bytes.to_vec()).expect("the artwork is checked at build time");
         stack.set_image(name, Some(image));
@@ -558,10 +736,12 @@ fn cluedo() -> Stack {
     stack
 }
 
-/// The artwork, by the name it is known by inside the stack.
-fn cluedo_art() -> [(&'static str, &'static [u8]); 13] {
+/// The hand-drawn artwork, by the name it is known by inside the stack.
+///
+/// The board is not here: it is generated from [`ROOMS`] so that the picture
+/// and the buttons over it cannot disagree.
+fn cluedo_art() -> [(&'static str, &'static [u8]); 12] {
     [
-        ("board.svg", include_bytes!("cluedo-art/board.svg")),
         ("scarlett.svg", include_bytes!("cluedo-art/scarlett.svg")),
         ("mustard.svg", include_bytes!("cluedo-art/mustard.svg")),
         ("white.svg", include_bytes!("cluedo-art/white.svg")),
@@ -583,8 +763,8 @@ fn cluedo_art() -> [(&'static str, &'static [u8]); 13] {
 fn build_mansion(stack: &mut Stack, card: Id) {
     add_card_image(stack, card, "Board", BOARD, "board.svg", "");
 
-    for (room, left, top) in ROOMS {
-        let script = if room == "Cellar" {
+    for room in &ROOMS {
+        let script = if room.name == "Cellar" {
             // The one room nothing happened in: it is where the envelope
             // goes, which is worth saying rather than silently ignoring.
             "on mouseUp\n  \
@@ -592,13 +772,21 @@ fn build_mansion(stack: &mut Stack, card: Id) {
              end mouseUp"
                 .to_string()
         } else {
-            format!("on mouseUp\n  put \"{room}\" into field \"Room\"\nend mouseUp")
+            format!(
+                "on mouseUp\n  put \"{}\" into field \"Room\"\nend mouseUp",
+                room.name
+            )
         };
         add_card_button(
             stack,
             card,
-            room,
-            Rect::new(BOARD.left + left + 3, BOARD.top + top + 3, 114, 94),
+            room.name,
+            Rect::new(
+                BOARD.left + room.left,
+                BOARD.top + room.top,
+                room.width,
+                room.height,
+            ),
             &script,
             true,
         );
@@ -727,4 +915,208 @@ fn build_picker(stack: &mut Stack, card: Id, entries: &[(&str, &str); 6], field:
         );
         add_card_label(stack, card, name, Rect::new(left, top + 102, 162, 20));
     }
+}
+
+// ------------------------------------------------------------------- an island
+
+/// One place, its picture, what it says, and the ways out of it.
+struct Place {
+    name: &'static str,
+    picture: &'static str,
+    blurb: &'static str,
+    exits: &'static [(&'static str, &'static str)],
+}
+
+/// An island, four Ages, and one place with no way back.
+///
+/// Not a port of anything — an original stack shaped like the thing
+/// [`crates/graph`](../graph) was built after. Myst is a hub with spokes:
+/// almost everything runs through the library, and the interesting question
+/// about it is structural rather than visual, which is why two separate
+/// projects have gone to the trouble of extracting its graph.
+const PLACES: [Place; 11] = [
+    Place {
+        name: "Dock",
+        picture: "dock.svg",
+        blurb: "You arrive here and the book closes behind you. \
+                A path climbs away from the water.",
+        exits: &[("Up to the library", "Library")],
+    },
+    Place {
+        name: "Library",
+        picture: "library.svg",
+        blurb: "Two shelves burned. The four books that did not are each a \
+                place, and each of them is somewhere you can go.",
+        exits: &[
+            ("Down to the dock", "Dock"),
+            ("The clock tower", "Clock Tower"),
+            ("The planetarium", "Planetarium"),
+            ("The generator room", "Generator Room"),
+            ("The linking books", "Linking Books"),
+        ],
+    },
+    Place {
+        name: "Clock Tower",
+        picture: "clock-tower.svg",
+        blurb: "The hands answer to two brass wheels on the shore. \
+                Somebody has left them at two and two.",
+        exits: &[("Back to the library", "Library")],
+    },
+    Place {
+        name: "Planetarium",
+        picture: "planetarium.svg",
+        blurb: "A dome, a dial, and a sky that will show you any date you \
+                ask it for.",
+        exits: &[("Back to the library", "Library")],
+    },
+    Place {
+        name: "Generator Room",
+        picture: "generator.svg",
+        blurb: "Dials, breakers, and a needle that has to sit between two \
+                marks before anything else on this island works.",
+        exits: &[("Back to the library", "Library")],
+    },
+    Place {
+        name: "Linking Books",
+        picture: "linking-books.svg",
+        blurb: "Four lecterns. Put your hand on the page and you are \
+                somewhere else before you have finished deciding to.",
+        exits: &[
+            ("Back to the library", "Library"),
+            ("Channelwood", "Channelwood"),
+            ("Mechanical", "Mechanical Age"),
+            ("Selenitic", "Selenitic Age"),
+            ("Stoneship", "Stoneship Age"),
+        ],
+    },
+    Place {
+        name: "Channelwood",
+        picture: "channelwood.svg",
+        blurb: "Walkways lashed between trees, over water that goes down \
+                further than the light does.",
+        exits: &[("Link home", "Linking Books")],
+    },
+    Place {
+        name: "Mechanical Age",
+        picture: "mechanical.svg",
+        blurb: "A fortress on a pivot. Turn the handle and the whole \
+                building faces somewhere new.",
+        exits: &[("Link home", "Linking Books")],
+    },
+    Place {
+        name: "Selenitic Age",
+        picture: "selenitic.svg",
+        blurb: "Craters, and five sounds carried on aerials to a room that \
+                is listening for them in the right order.",
+        exits: &[("Link home", "Linking Books")],
+    },
+    Place {
+        name: "Stoneship Age",
+        picture: "stoneship.svg",
+        blurb: "A ship in the rock, and a compass rose with a book set into \
+                it. The book is not labelled.",
+        exits: &[
+            ("Link home", "Linking Books"),
+            ("Open the unlabelled book", "D'ni"),
+        ],
+    },
+    Place {
+        // The point of the example, and of the map: a card you can reach and
+        // cannot leave. A trap book is exactly the shape of that bug.
+        name: "D'ni",
+        picture: "dni.svg",
+        blurb: "Rock, and a long way down, a light.\n\nThe book you came \
+                through is not here, and neither is any other.",
+        exits: &[],
+    },
+];
+
+/// An island you move around by clicking, and a graph worth looking at.
+fn myst() -> Stack {
+    let mut stack = Stack::new("Myst");
+    stack.set_size(Size::new(600, 400));
+    stack.set_script("on openStack\n  go to first card\nend openStack");
+
+    for (name, bytes) in myst_art() {
+        let image = Image::new(name, bytes.to_vec()).expect("the artwork is checked at build time");
+        stack.set_image(name, Some(image));
+    }
+
+    let background = stack.backgrounds()[0].id();
+    rename_background(&mut stack, background, "Age");
+
+    let first = stack.cards()[0].id();
+    let mut cards = vec![first];
+    for _ in 1..PLACES.len() {
+        let card = stack.new_card(background).expect("the background exists");
+        let id = card.id();
+        stack.add_card(card);
+        cards.push(id);
+    }
+
+    for (card, place) in cards.iter().zip(PLACES.iter()) {
+        rename_card(&mut stack, *card, place.name);
+        add_card_image(
+            &mut stack,
+            *card,
+            place.name,
+            Rect::new(16, 16, 320, 200),
+            place.picture,
+            "",
+        );
+        add_card_field(
+            &mut stack,
+            *card,
+            "Place",
+            Rect::new(352, 16, 232, 24),
+            place.name,
+        );
+        add_card_field(
+            &mut stack,
+            *card,
+            "About",
+            Rect::new(352, 48, 232, 100),
+            place.blurb,
+        );
+        for (index, (label, destination)) in place.exits.iter().enumerate() {
+            add_card_button(
+                &mut stack,
+                *card,
+                label,
+                Rect::new(352, 162 + (index as i32) * 32, 232, 26),
+                &format!("on mouseUp\n  go to card \"{destination}\"\nend mouseUp"),
+                false,
+            );
+        }
+    }
+    stack
+}
+
+/// The scenery, by the name it is known by inside the stack.
+fn myst_art() -> [(&'static str, &'static [u8]); 11] {
+    [
+        ("dock.svg", include_bytes!("myst-art/dock.svg")),
+        ("library.svg", include_bytes!("myst-art/library.svg")),
+        (
+            "clock-tower.svg",
+            include_bytes!("myst-art/clock-tower.svg"),
+        ),
+        (
+            "planetarium.svg",
+            include_bytes!("myst-art/planetarium.svg"),
+        ),
+        ("generator.svg", include_bytes!("myst-art/generator.svg")),
+        (
+            "linking-books.svg",
+            include_bytes!("myst-art/linking-books.svg"),
+        ),
+        (
+            "channelwood.svg",
+            include_bytes!("myst-art/channelwood.svg"),
+        ),
+        ("mechanical.svg", include_bytes!("myst-art/mechanical.svg")),
+        ("selenitic.svg", include_bytes!("myst-art/selenitic.svg")),
+        ("stoneship.svg", include_bytes!("myst-art/stoneship.svg")),
+        ("dni.svg", include_bytes!("myst-art/dni.svg")),
+    ]
 }

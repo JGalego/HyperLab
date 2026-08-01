@@ -1,0 +1,3 @@
+on openStack
+  go to first card
+end openStack

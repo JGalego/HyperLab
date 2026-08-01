@@ -1,0 +1,185 @@
+{
+  "id": 8,
+  "name": "Linking Books",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 38,
+      "name": "Linking Books",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "linking-books.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 16,
+        "top": 16,
+        "width": 320,
+        "height": 200
+      }
+    },
+    {
+      "id": 39,
+      "name": "Place",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Linking Books",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 352,
+        "top": 16,
+        "width": 232,
+        "height": 24
+      }
+    },
+    {
+      "id": 40,
+      "name": "About",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Four lecterns. Put your hand on the page and you are somewhere else before you have finished deciding to.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 352,
+        "top": 48,
+        "width": 232,
+        "height": 100
+      }
+    },
+    {
+      "id": 41,
+      "name": "Back to the library",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 352,
+        "top": 162,
+        "width": 232,
+        "height": 26
+      }
+    },
+    {
+      "id": 42,
+      "name": "Channelwood",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 352,
+        "top": 194,
+        "width": 232,
+        "height": 26
+      }
+    },
+    {
+      "id": 43,
+      "name": "Mechanical",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 352,
+        "top": 226,
+        "width": 232,
+        "height": 26
+      }
+    },
+    {
+      "id": 44,
+      "name": "Selenitic",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 352,
+        "top": 258,
+        "width": 232,
+        "height": 26
+      }
+    },
+    {
+      "id": 45,
+      "name": "Stoneship",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 352,
+        "top": 290,
+        "width": 232,
+        "height": 26
+      }
+    }
+  ]
+}

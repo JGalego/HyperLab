@@ -1,0 +1,97 @@
+{
+  "id": 3,
+  "name": "Dock",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 14,
+      "name": "Dock",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "dock.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 16,
+        "top": 16,
+        "width": 320,
+        "height": 200
+      }
+    },
+    {
+      "id": 15,
+      "name": "Place",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Dock",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 352,
+        "top": 16,
+        "width": 232,
+        "height": 24
+      }
+    },
+    {
+      "id": 16,
+      "name": "About",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "You arrive here and the book closes behind you. A path climbs away from the water.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 352,
+        "top": 48,
+        "width": 232,
+        "height": 100
+      }
+    },
+    {
+      "id": 17,
+      "name": "Up to the library",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 352,
+        "top": 162,
+        "width": 232,
+        "height": 26
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+  <title>The mechanical age</title>
+  <defs>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a8b2b8"/><stop offset="1" stop-color="#7d8a92"/>
+    </linearGradient>
+    <clipPath id="f"><rect x="4" y="4" width="232" height="142"/></clipPath>
+  </defs>
+  <rect width="240" height="150" fill="#efe7d7"/>
+  <g clip-path="url(#f)">
+    <rect x="4" y="4" width="232" height="142" fill="url(#s)"/>
+    <rect x="0" y="112" width="240" height="38" fill="#5d6a72"/><path d="M74 112 v-64 l46 -22 l46 22 v64 z" fill="#6a6156" stroke="#23201c" stroke-width="2.5"/><rect x="104" y="70" width="32" height="42" fill="#3d372e" stroke="#23201c" stroke-width="2"/><circle cx="34" cy="84" r="18" fill="#8a8072" stroke="#23201c" stroke-width="2"/><circle cx="34" cy="84" r="6.0" fill="#23201c"/><circle cx="206" cy="92" r="14" fill="#8a8072" stroke="#23201c" stroke-width="2"/><circle cx="206" cy="92" r="4.7" fill="#23201c"/><circle cx="36" cy="118" r="10" fill="#8a8072" stroke="#23201c" stroke-width="2"/><circle cx="36" cy="118" r="3.3" fill="#23201c"/><path d="M120 26 v-14" stroke="#23201c" stroke-width="2.5"/><path d="M120 12 h18 v9 h-18 z" fill="#a8402c" stroke="#23201c" stroke-width="1.6"/>
+  </g>
+  <rect x="4" y="4" width="232" height="142" fill="none" stroke="#23201c" stroke-width="3"/>
+</svg>

@@ -43,10 +43,10 @@
       "updated_at": 1735689600000,
       "kind": "button",
       "geometry": {
-        "left": 19,
-        "top": 43,
-        "width": 114,
-        "height": 94
+        "left": 24,
+        "top": 48,
+        "width": 96,
+        "height": 80
       }
     },
     {
@@ -65,10 +65,10 @@
       "updated_at": 1735689600000,
       "kind": "button",
       "geometry": {
-        "left": 139,
-        "top": 43,
-        "width": 114,
-        "height": 94
+        "left": 132,
+        "top": 48,
+        "width": 128,
+        "height": 80
       }
     },
     {
@@ -87,10 +87,10 @@
       "updated_at": 1735689600000,
       "kind": "button",
       "geometry": {
-        "left": 259,
-        "top": 43,
-        "width": 114,
-        "height": 94
+        "left": 272,
+        "top": 48,
+        "width": 96,
+        "height": 80
       }
     },
     {
@@ -109,10 +109,10 @@
       "updated_at": 1735689600000,
       "kind": "button",
       "geometry": {
-        "left": 19,
-        "top": 143,
-        "width": 114,
-        "height": 94
+        "left": 24,
+        "top": 140,
+        "width": 96,
+        "height": 92
       }
     },
     {
@@ -131,10 +131,10 @@
       "updated_at": 1735689600000,
       "kind": "button",
       "geometry": {
-        "left": 139,
-        "top": 143,
-        "width": 114,
-        "height": 94
+        "left": 140,
+        "top": 140,
+        "width": 112,
+        "height": 92
       }
     },
     {
@@ -153,14 +153,36 @@
       "updated_at": 1735689600000,
       "kind": "button",
       "geometry": {
-        "left": 259,
-        "top": 143,
-        "width": 114,
-        "height": 94
+        "left": 272,
+        "top": 140,
+        "width": 96,
+        "height": 54
       }
     },
     {
       "id": 15,
+      "name": "Library",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": false,
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 272,
+        "top": 206,
+        "width": 96,
+        "height": 42
+      }
+    },
+    {
+      "id": 16,
       "name": "Lounge",
       "script": "",
       "properties": {
@@ -175,14 +197,14 @@
       "updated_at": 1735689600000,
       "kind": "button",
       "geometry": {
-        "left": 19,
-        "top": 243,
-        "width": 114,
-        "height": 94
+        "left": 24,
+        "top": 244,
+        "width": 96,
+        "height": 88
       }
     },
     {
-      "id": 16,
+      "id": 17,
       "name": "Hall",
       "script": "",
       "properties": {
@@ -197,14 +219,14 @@
       "updated_at": 1735689600000,
       "kind": "button",
       "geometry": {
-        "left": 139,
-        "top": 243,
-        "width": 114,
-        "height": 94
+        "left": 140,
+        "top": 244,
+        "width": 112,
+        "height": 88
       }
     },
     {
-      "id": 17,
+      "id": 18,
       "name": "Study",
       "script": "",
       "properties": {
@@ -219,14 +241,14 @@
       "updated_at": 1735689600000,
       "kind": "button",
       "geometry": {
-        "left": 259,
-        "top": 243,
-        "width": 114,
-        "height": 94
+        "left": 272,
+        "top": 260,
+        "width": 96,
+        "height": 72
       }
     },
     {
-      "id": 18,
+      "id": 19,
       "name": "Suspect Caption",
       "script": "",
       "properties": {
@@ -248,7 +270,7 @@
       }
     },
     {
-      "id": 19,
+      "id": 20,
       "name": "Suspect",
       "script": "",
       "properties": {
@@ -270,7 +292,7 @@
       }
     },
     {
-      "id": 20,
+      "id": 21,
       "name": "Weapon Caption",
       "script": "",
       "properties": {
@@ -292,7 +314,7 @@
       }
     },
     {
-      "id": 21,
+      "id": 22,
       "name": "Weapon",
       "script": "",
       "properties": {
@@ -314,7 +336,7 @@
       }
     },
     {
-      "id": 22,
+      "id": 23,
       "name": "Room Caption",
       "script": "",
       "properties": {
@@ -336,7 +358,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 24,
       "name": "Room",
       "script": "",
       "properties": {
@@ -358,7 +380,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 25,
       "name": "Ask",
       "script": "",
       "properties": {
@@ -380,7 +402,7 @@
       }
     },
     {
-      "id": 25,
+      "id": 26,
       "name": "Accuse",
       "script": "",
       "properties": {
@@ -402,7 +424,7 @@
       }
     },
     {
-      "id": 26,
+      "id": 27,
       "name": "Replies Caption",
       "script": "",
       "properties": {
@@ -424,7 +446,7 @@
       }
     },
     {
-      "id": 27,
+      "id": 28,
       "name": "Replies",
       "script": "",
       "properties": {
@@ -446,7 +468,7 @@
       }
     },
     {
-      "id": 28,
+      "id": 29,
       "name": "Start Over",
       "script": "",
       "properties": {
@@ -468,7 +490,7 @@
       }
     },
     {
-      "id": 29,
+      "id": 30,
       "name": "Solution",
       "script": "",
       "properties": {

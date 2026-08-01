@@ -19,7 +19,9 @@ app="$(cd "$here/.." && pwd)"
 root="$(cd "$app/../.." && pwd)"
 out="$root/target/demo"
 
-: "${GROQ_API_KEY:?set GROQ_API_KEY to a Groq key before filming}"
+# Only the films with an assistant act need a key, and each of them says so
+# if it is missing rather than refusing to shoot.
+: "${GROQ_API_KEY:=}"
 : "${GROQ_MODEL:=openai/gpt-oss-120b}"
 export GROQ_API_KEY GROQ_MODEL
 
@@ -32,6 +34,7 @@ film="${1:-film}"
 # Each film expects a particular stack, so the default follows the film.
 case "$film" in
 cluedo) default_stack="$root/examples/Cluedo.hl" ;;
+myst) default_stack="$root/examples/Myst.hl" ;;
 *) default_stack="$root/examples/Recipe Box.hl" ;;
 esac
 stack="${2:-$default_stack}"
@@ -89,6 +92,8 @@ echo "converting…"
 # GIF_FROM and GIF_FOR move the window if the film changes length.
 case "$film" in
 cluedo) : "${GIF_FROM:=2}" "${GIF_FOR:=34}" ;;
+# Myst's gif is the ending: the map, which is the point of the stack.
+myst) : "${GIF_FROM:=42}" "${GIF_FOR:=30}" ;;
 *) : "${GIF_FROM:=66}" "${GIF_FOR:=26}" ;;
 esac
 : "${GIF_WIDTH:=640}"

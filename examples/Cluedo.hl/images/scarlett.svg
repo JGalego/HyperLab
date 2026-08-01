@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Miss Scarlett</title>
-  <circle cx="32" cy="32" r="31" fill="#b0242a" stroke="#1a1a1a" stroke-width="2"/>
-  <circle cx="32" cy="25" r="9" fill="#f4f1ea"/>
-  <path d="M14 56 a18 18 0 0 1 36 0 z" fill="#f4f1ea"/>
+  <defs><clipPath id="d"><circle cx="32" cy="32" r="29.5"/></clipPath></defs>
+  <circle cx="32" cy="32" r="30.5" fill="#a81f28" stroke="#141414" stroke-width="2.5"/>
+  <g clip-path="url(#d)"><circle cx="32" cy="24" r="9.5" fill="#f4f1ea"/><path d="M12.5 58 a19.5 18 0 0 1 39 0 z" fill="#ddd6c9"/><circle cx="28.4" cy="23" r="1.35" fill="#3d0b0f"/><circle cx="35.6" cy="23" r="1.35" fill="#3d0b0f"/><path d="M22.4 22 c-0.5 -12.5 20 -12.5 19.5 0 c-1.5 -6.5 -5.5 -8.5 -9.9 -8.5 c-4.4 0 -8.2 2 -9.6 8.5 z" fill="#3d0b0f"/><path d="M22 20 c-3.4 6 -3.4 16.5 -1.4 24.5 l4.2 -1 c-3 -8 -3 -16.5 -1 -22.5 z" fill="#3d0b0f"/><path d="M42 20 c3.4 6 3.4 16.5 1.4 24.5 l-4.2 -1 c3 -8 3 -16.5 1 -22.5 z" fill="#3d0b0f"/><path d="M29.5 28.5 c1.6 1.2 3.4 1.2 5 0" fill="none" stroke="#3d0b0f" stroke-width="1.3" stroke-linecap="round"/></g>
 </svg>

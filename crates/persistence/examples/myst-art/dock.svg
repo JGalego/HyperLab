@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+  <title>The dock</title>
+  <defs>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cfe0e6"/><stop offset="1" stop-color="#a8c3cd"/>
+    </linearGradient>
+    <clipPath id="f"><rect x="4" y="4" width="232" height="142"/></clipPath>
+  </defs>
+  <rect width="240" height="150" fill="#efe7d7"/>
+  <g clip-path="url(#f)">
+    <rect x="4" y="4" width="232" height="142" fill="url(#s)"/>
+    <rect x="0" y="96" width="240" height="54" fill="#5d7a84"/><g stroke="#7d97a0" stroke-width="1.7" fill="none"><path d="M0 106 q12 -5 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0"/><path d="M0 119 q12 -5 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0"/><path d="M0 132 q12 -5 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0"/></g><path d="M0 92 h240 v6 h-240 z" fill="#8d8574"/><path d="M60 98 h120 v10 h-120 z" fill="#7a6a52"/><rect x="66" y="110" width="6" height="24" fill="#5d5040"/><rect x="96" y="110" width="6" height="24" fill="#5d5040"/><rect x="126" y="110" width="6" height="24" fill="#5d5040"/><rect x="156" y="110" width="6" height="24" fill="#5d5040"/><rect x="174" y="110" width="6" height="24" fill="#5d5040"/><rect x="50" y="82" width="10" height="26" fill="#5d5040"/><path d="M196 96 v-58" stroke="#23201c" stroke-width="2.5"/><path d="M196 44 l22 26 h-22 z" fill="#efe7d7" stroke="#23201c" stroke-width="2"/><circle cx="40" cy="30" r="12" fill="#f2e3b8"/>
+  </g>
+  <rect x="4" y="4" width="232" height="142" fill="none" stroke="#23201c" stroke-width="3"/>
+</svg>

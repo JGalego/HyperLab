@@ -1,0 +1,3 @@
+on mouseUp
+  go to card "Stoneship Age"
+end mouseUp

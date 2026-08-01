@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Colonel Mustard</title>
-  <circle cx="32" cy="32" r="31" fill="#c8952a" stroke="#1a1a1a" stroke-width="2"/>
-  <circle cx="32" cy="25" r="9" fill="#f4f1ea"/>
-  <path d="M14 56 a18 18 0 0 1 36 0 z" fill="#f4f1ea"/>
+  <defs><clipPath id="d"><circle cx="32" cy="32" r="29.5"/></clipPath></defs>
+  <circle cx="32" cy="32" r="30.5" fill="#c08a1e" stroke="#141414" stroke-width="2.5"/>
+  <g clip-path="url(#d)"><circle cx="32" cy="24" r="9.5" fill="#f4f1ea"/><path d="M12.5 58 a19.5 18 0 0 1 39 0 z" fill="#ddd6c9"/><circle cx="28.4" cy="23" r="1.35" fill="#4a3208"/><circle cx="35.6" cy="23" r="1.35" fill="#4a3208"/><path d="M19.5 18.5 h25 v3.2 h-25 z" fill="#4a3208"/><path d="M22.5 18 c0 -8.5 19 -8.5 19 0 z" fill="#4a3208"/><path d="M25 28 c2.5 -2.2 5 -1.6 7 0.6 c2 -2.2 4.5 -2.8 7 -0.6 c-2 3.2 -5 3.2 -7 1.6 c-2 1.6 -5 1.6 -7 -1.6 z" fill="#4a3208"/></g>
 </svg>

@@ -23,7 +23,7 @@ pub(crate) fn edges_in(stack: &Stack, source: &str, me: ObjectId, from: Id, into
         // editor already tells the author about it.
         return;
     };
-    for (destination, line) in gos(&script) {
+    for (destination, line) in gos(&script, me.kind) {
         into.push(Edge {
             from,
             to: resolve(stack, &destination, from),
@@ -33,12 +33,22 @@ pub(crate) fn edges_in(stack: &Stack, source: &str, me: ObjectId, from: Id, into
     }
 }
 
-/// Every `go` in a script, with the line it was written on.
+/// Messages the stack receives directly rather than up the path from a card.
+///
+/// `on openStack` runs once, when the stack is opened. Counting the `go` in
+/// it as a way out of *every* card is what a naive message-path walk does,
+/// and it is wrong in a way that quietly matters: almost every stack starts
+/// with `on openStack go to first card`, so every card would look like it
+/// led somewhere and nothing would ever be reported as a dead end.
+const STACK_ONLY: [&str; 2] = ["openstack", "closestack"];
+
+/// Every `go` in a script that a card could actually set off, with the line
+/// it was written on.
 ///
 /// Walks into `if` and `repeat` bodies: a `go` inside a branch is still a way
 /// out of the card, and drawing only the unconditional ones would understate
 /// the graph badly.
-fn gos(script: &Script) -> Vec<(Written, u32)> {
+fn gos(script: &Script, owner: hyperlab_stack::ObjectKind) -> Vec<(Written, u32)> {
     fn walk(block: &[hyperlab_parser::ast::Statement], found: &mut Vec<(Written, u32)>) {
         for statement in block {
             match &statement.kind {
@@ -64,6 +74,11 @@ fn gos(script: &Script) -> Vec<(Written, u32)> {
 
     let mut found = Vec::new();
     for handler in &script.handlers {
+        if owner == hyperlab_stack::ObjectKind::Stack
+            && STACK_ONLY.contains(&handler.name.to_ascii_lowercase().as_str())
+        {
+            continue;
+        }
         walk(&handler.body, &mut found);
     }
     found

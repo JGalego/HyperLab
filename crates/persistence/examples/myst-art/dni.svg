@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+  <title>D'ni</title>
+  <defs>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14120f"/><stop offset="1" stop-color="#221d18"/>
+    </linearGradient>
+    <clipPath id="f"><rect x="4" y="4" width="232" height="142"/></clipPath>
+  </defs>
+  <rect width="240" height="150" fill="#efe7d7"/>
+  <g clip-path="url(#f)">
+    <rect x="4" y="4" width="232" height="142" fill="url(#s)"/>
+    <rect x="0" y="118" width="240" height="32" fill="#1a1611"/><path d="M0 4 h240 v40 q-40 18 -80 6 q-46 -14 -80 4 q-40 18 -80 2 z" fill="#0e0c0a"/><circle cx="10" cy="8" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="71" cy="15" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="132" cy="22" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="193" cy="29" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="34" cy="36" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="95" cy="13" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="156" cy="20" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="217" cy="27" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="58" cy="34" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="119" cy="11" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="180" cy="18" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="21" cy="25" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="82" cy="32" r="1" fill="#5f6f7a" opacity="0.6"/><circle cx="143" cy="9" r="1" fill="#5f6f7a" opacity="0.6"/><path d="M0 118 q30 -30 62 -18 q28 10 44 -14 q20 -28 52 -8 q34 22 82 6 v34 z" fill="#2a241d" stroke="#23201c" stroke-width="2"/><path d="M106 118 l10 -48 l6 22 l8 -30 l6 56 z" fill="#4a6b8a" opacity="0.55"/><path d="M116 118 l4 -42 l4 42 z" fill="#8fb6d4" opacity="0.85"/>
+  </g>
+  <rect x="4" y="4" width="232" height="142" fill="none" stroke="#23201c" stroke-width="3"/>
+</svg>
