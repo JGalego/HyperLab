@@ -177,6 +177,15 @@ The code is arranged so these hold on their own:
   omits your field contents unless a question actually needs them. The
   sidebar shows the exact text it sent with every question.
 
+![The assistant is asked for a button that halves the ingredients; it calls
+create_button, the button appears, clicking it halves them, and undo puts the
+card back](docs/demo.gif)
+
+Nothing there is staged. The model wrote that HyperTalk, the parser accepted
+it, the interpreter ran it, and the three commands it took undo like anyone
+else's. [`apps/desktop/demo`](apps/desktop/demo) is the script that filmed
+it.
+
 There are three ways in, and they are the same machinery underneath: `ai(…)`
 and `ask assistant` in [a script](docs/hypertalk.md#asking-a-language-model),
 the sidebar, and [MCP](crates/mcp) — `hyperlab-mcp --stack Todo.hl` hands the
