@@ -68,7 +68,7 @@ latest_version() {
 choose_bin_dir() {
   if [ -n "${BIN_DIR:-}" ]; then
     printf '%s' "$BIN_DIR"
-  elif [ -w /usr/local/bin ] 2>/dev/null; then
+  elif [ -w /usr/local/bin ]; then
     printf '%s' /usr/local/bin
   else
     printf '%s' "$HOME/.local/bin"
