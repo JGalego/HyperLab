@@ -10,16 +10,15 @@
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-000000?style=flat-square" alt="PRs welcome"></a>
 </p>
 
-Build a desktop application the way you would build a stack of index cards:
-draw a card, put a button on it, write two lines of script, and you have
-something that runs. HyperCard let a generation of people who did not call
-themselves programmers build real software. HyperLab is an attempt at what
-that idea looks like now.
+[HyperCard](https://en.wikipedia.org/wiki/HyperCard) let people who never
+called themselves programmers build real software: draw a card, put a button
+on it, write two lines of script, and it runs. HyperLab is what that idea
+looks like thirty years on, with language models built into the way a stack
+thinks rather than bolted onto the side of one.
 
-It is not a clone. It keeps what made HyperCard work — cards, stacks, fields,
-buttons, scripts, message passing, everything inspectable and everything
-changeable while it runs — and adds language models as a first-class part of
-the programming model rather than a panel bolted on the side.
+Cards, stacks, fields, buttons, scripts and message passing are all still
+here, and a stack stays inspectable and editable while it runs — the two
+qualities that made the original worth learning in the first place.
 
 ![HyperLab: a card with a button and a field, the object inspector showing
 the button's script](docs/screenshot.png)
@@ -40,6 +39,9 @@ the button's script](docs/screenshot.png)
 
 <h2 id="what-it-looks-like-to-use">🧩 What It Looks Like to Use</h2>
 
+This is [HyperTalk](docs/hypertalk.md), the whole of the *Add* button in
+[the Todo example](examples):
+
 ```hypertalk
 on mouseUp
   ask "What needs doing?" with ""
@@ -49,16 +51,16 @@ on mouseUp
 end mouseUp
 ```
 
-That is the whole of the *Add* button in [the Todo example](examples). Click
-it, and it runs. Change it, and the change takes effect immediately — there is
-no build step inside a stack.
+Click it, and it runs. Change it, and the change takes effect immediately —
+there is no build step inside a stack.
 
 ---
 
 <h2 id="getting-started">🚀 Getting Started</h2>
 
-You will need [Rust](https://rustup.rs) 1.85 or newer and Node 20 or newer,
-plus [Tauri's system dependencies](https://tauri.app/start/prerequisites/) for
+You will need 🦀 [Rust](https://rustup.rs) 1.85 or newer and 🟢
+[Node](https://nodejs.org) 20 or newer, plus
+[Tauri's system dependencies](https://tauri.app/start/prerequisites/) for
 your platform.
 
 Clone the repository:
@@ -95,10 +97,10 @@ UI  →  Commands  →  Runtime  →  Model  →  Renderer
 ```
 
 One rule holds the design up: **nothing changes a stack except a command.**
-Not the interface, not a script, not an AI assistant. Because there is one
-path in, undo, scripting, automation, testing and AI all work the same way,
-and a change made by any of them is indistinguishable from a change made by
-any other.
+The interface, a script and an AI assistant all reach a stack through that
+one path in, so undo, scripting, automation, testing and AI all work the
+same way — a change made by any of them looks like a change made by any
+other.
 
 ```
 crates/
@@ -127,7 +129,7 @@ Read [`docs/architecture.md`](docs/architecture.md) for the reasoning, and
 
 <h2 id="stacks-are-files-you-can-read">📂 Stacks Are Files You Can Read</h2>
 
-A stack is a directory, not a blob:
+Open a stack in a file browser and you'll find a plain directory:
 
 ```
 Todo.hl/
@@ -147,17 +149,17 @@ that is what it is.
 
 <h2 id="where-the-ai-goes">🤖 Where the AI Goes</h2>
 
-Enforced by the way the code is arranged, not by good intentions:
+The code is arranged so these hold on their own:
 
 - **No provider is special.** A provider implements
   [`AiProvider`](crates/ai/src/provider.rs) and nothing in HyperLab switches
   on which one it is. OpenAI, Anthropic, Google, Ollama, OpenRouter and local
-  models are names in a settings file, not branches in the runtime. The
-  clients live in [their own crate](crates/ai-providers), which the rest of
-  HyperLab does not depend on; one of them speaks the OpenAI chat-completions
-  protocol, so pointing a `baseUrl` at Ollama or a local server is all it
-  takes to run with no network at all. A key is read from an environment
-  variable you name, and is never written to a settings file.
+  models are just names in a settings file. The clients live in
+  [their own crate](crates/ai-providers), which the rest of HyperLab does
+  not depend on; one of them speaks the OpenAI chat-completions protocol, so
+  pointing a `baseUrl` at Ollama or a local server is all it takes to run
+  with no network at all. A key is read from an environment variable you
+  name, and is never written to a settings file.
 - **An assistant can do exactly what you can do.** It works through
   [MCP tools](crates/mcp) that wrap runtime commands, so everything it does
   is undoable and visible. There is no private back door into a stack.
