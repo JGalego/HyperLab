@@ -3,10 +3,39 @@
 version = 4
 
 [[package]]
+name = "hyperlab-ai"
+version = "0.1.0"
+dependencies = [
+ "hyperlab-stack",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "hyperlab-mcp"
+version = "0.1.0"
+dependencies = [
+ "hyperlab-ai",
+ "hyperlab-runtime",
+ "hyperlab-stack",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "hyperlab-parser"
 version = "0.1.0"
 dependencies = [
  "serde",
+]
+
+[[package]]
+name = "hyperlab-persistence"
+version = "0.1.0"
+dependencies = [
+ "hyperlab-stack",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

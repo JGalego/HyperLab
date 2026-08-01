@@ -67,6 +67,14 @@ impl IdGenerator {
         id
     }
 
+    /// The id that would be handed out next, without taking it.
+    ///
+    /// Persistence saves this so that ids are never reused across sessions.
+    #[must_use]
+    pub const fn peek(&self) -> Id {
+        Id::new(self.next)
+    }
+
     /// Ensures that ids handed out later are greater than `id`.
     ///
     /// Persistence calls this after loading objects so that a hand-edited file

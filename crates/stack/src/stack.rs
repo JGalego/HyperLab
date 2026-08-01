@@ -39,6 +39,29 @@ impl Stack {
         }
     }
 
+    /// Creates a stack with no cards and no backgrounds.
+    ///
+    /// A stack in this state cannot be shown: there is nothing to draw. Only
+    /// loading code should use it, and only long enough to put the saved
+    /// cards and backgrounds back. Everything else wants [`Stack::new`].
+    pub fn empty(id: Id, name: impl Into<String>) -> Self {
+        let mut ids = IdGenerator::new();
+        ids.reserve(id);
+        Self {
+            core: ObjectCore::new(id, name),
+            size: Size::default(),
+            ids,
+            backgrounds: Vec::new(),
+            cards: Vec::new(),
+        }
+    }
+
+    /// Whether this stack has anything to show.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.cards.is_empty()
+    }
+
     /// The size of every card in this stack.
     #[must_use]
     pub const fn size(&self) -> Size {
@@ -57,6 +80,12 @@ impl Stack {
     /// from here so that ids stay unique.
     pub fn next_id(&mut self) -> Id {
         self.ids.next_id()
+    }
+
+    /// The id that would be handed out next, without taking it.
+    #[must_use]
+    pub const fn peek_next_id(&self) -> Id {
+        self.ids.peek()
     }
 
     /// Ensures future ids do not collide with `id`.

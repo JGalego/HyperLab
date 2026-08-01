@@ -83,7 +83,7 @@ pub fn message_path(stack: &Stack, target: ObjectId, current_card: Id) -> Vec<Ob
             // message continues through the current card's layers.
             let card = stack
                 .card(current_card)
-                .map_or(current_card, |card| hyperlab_stack::Object::id(card));
+                .map_or(current_card, hyperlab_stack::Object::id);
             path.push(ObjectId::new(ObjectKind::Card, card));
             if let Some(background) = stack.background_of(card) {
                 path.push(ObjectId::new(
