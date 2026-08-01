@@ -1,0 +1,35 @@
+name: Set the repository topics
+
+# A one-off, and expected to be deleted once it has run. Topics are the chips
+# under About, and nothing outside a workflow can set them from here.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  topics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set them
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X PUT "repos/${{ github.repository }}/topics" \
+            -f names[]=hypercard \
+            -f names[]=hypertalk \
+            -f names[]=hypermedia \
+            -f names[]=end-user-programming \
+            -f names[]=low-code \
+            -f names[]=scripting-language \
+            -f names[]=retrocomputing \
+            -f names[]=rust \
+            -f names[]=tauri \
+            -f names[]=react \
+            -f names[]=typescript \
+            -f names[]=desktop-app \
+            -f names[]=ai \
+            -f names[]=llm \
+            -f names[]=mcp \
+            -f names[]=model-context-protocol
