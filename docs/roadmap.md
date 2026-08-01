@@ -203,6 +203,10 @@ and a reader can search it. **Go ▸ Map ▸ Save as PNG…** saves the drawing.
 the web. The result is one HTML file that runs the stack — buttons, fields,
 pictures, scripts and all — with nothing of HyperLab underneath it.
 
+**File ▸ Export as a Decker Deck…** sends it sideways instead, to
+[Decker](https://beyondloom.com/decker/) — cards, widgets, one-bit artwork,
+and the scripts rewritten in Lil.
+
 Still to come: one card rather than all of them, a page size that is a page
 rather than the card, and a copy of _hyperscript in the file so an exported
 page works with no network.

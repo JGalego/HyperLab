@@ -26,6 +26,7 @@ import { StatusBar } from './components/StatusBar';
 import type {
   AiView,
   DialogRequest,
+  Exported,
   Graph,
   Outcome,
   PartView,
@@ -203,19 +204,27 @@ export function App() {
     );
   }
 
-  /** The stack as a web page, in the language HyperTalk grew into. */
-  function exportWeb() {
+  /**
+   * Sends the stack somewhere that speaks a different language.
+   *
+   * Both destinations answer the same way: a file, and a list of what had no
+   * equivalent there. One that came across whole and one that lost something
+   * both wrote a file, and the difference is worth saying out loud.
+   */
+  function exportTranslated(
+    what: string,
+    extension: string,
+    write: (path: string) => Promise<Exported>,
+  ) {
     saveFileDialog({
-      title: 'Export this stack as a web page',
-      defaultPath: `${view.stackName}.html`,
-      filters: [{ name: 'Web page', extensions: ['html'] }],
+      title: `Export this stack as ${what}`,
+      defaultPath: `${view.stackName}.${extension}`,
+      filters: [{ name: what, extensions: [extension] }],
     }).then(
       (chosen) => {
         if (typeof chosen !== 'string') return;
-        api.exportWeb(chosen).then(
+        write(chosen).then(
           ({ path, notes }) => {
-            // A page that came across whole and one that lost something both
-            // wrote a file, and the difference is worth saying out loud.
             const missing =
               notes.length === 0
                 ? ''
@@ -295,7 +304,14 @@ export function App() {
         { label: 'Save As…', run: () => saveStack(true) },
         null,
         { label: 'Export as PDF…', run: exportPdf },
-        { label: 'Export as a Web Page…', run: exportWeb },
+        {
+          label: 'Export as a Web Page…',
+          run: () => exportTranslated('a web page', 'html', api.exportWeb),
+        },
+        {
+          label: 'Export as a Decker Deck…',
+          run: () => exportTranslated('a Decker deck', 'deck', api.exportDeck),
+        },
       ],
     },
     {
