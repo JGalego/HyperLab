@@ -1369,6 +1369,7 @@ dependencies = [
  "hyperlab-ai",
  "hyperlab-ai-providers",
  "hyperlab-assistant",
+ "hyperlab-graph",
  "hyperlab-mcp",
  "hyperlab-parser",
  "hyperlab-persistence",
@@ -1379,6 +1380,17 @@ dependencies = [
  "tauri",
  "tauri-build",
  "tauri-plugin-dialog",
+]
+
+[[package]]
+name = "hyperlab-graph"
+version = "0.1.0"
+dependencies = [
+ "hyperlab-parser",
+ "hyperlab-persistence",
+ "hyperlab-stack",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

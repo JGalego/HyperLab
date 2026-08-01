@@ -94,6 +94,47 @@ export interface Outcome {
   effects: Effect[];
 }
 
+/**
+ * Where a `go` leads, as `crates/graph` read it.
+ *
+ * `unresolved` and `missing` are the interesting ones. Nothing is run to
+ * build the map, so a destination worked out at run time cannot be known,
+ * and a destination naming a card that is not there is a bug worth drawing.
+ */
+export type Destination =
+  | { kind: 'card'; id: number }
+  | { kind: 'back' }
+  | { kind: 'missing'; wanted: string }
+  | { kind: 'unresolved'; because: string };
+
+/** One way out of one card. */
+export interface GraphEdge {
+  from: number;
+  to: Destination;
+  /** The object whose script says so. */
+  via: { kind: ObjectKind; id: number };
+  line: number;
+}
+
+/** One card, and what the map knows about it. */
+export interface GraphNode {
+  id: number;
+  name: string;
+  /** Its place in the stack, counting from one. */
+  position: number;
+  background: number;
+  /** Whether anything leads here from the first card. */
+  reachable: boolean;
+  leadsAnywhere: boolean;
+}
+
+/** A stack read as the routes between its cards. */
+export interface Graph {
+  stack: string;
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
+
 /** What the inspector is looking at. */
 export interface Selection {
   kind: ObjectKind;

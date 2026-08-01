@@ -20,10 +20,12 @@ import { Card } from './components/Card';
 import { Dialog } from './components/Dialog';
 import { Inspector } from './components/Inspector';
 import { MenuBar, type MenuEntry } from './components/MenuBar';
+import { StackMap } from './components/StackMap';
 import { StatusBar } from './components/StatusBar';
 import type {
   AiView,
   DialogRequest,
+  Graph,
   Outcome,
   PartView,
   Selection,
@@ -41,6 +43,9 @@ export function App() {
   const [ai, setAi] = useState<AiView | null>(null);
   const [aiOpen, setAiOpen] = useState(false);
   const [aiSettings, setAiSettings] = useState(false);
+  // Read when the map is opened and thrown away when it closes: it is a
+  // reading of the stack as it is now, and a script may have changed it.
+  const [map, setMap] = useState<Graph | null>(null);
 
   /**
    * Applies whatever a command gave back.
@@ -236,6 +241,12 @@ export function App() {
         },
         { label: 'Next Card', run: () => run(() => api.goToCard(view.cardNumber + 1)) },
         { label: 'Last Card', run: () => run(() => api.goToCard(view.cardCount)) },
+        null,
+        {
+          label: 'Map…',
+          run: () =>
+            api.stackGraph().then(setMap, (reason: unknown) => setError(String(reason))),
+        },
       ],
     },
     {
@@ -320,6 +331,15 @@ export function App() {
           }}
           onCancel={() => setAiSettings(false)}
           onError={setError}
+        />
+      )}
+
+      {map && (
+        <StackMap
+          graph={map}
+          current={view.card.id}
+          onGoTo={(position) => run(() => api.goToCard(position))}
+          onClose={() => setMap(null)}
         />
       )}
 

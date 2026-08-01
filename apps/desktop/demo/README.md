@@ -40,8 +40,9 @@ nothing to know: same components, same `api.ts`, same snapshot type, same
 
 `hyperlab-bridge` lives in
 [`src-tauri/src/bin`](../src-tauri/src/bin/hyperlab-bridge.rs). It binds to
-loopback, has no authentication, and carries only the commands the film uses.
-It is a development tool you start on purpose, not a way to run HyperLab.
+loopback, has no authentication, and carries only the commands a browser
+needs to drive the interface. It is a development tool you start on purpose,
+not a way to run HyperLab.
 
 ## Changing the film
 

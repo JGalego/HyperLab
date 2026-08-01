@@ -82,7 +82,9 @@ fn run() -> Result<(), String> {
     }
 
     let dialogs = Arc::new(Pending::default());
-    app.install_host(Box::new(BridgeHost { pending: Arc::clone(&dialogs) }));
+    app.install_host(Box::new(BridgeHost {
+        pending: Arc::clone(&dialogs),
+    }));
 
     // No settings file: the demo passes providers in over the wire, so a
     // machine that has HyperLab configured does not have its own settings
@@ -163,13 +165,18 @@ struct BridgeHost {
 
 impl BridgeHost {
     fn show(&self, request: DialogRequest) -> Option<String> {
-        self.pending.show(request).recv_timeout(PATIENCE).unwrap_or(None)
+        self.pending
+            .show(request)
+            .recv_timeout(PATIENCE)
+            .unwrap_or(None)
     }
 }
 
 impl Host for BridgeHost {
     fn answer(&mut self, message: &str) {
-        self.show(DialogRequest::Answer { message: message.to_string() });
+        self.show(DialogRequest::Answer {
+            message: message.to_string(),
+        });
     }
 
     fn ask(&mut self, prompt: &str, default: &str) -> Option<String> {
@@ -240,7 +247,11 @@ fn serve(bridge: &Bridge, mut stream: TcpStream) -> std::io::Result<()> {
 }
 
 fn respond(stream: &mut TcpStream, status: u16, body: &Json) -> std::io::Result<()> {
-    let text = if body.is_null() { String::new() } else { body.to_string() };
+    let text = if body.is_null() {
+        String::new()
+    } else {
+        body.to_string()
+    };
     write!(
         stream,
         "HTTP/1.1 {status} OK\r\n\
@@ -283,7 +294,10 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
     match command {
         "plugin:event|listen" | "plugin:event|unlisten" => return Ok(Json::Null),
         "dialog_reply" => {
-            let reply = arguments.get("text").and_then(Json::as_str).map(String::from);
+            let reply = arguments
+                .get("text")
+                .and_then(Json::as_str)
+                .map(String::from);
             return Ok(json!(bridge.dialogs.reply(reply)));
         }
         "ai_ask" => {
@@ -339,7 +353,10 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
         "new_card" => {
             let after = runtime.current_card_index();
             runtime
-                .execute(Command::CreateCard { after, background: None })
+                .execute(Command::CreateCard {
+                    after,
+                    background: None,
+                })
                 .map_err(|error| error.to_string())?;
             runtime
                 .go_to_index(after as isize + 1)
@@ -352,7 +369,9 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
                 "button" => PartKind::Button,
                 _ => PartKind::Field,
             };
-            let owner = PartOwner::Card { id: runtime.current_card() };
+            let owner = PartOwner::Card {
+                id: runtime.current_card(),
+            };
             let name = arguments
                 .get("name")
                 .and_then(Json::as_str)
@@ -371,7 +390,10 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
         "set_script" => {
             let object = object_id(&text("kind")?, number("id")? as u64)?;
             runtime
-                .execute(Command::SetScript { object, script: text("script")? })
+                .execute(Command::SetScript {
+                    object,
+                    script: text("script")?,
+                })
                 .map_err(|error| error.to_string())?;
             held.touch();
             finish(&mut held)
@@ -385,7 +407,10 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
                 number("height")? as i32,
             );
             runtime
-                .execute(Command::SetGeometry { id, geometry: rectangle })
+                .execute(Command::SetGeometry {
+                    id,
+                    geometry: rectangle,
+                })
                 .map_err(|error| error.to_string())?;
             held.touch();
             finish(&mut held)
@@ -409,6 +434,8 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
             held.touch();
             finish(&mut held)
         }
+        "stack_graph" => serde_json::to_value(hyperlab_graph::Graph::of(runtime.stack()))
+            .map_err(|error| error.to_string())?,
         "get_properties" => {
             let object = object_id(&text("kind")?, number("id")? as u64)?;
             let described = runtime.object(object).map_err(|error| error.to_string())?;
@@ -423,11 +450,15 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
             serde_json::to_value(bridge.ai.view()).map_err(|error| error.to_string())?
         }
         "ai_set_may_edit" => {
-            bridge.ai.set_may_edit(arguments["editing"].as_bool().unwrap_or(false));
+            bridge
+                .ai
+                .set_may_edit(arguments["editing"].as_bool().unwrap_or(false));
             serde_json::to_value(bridge.ai.view()).map_err(|error| error.to_string())?
         }
         "ai_set_sends_field_text" => {
-            bridge.ai.set_sends_field_text(arguments["sending"].as_bool().unwrap_or(false));
+            bridge
+                .ai
+                .set_sends_field_text(arguments["sending"].as_bool().unwrap_or(false));
             serde_json::to_value(bridge.ai.view()).map_err(|error| error.to_string())?
         }
         "ai_settings" => {
