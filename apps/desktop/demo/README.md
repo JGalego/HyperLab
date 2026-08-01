@@ -4,7 +4,10 @@
 GROQ_API_KEY=… apps/desktop/demo/record.sh
 ```
 
-Leaves `target/demo/hyperlab.mp4` and `target/demo/hyperlab.gif`.
+Leaves `target/demo/hyperlab.mp4` (the whole film) and
+`target/demo/hyperlab.gif` (the assistant act, which is the part worth
+putting in a README — all ninety seconds at a legible size would be twenty
+megabytes). Move the cut with `GIF_FROM`, `GIF_FOR` and `GIF_WIDTH`.
 
 Without a key it films everything except the assistant, and says so.
 
@@ -50,9 +53,13 @@ The model is set through the same settings the window writes, so it is an
 `openAiCompatible` provider pointed at Groq — no special case anywhere:
 
 ```js
-{ kind: 'openAiCompatible', model: 'llama-3.3-70b-versatile',
+{ kind: 'openAiCompatible', model: 'openai/gpt-oss-120b',
   baseUrl: 'https://api.groq.com/openai/v1', apiKeyEnv: 'GROQ_API_KEY' }
 ```
+
+Pick a model that calls tools properly. Llama 3.3 on Groq, asked to write a
+script, tends to emit `<function(create_button){…}>` as prose rather than
+calling the tool, and the turn goes nowhere.
 
 Override with `GROQ_MODEL` or `GROQ_BASE_URL`. Point `GROQ_BASE_URL` at
 `http://localhost:11434/v1` and it films against Ollama instead.

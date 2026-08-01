@@ -47,10 +47,17 @@ const APP = process.env.HYPERLAB_APP ?? 'http://127.0.0.1:5173';
 const BRIDGE = process.env.HYPERLAB_BRIDGE ?? 'http://127.0.0.1:7878';
 const OUT = resolve(HERE, '../../../target/demo');
 
-/** The model to film. Groq speaks the OpenAI protocol, so nothing special. */
+/**
+ * The model to film. Groq speaks the OpenAI protocol, so nothing special.
+ *
+ * `gpt-oss-120b` rather than a Llama: asked to write a script, Llama 3.3 on
+ * Groq tends to emit the tool call as prose — `<function(create_button){…}>`
+ * — instead of calling the tool, and the turn goes nowhere. Any model that
+ * calls tools properly will do.
+ */
 const PROVIDER = {
   kind: 'openAiCompatible',
-  model: process.env.GROQ_MODEL ?? 'llama-3.3-70b-versatile',
+  model: process.env.GROQ_MODEL ?? 'openai/gpt-oss-120b',
   baseUrl: process.env.GROQ_BASE_URL ?? 'https://api.groq.com/openai/v1',
   apiKeyEnv: 'GROQ_API_KEY',
 };
@@ -182,12 +189,11 @@ async function main() {
 
   // ------------------------------------------------------------ the script
 
-  await say(page, 'Any object shows you its script.', 1800);
-  await press(page, 'button.part:has-text("Double")', { settle: 400 });
-  await page.waitForSelector('.dialog', { timeout: 10_000 });
-  await press(page, '.dialog__buttons .tool:has-text("OK")', { settle: 400 });
-  await page.keyboard.press('Control+z');
-  await beat(600);
+  await say(page, 'Pick anything up, and its script is right there.', 2200);
+  await press(page, '.statusbar .tool:has-text("Edit")', { settle: 400 });
+  await press(page, '.part:has-text("Double It")', { settle: 400 });
+  await press(page, '.inspector__tab:has-text("Script")', { settle: 2800 });
+  await press(page, '.statusbar .tool:has-text("Browse")', { settle: 600 });
 
   // ---------------------------------------------------------- the assistant
 
@@ -221,27 +227,48 @@ async function assistantAct(page) {
   await write(
     page,
     '.assistant__field',
-    'Add a button called "Halve" to this card. Give it a script that halves the first number on every line of the Ingredients field.',
+    'Add a button called "Halve" below the other buttons, at left 300 and top 250. ' +
+      'Give it a script that halves the first number on every line of the Ingredients field.',
   );
   await page.keyboard.press('Enter');
 
   await page.waitForSelector('.said--used', { timeout: 90_000 });
-  await say(page, 'It works through the same tools a person has…', 2600);
+  await say(page, 'It works through the same tools a person has…', 2400);
   await page.waitForFunction(
     () => !document.querySelector('.assistant__thinking'),
     null,
-    {
-      timeout: 90_000,
-    },
+    { timeout: 90_000 },
   );
-  await beat(1600);
+  await beat(1200);
+  await press(page, '.said--used summary', { settle: 2600 });
 
-  await say(page, '…so what it did shows up like anyone else’s change…', 2600);
-  await press(page, '.said--used summary', { settle: 2200 });
+  await say(page, '…and the script it wrote really runs.', 1800);
+  await press(page, 'button.part:has-text("Halve")', { settle: 400 });
+  // Whether it ends in `answer` is the model's choice, so wait and see.
+  await dismissAnyDialog(page);
+  await beat(2400);
 
-  await say(page, '…and undoes the same way.', 2000);
-  await page.keyboard.press('Control+z');
-  await beat(2000);
+  // Three commands went in — the button, its script, and the edit it made —
+  // so three come out. The middle one is invisible, which is the point: it
+  // is the same history a person's edits go into.
+  await say(page, 'Every step of that was a command. So every step undoes.', 2400);
+  for (const _ of [0, 1, 2]) {
+    await page.keyboard.press('Control+z');
+    await beat(900);
+  }
+  await beat(1400);
+}
+
+/** Dismisses a modal if a script put one up, and shrugs if it did not. */
+async function dismissAnyDialog(page) {
+  const dialog = page.locator('.dialog');
+  try {
+    await dialog.waitFor({ state: 'visible', timeout: 3000 });
+  } catch {
+    return;
+  }
+  await beat(900);
+  await press(page, '.dialog__buttons .tool:has-text("OK")', { settle: 700 });
 }
 
 main().catch(async (error) => {
