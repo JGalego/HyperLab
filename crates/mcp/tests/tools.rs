@@ -109,8 +109,10 @@ fn a_button_can_be_created_with_a_script_and_then_clicked() {
 }
 
 #[test]
-fn a_script_that_does_not_parse_is_refused_before_it_is_stored() {
+fn a_script_that_does_not_parse_takes_the_whole_call_down_with_it() {
     let (mut runtime, registry) = setup();
+    let before = count_parts(&runtime);
+
     let error = registry
         .call(
             &mut runtime,
@@ -118,7 +120,25 @@ fn a_script_that_does_not_parse_is_refused_before_it_is_stored() {
             &json!({ "name": "Broken", "script": "on mouseUp\n  repeat" }),
         )
         .unwrap_err();
+
     assert!(matches!(error, ToolError::Runtime(_)), "{error}");
+    // A call that said no must not have left half of itself behind. A model
+    // told "no" will try again, and two nameless buttons is how that ends.
+    assert_eq!(
+        count_parts(&runtime),
+        before,
+        "the button was created anyway"
+    );
+    assert!(error.to_string().contains("was not created"), "{error}");
+}
+
+/// How many parts the current card has.
+fn count_parts(runtime: &Runtime) -> usize {
+    use hyperlab_stack::PartContainer;
+    runtime
+        .stack()
+        .card(runtime.current_card())
+        .map_or(0, |card| card.parts().len())
 }
 
 #[test]

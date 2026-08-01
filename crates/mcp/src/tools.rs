@@ -347,6 +347,22 @@ fn create_part(runtime: &mut Runtime, arguments: &Json, kind: PartKind) -> ToolR
         integer(arguments, "width").unwrap_or(default.width),
         integer(arguments, "height").unwrap_or(default.height),
     );
+
+    // Everything that can be refused is refused before anything is created.
+    // A call that returns an error must not have left half of itself behind:
+    // a caller told "no" and then finding a nameless button on the card has
+    // been lied to, and a model told "no" will simply try again and leave a
+    // second one.
+    let script = optional_string(arguments, "script");
+    if let Some(script) = &script {
+        Runtime::check_script(script).map_err(|error| {
+            ToolError::Runtime(format!(
+                "{error} — the {} was not created",
+                kind.object_kind()
+            ))
+        })?;
+    }
+
     let card = runtime.current_card();
     let created = runtime
         .execute(Command::CreatePart {
@@ -357,10 +373,7 @@ fn create_part(runtime: &mut Runtime, arguments: &Json, kind: PartKind) -> ToolR
         })?
         .ok_or_else(|| ToolError::Runtime("the part was not created".into()))?;
 
-    if let Some(script) = optional_string(arguments, "script") {
-        // Refusing a script that does not parse is friendlier than storing a
-        // broken one and failing at the first click.
-        Runtime::check_script(&script)?;
+    if let Some(script) = script {
         runtime.execute(Command::SetScript {
             object: created,
             script,

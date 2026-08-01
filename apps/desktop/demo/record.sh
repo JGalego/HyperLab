@@ -16,7 +16,7 @@ root="$(cd "$app/../.." && pwd)"
 out="$root/target/demo"
 
 : "${GROQ_API_KEY:?set GROQ_API_KEY to a Groq key before filming}"
-: "${GROQ_MODEL:=llama-3.3-70b-versatile}"
+: "${GROQ_MODEL:=openai/gpt-oss-120b}"
 export GROQ_API_KEY GROQ_MODEL
 
 stack="${1:-$root/examples/Recipe Box.hl}"
@@ -68,12 +68,21 @@ echo "converting…"
   -c:v libx264 -pix_fmt yuv420p -crf 24 -movflags +faststart \
   "$out/hyperlab.mp4"
 
+# The gif is a highlight, not the whole film: the assistant act, which is the
+# part worth putting in a README. All ninety seconds at a legible size would
+# be twenty megabytes, and nobody scrolls past that.
+#
+# GIF_FROM and GIF_FOR move the window if the film changes length.
+: "${GIF_FROM:=66}"
+: "${GIF_FOR:=26}"
+: "${GIF_WIDTH:=640}"
+
 # A shared palette, or a black-and-white interface dithers into mush.
-"$ffmpeg" -y -loglevel error -i "$webm" \
-  -vf "fps=12,scale=900:-1:flags=lanczos,palettegen=stats_mode=diff" \
+"$ffmpeg" -y -loglevel error -ss "$GIF_FROM" -t "$GIF_FOR" -i "$webm" \
+  -vf "fps=10,scale=$GIF_WIDTH:-1:flags=lanczos,palettegen=stats_mode=diff" \
   "$out/palette.png"
-"$ffmpeg" -y -loglevel error -i "$webm" -i "$out/palette.png" \
-  -lavfi "fps=12,scale=900:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3" \
+"$ffmpeg" -y -loglevel error -ss "$GIF_FROM" -t "$GIF_FOR" -i "$webm" -i "$out/palette.png" \
+  -lavfi "fps=10,scale=$GIF_WIDTH:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4" \
   "$out/hyperlab.gif"
 rm -f "$out/palette.png"
 
