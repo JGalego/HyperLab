@@ -93,7 +93,7 @@ echo "converting…"
 case "$film" in
 cluedo) : "${GIF_FROM:=2}" "${GIF_FOR:=34}" ;;
 # Myst's gif is the ending: the map, which is the point of the stack.
-myst) : "${GIF_FROM:=42}" "${GIF_FOR:=30}" ;;
+myst) : "${GIF_FROM:=58}" "${GIF_FOR:=28}" ;;
 *) : "${GIF_FROM:=66}" "${GIF_FOR:=26}" ;;
 esac
 : "${GIF_WIDTH:=640}"
