@@ -3,11 +3,12 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/JGalego/HyperLab/actions/workflows/ci.yml"><img src="https://github.com/JGalego/HyperLab/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-000000?style=flat-square" alt="Licence: MIT"></a>
-  <img src="https://img.shields.io/badge/rust-1.88%2B-000000?style=flat-square&logo=rust&logoColor=white" alt="Rust 1.88+">
-  <img src="https://img.shields.io/badge/tauri-2-000000?style=flat-square&logo=tauri&logoColor=white" alt="Tauri 2">
-  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-000000?style=flat-square" alt="PRs welcome"></a>
+  <a href="https://github.com/JGalego/HyperLab/releases/latest"><img src="https://img.shields.io/github/v/release/JGalego/HyperLab?style=flat-square&color=118833&label=release" alt="Latest release"></a>
+  <a href="https://github.com/JGalego/HyperLab/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/JGalego/HyperLab/ci.yml?branch=main&style=flat-square&label=CI" alt="CI status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-3b5bdb?style=flat-square" alt="Licence: MIT"></a>
+  <img src="https://img.shields.io/badge/rust-1.88%2B-ce422b?style=flat-square&logo=rust&logoColor=white" alt="Rust 1.88+">
+  <img src="https://img.shields.io/badge/tauri-2-ffc131?style=flat-square&logo=tauri&logoColor=black" alt="Tauri 2">
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-118833?style=flat-square" alt="PRs welcome"></a>
 </p>
 
 [HyperCard](https://en.wikipedia.org/wiki/HyperCard) let people who never
