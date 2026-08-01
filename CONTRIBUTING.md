@@ -66,12 +66,14 @@ Self-contained places to begin:
 
 - **A HyperTalk debugger** — step, breakpoints, and a look at the current
   frame. The interpreter already has frames and per-statement line numbers.
-- **A real AI provider.** `MockProvider` shows the shape;
-  [`AiProvider`](crates/ai/src/provider.rs) is four methods.
 - **`find` and `sort`**, the two commands classic stacks miss most.
 - **A second theme.** Every value in the Neo Classic theme is a custom
   property, and the dark variant is already a five-line override.
-- **An MCP transport**, so other tools can drive HyperLab.
+- **A third AI provider.** Adding one is a module and one arm of `build` in
+  [`hyperlab-ai-providers`](crates/ai-providers); nothing else knows.
+- **Streaming**, so an answer appears in the sidebar as it is written. This
+  one is a new method on [`AiProvider`](crates/ai/src/provider.rs), so it is
+  worth an issue first.
 
 Adding a language feature usually means: a token or two, an AST node, a parser
 branch, an interpreter case, tests at each layer, and a line in

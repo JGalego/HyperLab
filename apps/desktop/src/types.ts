@@ -85,7 +85,8 @@ export type Effect =
   | { kind: 'beep' }
   | { kind: 'wait'; ticks: number }
   | { kind: 'navigated'; card: number }
-  | { kind: 'messageBox'; text: string };
+  | { kind: 'messageBox'; text: string }
+  | { kind: 'assistant'; prompt: string; intent: 'answer' | 'edit' };
 
 /** What every command gives back. */
 export interface Outcome {
@@ -101,3 +102,42 @@ export interface Selection {
 
 /** Whether clicking runs a script or picks an object up. */
 export type Tool = 'browse' | 'edit';
+
+/** Exactly what was sent to a model with a question. */
+export interface Briefing {
+  context: string;
+  includedFieldText: boolean;
+  includedScripts: boolean;
+}
+
+/** One thing that happened in a conversation, as the user sees it. */
+export type AiEntry =
+  | { kind: 'question'; text: string; briefing: Briefing }
+  | { kind: 'answer'; text: string }
+  | { kind: 'used'; tool: string; arguments: string; allowed: boolean; outcome: string }
+  | { kind: 'failed'; reason: string };
+
+/** What the AI sidebar draws. */
+export interface AiView {
+  entries: AiEntry[];
+  providers: string[];
+  provider: string | null;
+  problems: string[];
+  sendsFieldText: boolean;
+  mayEdit: boolean;
+  busy: boolean;
+}
+
+/** One configured provider. Never holds a key — only the name of a variable. */
+export interface ProviderConfig {
+  kind: string;
+  model: string;
+  baseUrl?: string;
+  apiKeyEnv?: string;
+}
+
+/** The provider settings, as they are stored. */
+export interface AiSettings {
+  defaultProvider?: string;
+  providers: Record<string, ProviderConfig>;
+}

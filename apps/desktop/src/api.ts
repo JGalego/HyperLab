@@ -11,6 +11,8 @@ import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
 
 import type {
+  AiSettings,
+  AiView,
   DialogRequest,
   Layer,
   ObjectKind,
@@ -167,3 +169,29 @@ export const emptyView: StackView = {
   dirty: false,
   path: null,
 };
+
+// ------------------------------------------------------------------- the AI
+
+/** What the assistant sidebar should draw. */
+export const aiView = (): Promise<AiView> => call('ai_view');
+
+/** Asks the assistant something. Slow: it goes to a model and back. */
+export const aiAsk = (question: string): Promise<Outcome> => call('ai_ask', { question });
+
+/** Forgets the conversation. */
+export const aiClear = (): Promise<AiView> => call('ai_clear');
+
+/** Chooses whether the contents of fields are sent with a question. */
+export const aiSetSendsFieldText = (sending: boolean): Promise<AiView> =>
+  call('ai_set_sends_field_text', { sending });
+
+/** Chooses whether the assistant may change the stack. */
+export const aiSetMayEdit = (editing: boolean): Promise<AiView> =>
+  call('ai_set_may_edit', { editing });
+
+/** The provider settings. */
+export const aiSettings = (): Promise<AiSettings> => call('ai_settings');
+
+/** Saves provider settings and rebuilds the providers. */
+export const aiSaveSettings = (settings: AiSettings): Promise<AiView> =>
+  call('ai_save_settings', { settings });

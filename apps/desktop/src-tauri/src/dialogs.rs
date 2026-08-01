@@ -26,8 +26,10 @@ use std::{
     time::Duration,
 };
 
-use hyperlab_runtime::Host;
+use hyperlab_runtime::{AiRequest, Host};
 use serde::Serialize;
+
+use crate::assistant::AiState;
 use tauri::{AppHandle, Emitter};
 
 /// The event the window listens for.
@@ -114,13 +116,18 @@ impl Dialogs {
 pub struct DesktopHost {
     app: AppHandle,
     dialogs: Arc<Dialogs>,
+    assistant: AiState,
 }
 
 impl DesktopHost {
     /// Builds a host that talks to this window.
     #[must_use]
-    pub fn new(app: AppHandle, dialogs: Arc<Dialogs>) -> Self {
-        Self { app, dialogs }
+    pub fn new(app: AppHandle, dialogs: Arc<Dialogs>, assistant: AiState) -> Self {
+        Self {
+            app,
+            dialogs,
+            assistant,
+        }
     }
 
     /// Shows a dialog and waits for the reply.
@@ -157,6 +164,25 @@ impl Host for DesktopHost {
     }
 
     // `beep` needs no dialog: the recorded effect already tells the window.
+
+    fn ai(&mut self, request: &AiRequest) -> Result<String, String> {
+        // On a thread of its own, with a deadline, for the same reason a
+        // dialog has one: a provider that never answers must not hold a
+        // script — and the session lock it is running under — for ever.
+        let (sender, receiver) = sync_channel(1);
+        let assistant = self.assistant.handle();
+        let prompt = request.prompt.clone();
+        std::thread::spawn(move || {
+            let _ = sender.send(assistant.answer(&prompt));
+        });
+
+        receiver.recv_timeout(PATIENCE).unwrap_or_else(|_| {
+            Err(format!(
+                "the assistant did not answer within {} minutes",
+                PATIENCE.as_secs() / 60
+            ))
+        })
+    }
 }
 
 #[cfg(test)]

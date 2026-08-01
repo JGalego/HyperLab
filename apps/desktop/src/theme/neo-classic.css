@@ -606,3 +606,161 @@ body {
   background: var(--shade-light);
   padding: 0 var(--space-hair);
 }
+
+/* ------------------------------------------------------------- assistant */
+
+.assistant {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  background: var(--paper);
+  border-left: var(--border);
+  overflow: hidden;
+}
+
+.assistant__bar {
+  display: flex;
+  gap: var(--space-tight);
+  align-items: center;
+  padding: var(--space-tight) var(--space);
+  border-bottom: var(--border);
+}
+
+.assistant__who {
+  flex: 1;
+  font-weight: bold;
+  font-size: var(--text-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.assistant__switches {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-hair);
+  padding: var(--space-tight) var(--space);
+  border-bottom: var(--border);
+  font-size: var(--text-small);
+}
+
+.assistant__switch {
+  display: flex;
+  gap: var(--space-tight);
+  align-items: center;
+}
+
+.assistant__problems {
+  margin: 0;
+  padding: var(--space-tight) var(--space) var(--space-tight) var(--space-wide);
+  border-bottom: var(--border);
+  color: var(--paper);
+  background: var(--ink);
+  font-size: var(--text-small);
+}
+
+.assistant__transcript {
+  flex: 1;
+  padding: var(--space);
+  overflow-y: auto;
+}
+
+.assistant__empty {
+  color: var(--shade);
+  font-size: var(--text-small);
+}
+
+.assistant__suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-tight);
+  align-items: flex-start;
+  margin: var(--space) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.assistant__thinking {
+  color: var(--shade);
+  font-size: var(--text-small);
+}
+
+.assistant__note {
+  margin: var(--space-tight) 0 0;
+  color: var(--shade);
+  font-size: var(--text-small);
+}
+
+.assistant__ask {
+  display: flex;
+  gap: var(--space-tight);
+  align-items: flex-end;
+  padding: var(--space-tight) var(--space);
+  border-top: var(--border);
+}
+
+.assistant__field {
+  flex: 1;
+  padding: var(--space-tight);
+  border: var(--border);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--text-small);
+  resize: none;
+  user-select: text;
+}
+
+/* one thing that was said */
+
+.said {
+  margin-bottom: var(--space);
+  font-size: var(--text-small);
+}
+
+.said__text {
+  margin: 0;
+  white-space: pre-wrap;
+  user-select: text;
+}
+
+.said--question .said__text {
+  padding: var(--space-tight);
+  border: var(--border);
+  background: var(--shade-light);
+  font-weight: bold;
+}
+
+.said--failed .said__text {
+  padding: var(--space-tight);
+  color: var(--paper);
+  background: var(--ink);
+}
+
+.said__sent > summary,
+.said--used > summary {
+  color: var(--shade);
+  cursor: default;
+  font-size: var(--text-small);
+}
+
+.said--refused > summary {
+  color: var(--ink);
+  font-weight: bold;
+}
+
+.said__context {
+  max-height: 200px;
+  margin: var(--space-hair) 0 0;
+  padding: var(--space-tight);
+  overflow: auto;
+  border: var(--border);
+  font-family: var(--font-code);
+  font-size: var(--text-small);
+  white-space: pre-wrap;
+  user-select: text;
+}
+
+.dialog--wide {
+  width: 420px;
+}

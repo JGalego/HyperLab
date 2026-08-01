@@ -9,8 +9,11 @@
 
 #![warn(missing_docs)]
 
+mod ai_commands;
+mod assistant;
 mod commands;
 mod dialogs;
+mod settings;
 mod state;
 mod view;
 
@@ -18,6 +21,7 @@ use std::sync::Arc;
 
 use tauri::{Manager, WindowEvent};
 
+pub use assistant::{AiState, AiView};
 pub use dialogs::{DIALOG_EVENT, DesktopHost, DialogRequest, Dialogs};
 pub use state::AppState;
 
@@ -32,10 +36,29 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .manage(AppState::new())
         .setup(|app| {
+            // Settings can only be read now: where they live is something
+            // only a running application knows.
+            let (ai_settings, problems) = match app.path().app_config_dir() {
+                Ok(directory) => match settings::load(&directory) {
+                    Ok(settings) => (settings, Vec::new()),
+                    // A broken settings file must not stop the application
+                    // opening; the sidebar shows why instead.
+                    Err(reason) => (hyperlab_ai::AiSettings::default(), vec![reason]),
+                },
+                Err(error) => (
+                    hyperlab_ai::AiSettings::default(),
+                    vec![format!("there is nowhere to keep settings: {error}")],
+                ),
+            };
+            let (registry, mut trouble) = settings::build(&ai_settings);
+            trouble.extend(problems);
+            let assistant = AiState::new(ai_settings, registry, trouble);
+            app.manage(assistant.handle());
+
             // The host needs a window to show dialogs on, so it can only be
             // built now.
             let state = app.state::<AppState>();
-            let host = DesktopHost::new(app.handle().clone(), state.dialogs());
+            let host = DesktopHost::new(app.handle().clone(), state.dialogs(), assistant);
             state.install_host(Box::new(host));
             Ok(())
         })
@@ -74,6 +97,13 @@ pub fn run() {
             commands::open_stack,
             commands::save_stack,
             commands::part_at,
+            ai_commands::ai_view,
+            ai_commands::ai_ask,
+            ai_commands::ai_clear,
+            ai_commands::ai_set_sends_field_text,
+            ai_commands::ai_set_may_edit,
+            ai_commands::ai_settings,
+            ai_commands::ai_save_settings,
         ])
         .run(tauri::generate_context!())
         .expect("HyperLab could not open a window");
