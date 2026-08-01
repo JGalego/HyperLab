@@ -17,8 +17,11 @@ $ErrorActionPreference = 'Stop'
 $Repo = 'JGalego/HyperLab'
 $Tools = @('hyperlab-mcp', 'hyperlab-graph')
 
+# Not Write-Error: with $ErrorActionPreference = 'Stop' that throws before
+# reaching the exit, and the reader gets a stack trace wrapped around the
+# sentence we wrote for them.
 function Fail($message) {
-    Write-Error "install.ps1: $message"
+    [Console]::Error.WriteLine("install.ps1: $message")
     exit 1
 }
 
