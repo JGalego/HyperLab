@@ -17,6 +17,9 @@ the programming model rather than a panel bolted on the side.
 > editor work and are covered by 240-odd tests. The AI layer is interfaces and
 > a mock: no provider ships yet. See the [roadmap](docs/roadmap.md).
 
+![HyperLab: a card with a button and a field, the object inspector showing
+the button's script](docs/screenshot.png)
+
 ---
 
 ## What it looks like to use
