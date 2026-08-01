@@ -14,12 +14,15 @@ import {
 } from '@tauri-apps/plugin-dialog';
 
 import * as api from './api';
+import { AiSettings } from './components/AiSettings';
+import { Assistant } from './components/Assistant';
 import { Card } from './components/Card';
 import { Dialog } from './components/Dialog';
 import { Inspector } from './components/Inspector';
 import { MenuBar, type MenuEntry } from './components/MenuBar';
 import { StatusBar } from './components/StatusBar';
 import type {
+  AiView,
   DialogRequest,
   Outcome,
   PartView,
@@ -35,6 +38,8 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [dialog, setDialog] = useState<DialogRequest | null>(null);
   const [ready, setReady] = useState(false);
+  const [ai, setAi] = useState<AiView | null>(null);
+  const [aiSettings, setAiSettings] = useState(false);
 
   /**
    * Applies whatever a command gave back.
@@ -76,6 +81,9 @@ export function App() {
       setReady(true);
       return;
     }
+    // The sidebar is opened by the user, but its state is read up front so
+    // that "no model is set up" is known before anyone asks a question.
+    api.aiView().then(setAi, () => setAi(null));
     api.getView().then(
       (outcome) => {
         apply(outcome);
@@ -229,6 +237,23 @@ export function App() {
         { label: 'Last Card', run: () => run(() => api.goToCard(view.cardCount)) },
       ],
     },
+    {
+      title: 'AI',
+      entries: [
+        {
+          label: ai === null ? 'Show Assistant' : 'Hide Assistant',
+          run: () => {
+            if (ai !== null) {
+              setAi(null);
+              return;
+            }
+            api.aiView().then(setAi, (reason: unknown) => setError(String(reason)));
+          },
+        },
+        null,
+        { label: 'Settings…', run: () => setAiSettings(true) },
+      ],
+    },
   ];
 
   return (
@@ -253,6 +278,16 @@ export function App() {
           />
         </div>
 
+        {ai !== null && (
+          <Assistant
+            view={ai}
+            onView={setAi}
+            onChanged={apply}
+            onError={setError}
+            onOpenSettings={() => setAiSettings(true)}
+          />
+        )}
+
         <Inspector
           view={view}
           selection={selection}
@@ -273,6 +308,17 @@ export function App() {
         onRunMessage={(source) => run(() => api.runMessageBox(source))}
         onDismissError={() => setError(null)}
       />
+
+      {aiSettings && (
+        <AiSettings
+          onDone={(next) => {
+            setAi(next);
+            setAiSettings(false);
+          }}
+          onCancel={() => setAiSettings(false)}
+          onError={setError}
+        />
+      )}
 
       {dialog && (
         <Dialog

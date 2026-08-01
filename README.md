@@ -112,6 +112,8 @@ crates/
     ai/             provider interfaces   — who is asked
     ai-providers/   OpenAI and Anthropic
                     clients               — how they are reached
+    assistant/      prompts, the tool
+                    loop, the transcript  — what is actually said
     mcp/            tools, MCP server
                     and client            — what may be done
 

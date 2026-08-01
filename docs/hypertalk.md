@@ -237,7 +237,7 @@ Constants: `empty`, `true`, `false`, `quote`, `return`, `space`, `tab`,
 | `send <message> to <object>` | Send a message elsewhere |
 | `answer <text>` | Show a message |
 | `ask <question> [with <default>]` | Ask for a line of text; the answer lands in `it` |
-| `ask assistant <request>` | Ask a language model, which may change the stack |
+| `ask assistant <request>` | Ask a language model to do something; its reply lands in `it` |
 | `beep` | Make a noise |
 | `wait <n> [ticks\|seconds]` | Pause |
 | `hide`/`show <object>` | Set `visible` |
@@ -299,8 +299,7 @@ runtime.
 
 ## Asking a language model
 
-Two things, and they differ in exactly one way: whether the assistant is
-allowed to change the stack.
+Two things: one is a value, the other is a request.
 
 `ai(…)` is a function. It answers in words and touches nothing, so it goes
 wherever any other value goes:
@@ -313,9 +312,8 @@ if ai("Is this address in Portugal?") is "yes" then
 end if
 ```
 
-`ask assistant` is a command. The assistant may edit the stack while it
-answers — through the same commands a person uses, so everything it does is
-undoable and shows up in the history like anyone else's change:
+`ask assistant` is a command. It asks for something to be *done*, not merely
+described:
 
 ```hypertalk
 ask assistant "Add a search button to this card"
@@ -344,10 +342,24 @@ function ai question
 end ai
 ```
 
-What is sent is never more than what you asked plus the context the shell
-decided to include, and the shell shows you that before it goes. The runtime
-itself does not know what a prompt looks like — it passes your words through
-and hands back the reply.
+### What a script can and cannot get done
+
+From a script, both of these answer in words. Neither can restructure the
+stack, and that is a deliberate limit rather than an unfinished one: your
+handler is *already running* inside the runtime, and an assistant rearranging
+cards between two of your statements would pull the ground out from under it.
+Changes belong in the AI sidebar, where nothing is mid-handler and every edit
+goes through the same undoable commands you use.
+
+Nothing is sent but your own words. HyperLab adds no description of the stack
+to `ai(…)` — it does not need to guess, because you say what to include:
+
+```hypertalk
+put ai("Summarize this, in one line: " & field "Notes") into field "Summary"
+```
+
+The runtime does not know what a prompt looks like. It passes your words
+through and hands back the reply.
 
 ---
 

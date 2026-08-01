@@ -494,6 +494,50 @@ not a puzzling refusal later.
 
 ---
 
+# The Assistant
+
+`hyperlab-assistant` is the AI Layer named at the top of this document:
+prompt assembly, tool execution and the conversation. It is the only crate
+that knows what a prompt looks like.
+
+A turn is deliberately in two halves, and the reason is the session lock:
+
+```
+  lock    Briefing::about, Conversation::ask     reads the stack
+  unlock  provider.complete(...).await           slow, needs no stack
+  lock    tools::run, record_tool                writes the stack
+          … repeat while the model asks for tools
+```
+
+Holding the lock across the network request would stall every other command,
+including `dialog_reply` — which is how a script blocked on `ask` gets
+unstuck. So `Conversation` holds the state between the halves, and neither
+half has to know the other exists.
+
+Three properties fall out of the arrangement rather than being promised:
+
+| | Held up by |
+| --- | --- |
+| An assistant can do only what a person can | Tools are `hyperlab-mcp`, which wraps commands. There is no other write path |
+| Nothing runs that the user did not allow | Every call crosses a `Policy`; the sidebar's switch is what sets it |
+| What is shown is what was sent | `Briefing` is one string, used both as the message and as the disclosure |
+
+The system prompt says that a stack's contents are data rather than
+instructions. That does not make prompt injection harmless on its own — the
+policy is what actually stops it — but it is the difference between an
+assistant that asks and one that complies.
+
+## What a script gets, and why it is less
+
+`ai("…")` and `ask assistant "…"` reach the same provider without tools and
+without a briefing. Both limits are deliberate. A script is already inside
+the runtime, mid-handler, holding the lock: an assistant restructuring the
+stack between two statements would invalidate the references the interpreter
+is standing on. And no briefing is needed, because the script says what to
+send — `ai("Summarize: " & field "Notes")` sends that field and nothing else.
+
+---
+
 # AI Context Builder
 
 The AI layer should assemble context from runtime objects.
@@ -887,6 +931,8 @@ crates/
     ai/             provider interfaces   — who is asked
     ai-providers/   OpenAI and Anthropic
                     clients               — how they are reached
+    assistant/      prompts, the tool
+                    loop, the transcript  — what is actually said
     mcp/            tools, MCP server
                     and client            — what may be done
 

@@ -1,0 +1,20 @@
+[package]
+name = "hyperlab-assistant"
+description = "HyperLab's AI layer: prompt assembly, the tool loop, and the record of what was sent."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+hyperlab-ai.workspace = true
+hyperlab-mcp.workspace = true
+hyperlab-runtime.workspace = true
+hyperlab-stack.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

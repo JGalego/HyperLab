@@ -41,23 +41,41 @@ Still to come in this phase:
 - Caching parsed scripts, once a stack is big enough to notice.
 - Grouping a script's edits into one undo step.
 
-## Phase 4 — AI sidebar
+## Phase 4 — AI sidebar ✅
 
-The interfaces exist ([`hyperlab-ai`](../crates/ai)), and two providers
-implement them ([`hyperlab-ai-providers`](../crates/ai-providers)): a client
-for the OpenAI chat-completions protocol — which also reaches OpenRouter,
-Ollama and any local server that speaks it — and one for Anthropic's Messages
-API. Writing the second one was the point: it is what keeps the interface
-honest.
+The sidebar answers *explain this script*, *add a search button*, *what is
+this card for*, and it does so under three rules that are structural rather
+than promised.
+
+**It edits through the tools, or not at all.** Every change goes through
+[`hyperlab-mcp`](../crates/mcp), which wraps runtime commands, so an
+assistant's edit lands in the undo history and is indistinguishable from one
+a person made. A switch in the panel says whether it may edit; turning it off
+makes the policy read-only, and a refused tool is reported to the model so it
+can say why rather than pretending.
+
+**It shows what was sent.** Every question in the transcript carries a *What
+was sent* disclosure holding the exact text the model received. It is the
+same string, not a summary of it — the panel and the request read one field,
+so they cannot drift apart. Field contents are left out unless a second
+switch is on, and the disclosure says which.
+
+**It never holds a key.** A provider is configured with the *name* of an
+environment variable. The settings file has nowhere to put a key, so it can
+be copied into a bug report.
+
+The conversation itself lives in
+[`hyperlab-assistant`](../crates/assistant) — the AI layer the architecture
+named — and is split so that asking a model and running a tool are separate
+steps. That is not tidiness: the session lock is held for the tool calls and
+dropped for the network, so a slow model cannot stall the window or the
+dialog a script is waiting on.
 
 Still to come in this phase:
 
-- A sidebar that can answer *explain this script*, *refactor this*, *add a
-  search button*, *make this prettier*.
-- It edits the stack through MCP tools, never by reaching into it — so
-  everything it does is undoable, and shows up like anyone else's change.
-- A visible, reviewable account of what is sent: the context builder already
-  leaves field contents out unless asked.
+- Streaming, so an answer appears as it is written.
+- More than one conversation at a time.
+- Choosing a provider per question rather than per session.
 
 ## Phase 5 — MCP ✅
 
@@ -119,9 +137,12 @@ it does not know what a prompt looks like, and cannot, because it does not
 depend on any AI crate. Every question is recorded as an `Effect`, whether or
 not anything answered.
 
-The two differ in one way, and it is the one that matters: `ai(…)` answers in
-words, and `ask assistant` may change the stack — through commands, so its
-edits are undoable like anyone else's.
+The two differ in one way: `ai(…)` answers in words, and `ask assistant` asks
+for something to be done about it. What a host can actually do about that is
+the host's business — in the desktop, both answer in words, because a script
+is already inside the runtime and letting an assistant restructure a stack
+between two statements would pull the ground out from under the interpreter.
+Edits belong in the sidebar, where nothing is mid-handler.
 
 ## Phase 7 — Plugins
 

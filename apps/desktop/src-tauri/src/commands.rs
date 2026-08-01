@@ -68,6 +68,15 @@ where
         .map_err(|_| "the runtime stopped unexpectedly".to_string())?
 }
 
+/// Takes a snapshot after something outside this module changed the stack.
+///
+/// The AI sidebar locks and unlocks the session several times in one turn,
+/// so it cannot use [`with_session`]; it still has to leave the window
+/// looking at the truth.
+pub fn snapshot_outcome(session: &mut Session) -> Outcome {
+    finish(session)
+}
+
 /// Takes a snapshot, and collects whatever scripts left behind.
 fn finish(session: &mut Session) -> Outcome {
     let effects = session.runtime.take_effects();
