@@ -34,6 +34,7 @@ card back](docs/demo.gif)
 - [🤖 Where the AI Goes](#where-the-ai-goes)
 - [🤝 Contributing](#contributing)
 - [📄 Licence](#licence)
+- [🕯️ In Memoriam](#in-memoriam)
 
 ---
 
@@ -231,3 +232,12 @@ good places to start.
 HyperLab is an original work inspired by HyperCard. It contains no Apple code
 and no Apple artwork, and the Neo Classic theme is drawn from scratch in the
 spirit of the era.
+
+<h2 id="in-memoriam">🕯️ In Memoriam</h2>
+
+**Bill Atkinson (1951–2025)** wrote QuickDraw, MacPaint and HyperCard, and
+insisted the last of them ship free with every Mac. Millions of people built
+something with it, and a great many of them never thought of themselves as
+programmers at all.
+
+HyperLab is dedicated to his memory.
