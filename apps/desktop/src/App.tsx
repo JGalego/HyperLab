@@ -203,6 +203,32 @@ export function App() {
     );
   }
 
+  /** The stack as a web page, in the language HyperTalk grew into. */
+  function exportWeb() {
+    saveFileDialog({
+      title: 'Export this stack as a web page',
+      defaultPath: `${view.stackName}.html`,
+      filters: [{ name: 'Web page', extensions: ['html'] }],
+    }).then(
+      (chosen) => {
+        if (typeof chosen !== 'string') return;
+        api.exportWeb(chosen).then(
+          ({ path, notes }) => {
+            // A page that came across whole and one that lost something both
+            // wrote a file, and the difference is worth saying out loud.
+            const missing =
+              notes.length === 0
+                ? ''
+                : ` — ${notes.length} thing${notes.length === 1 ? '' : 's'} had no equivalent: ${[...new Set(notes)].join('; ')}`;
+            setNotice(`Exported to ${path}${missing}`);
+          },
+          (reason: unknown) => setError(String(reason)),
+        );
+      },
+      (reason: unknown) => setError(String(reason)),
+    );
+  }
+
   /** The map as a PNG. Drawn in the window, because only it knows the shape. */
   function saveMap(svg: SVGSVGElement) {
     saveFileDialog({
@@ -269,6 +295,7 @@ export function App() {
         { label: 'Save As…', run: () => saveStack(true) },
         null,
         { label: 'Export as PDF…', run: exportPdf },
+        { label: 'Export as a Web Page…', run: exportWeb },
       ],
     },
     {

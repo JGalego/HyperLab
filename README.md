@@ -159,6 +159,8 @@ crates/
     graph/          the routes between
                     cards                 — where it all leads
     export/         a stack as a PDF      — how it leaves
+    hyperscript/    HyperTalk as
+                    _hyperscript          — where it goes next
 
 apps/desktop/       the Tauri shell and the React renderer
 docs/               architecture, roadmap, HyperTalk reference
@@ -177,7 +179,10 @@ reused on its own. The desktop shell contains no logic worth the name.
   merges and greps like source code.
 - **A stack can leave.** **File ▸ Export as PDF…** writes a page per card,
   with the artwork as vector graphics and the text as text you can select.
-  **Go ▸ Map** saves itself as a PNG.
+  **Go ▸ Map** saves itself as a PNG. And **File ▸ Export as a Web Page…**
+  translates the whole stack into
+  [_hyperscript](https://hyperscript.org) — the language HyperTalk grew into —
+  so it runs in a browser with no HyperLab underneath it.
 - **A stack is also a graph.** Owning the parser means every `go` can be read
   back out, so **Go ▸ Map** draws the whole thing and names the cards nothing
   leads to, the cards with no way out, and the links pointing at a card that

@@ -14,6 +14,7 @@ import type {
   AiSettings,
   AiView,
   DialogRequest,
+  Exported,
   Graph,
   KeychainView,
   Layer,
@@ -229,6 +230,10 @@ export const exportPdf = (path: string): Promise<string> => call('export_pdf', {
  */
 export const exportPng = (path: string, bytes: Uint8Array): Promise<string> =>
   call('export_png', { path, bytes: Array.from(bytes) });
+
+/** Writes the stack as a web page driven by _hyperscript. */
+export const exportWeb = (path: string): Promise<Exported> =>
+  call('export_web', { path });
 
 /** Whether there is a keychain, and which providers have a key in it. */
 export const aiKeychain = (): Promise<KeychainView> => call('ai_keychain');

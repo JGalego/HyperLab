@@ -20,6 +20,13 @@ printed at any size without going soft.
 **Go ▸ Map ▸ Save as PNG…** saves the map, at twice the size it is shown, with
 the same greyed dead ends and bold current card.
 
+**File ▸ Export as a Web Page…** translates the stack into
+[_hyperscript](https://hyperscript.org), HyperTalk's descendant on the web,
+and writes one HTML file that runs on its own. Five of the six examples come
+across with nothing left behind — Cluedo is playable in a browser, Recipe
+Box still doubles its ingredients. Whatever has no equivalent is a comment in
+the file and a line in the message, never a silent gap.
+
 Every example is checked in as a PDF beside its film, so the exporter's
 output can be read without building anything.
 

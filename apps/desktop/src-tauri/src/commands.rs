@@ -22,6 +22,7 @@
 
 use hyperlab_export::to_pdf;
 use hyperlab_graph::Graph;
+use hyperlab_hyperscript::page;
 use hyperlab_persistence::{load, save};
 use hyperlab_runtime::{Command, Effect, Message, PartOwner, Runtime, messages};
 use hyperlab_stack::{Id, Object, ObjectId, ObjectKind, PartKind, Point, Rect, Size, Stack, Value};
@@ -810,4 +811,42 @@ pub async fn export_png(path: String, bytes: Vec<u8>) -> CommandResult<String> {
     std::fs::write(&target, bytes)
         .map_err(|error| format!("could not write {}: {error}", target.display()))?;
     Ok(target.display().to_string())
+}
+
+/// Writes the stack as a web page driven by _hyperscript.
+///
+/// Answers with the path, and with a line for anything that had no equivalent
+/// on a page, so the window can say what was left behind rather than implying
+/// the whole stack came across.
+#[tauri::command]
+pub async fn export_web(state: State<'_, AppState>, path: String) -> CommandResult<Exported> {
+    let session = state.session();
+    let (html, notes, target) = tauri::async_runtime::spawn_blocking(move || {
+        let held = lock(&session);
+        let translated = page(held.runtime.stack());
+        (
+            translated.source,
+            translated.notes,
+            std::path::PathBuf::from(path),
+        )
+    })
+    .await
+    .map_err(|_| "the export stopped unexpectedly".to_string())?;
+
+    std::fs::write(&target, html)
+        .map_err(|error| format!("could not write {}: {error}", target.display()))?;
+    Ok(Exported {
+        path: target.display().to_string(),
+        notes,
+    })
+}
+
+/// Where a page went, and what did not fit on it.
+#[derive(Debug, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Exported {
+    /// The file that was written.
+    pub path: String,
+    /// One line per thing that had no equivalent, in the order met.
+    pub notes: Vec<String>,
 }
