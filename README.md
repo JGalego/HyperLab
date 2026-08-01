@@ -82,7 +82,6 @@ Then open one of the [examples](#examples).
 
 **Cluedo** — a drawn mansion with clickable rooms, portraits that are
 themselves the buttons, and a case you close by deduction.
-([film](docs/cluedo.mp4))
 
 <p align="center">
   <img src="docs/myst.gif" alt="The map of the Myst stack" width="640">
@@ -92,7 +91,7 @@ themselves the buttons, and a case you close by deduction.
 shape is the point, which is why [DeMystify](https://github.com/glthr/DeMystify)
 and [mystextract](https://github.com/erkyrath/mystextract) both exist to
 recover it from the original. **Go ▸ Map** finds the trap book without
-running a line. ([film](docs/myst.mp4))
+running a line.
 
 **Address Book** — a card per person, one shared background.
 
