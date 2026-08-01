@@ -510,6 +510,31 @@ never leaks inward: Anthropic hoists system messages into a field of their
 own, carries content as typed blocks, puts a tool result inside a *user* turn,
 and requires `max_tokens`. A `CompletionRequest` knows none of that.
 
+## Getting out
+
+Two exports, made in two places, and the split says something about where
+things live.
+
+A **PDF of the cards** is built by [`hyperlab-export`](../crates/export) from
+the object model: one page per card, the size of the card. Every picture takes
+the same route whatever format it arrived in — an SVG goes to `svg2pdf` as it
+stands, a PNG is wrapped in a one-element SVG first — so raster and vector
+artwork land on the page by one code path. Text is drawn as text in Helvetica,
+one of the fourteen fonts a reader supplies itself, so nothing is embedded and
+the result can be searched. Nothing there can measure a font, so the line
+breaks come from Adobe's own Helvetica metrics.
+
+A **PNG of the map** is made by the window. The map's shape is a force-directed
+layout the renderer worked out from the graph; the core has never seen it, and
+rebuilding it in Rust would mean two layouts that drift. So the window
+serialises its own `<svg>`, carrying the stylesheet rules that dress it, draws
+it to a canvas at twice size, and the shell only writes the bytes — after
+checking they really are a PNG.
+
+The two do not agree to the pixel and are not meant to. The desktop draws a
+card with a browser's idea of a line break and the exporter with a PDF's; they
+agree on what is on the card and where, and differ on where a long line wraps.
+
 ## Keys
 
 A `ProviderConfig` names a `KeySource` — an environment variable, or the

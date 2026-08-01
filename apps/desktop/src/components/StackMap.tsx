@@ -23,6 +23,8 @@ interface Props {
   current: number;
   onGoTo: (position: number) => void;
   onClose: () => void;
+  /** Saves the drawing. Given the `<svg>`, because only it knows the shape. */
+  onSave: (svg: SVGSVGElement) => void;
 }
 
 /** What a card's unreadable routes add up to, for its badge. */
@@ -31,8 +33,9 @@ interface Doubts {
   unresolved: number;
 }
 
-export function StackMap({ graph, current, onGoTo, onClose }: Props) {
+export function StackMap({ graph, current, onGoTo, onClose, onSave }: Props) {
   const canvas = useRef<HTMLDivElement>(null);
+  const drawing = useRef<SVGSVGElement>(null);
   const [size, setSize] = useState({ width: 800, height: 460 });
   const [hovered, setHovered] = useState<number | null>(null);
 
@@ -84,6 +87,14 @@ export function StackMap({ graph, current, onGoTo, onClose }: Props) {
             {count(graph.nodes.length, 'card')}, {count(routes.length, 'route')}
           </span>
           <span className="map__spacer" />
+          <button
+            type="button"
+            onClick={() => {
+              if (drawing.current !== null) onSave(drawing.current);
+            }}
+          >
+            Save as PNG…
+          </button>
           <button type="button" onClick={onClose}>
             Done
           </button>
@@ -109,6 +120,7 @@ export function StackMap({ graph, current, onGoTo, onClose }: Props) {
 
         <div className="map__canvas" ref={canvas}>
           <svg
+            ref={drawing}
             width={size.width}
             height={size.height}
             viewBox={`0 0 ${frame.width} ${frame.height}`}

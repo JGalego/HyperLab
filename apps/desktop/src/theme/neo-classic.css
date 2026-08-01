@@ -536,6 +536,15 @@ body {
   padding: 0 var(--space-tight);
 }
 
+/* Said in the same place as an error and deliberately not dressed like one:
+   "saved to /Users/…" is news, not a problem. */
+.statusbar__notice {
+  color: var(--ink);
+  background: none;
+  padding: 0 var(--space-tight);
+  text-align: left;
+}
+
 /* ------------------------------------------------------------- navigation */
 
 .navigator {

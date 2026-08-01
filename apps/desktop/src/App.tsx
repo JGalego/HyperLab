@@ -21,6 +21,7 @@ import { Dialog } from './components/Dialog';
 import { Inspector } from './components/Inspector';
 import { MenuBar, type MenuEntry } from './components/MenuBar';
 import { StackMap } from './components/StackMap';
+import { toPng } from './map/picture';
 import { StatusBar } from './components/StatusBar';
 import type {
   AiView,
@@ -38,6 +39,8 @@ export function App() {
   const [selection, setSelection] = useState<Selection | null>(null);
   const [tool, setTool] = useState<Tool>('browse');
   const [error, setError] = useState<string | null>(null);
+  // Kept apart from `error` so that "saved to …" is not dressed as a failure.
+  const [notice, setNotice] = useState<string | null>(null);
   const [dialog, setDialog] = useState<DialogRequest | null>(null);
   // Whether the shell is behind us never changes while we are running, so
   // a browser is ready to show its notice on the first render.
@@ -182,6 +185,44 @@ export function App() {
     );
   }
 
+  /** The whole stack as a PDF, one page per card. */
+  function exportPdf() {
+    saveFileDialog({
+      title: 'Export this stack as a PDF',
+      defaultPath: `${view.stackName}.pdf`,
+      filters: [{ name: 'PDF', extensions: ['pdf'] }],
+    }).then(
+      (chosen) => {
+        if (typeof chosen !== 'string') return;
+        api.exportPdf(chosen).then(
+          (written) => setNotice(`Exported to ${written}`),
+          (reason: unknown) => setError(String(reason)),
+        );
+      },
+      (reason: unknown) => setError(String(reason)),
+    );
+  }
+
+  /** The map as a PNG. Drawn in the window, because only it knows the shape. */
+  function saveMap(svg: SVGSVGElement) {
+    saveFileDialog({
+      title: 'Save the map',
+      defaultPath: `${view.stackName} map.png`,
+      filters: [{ name: 'PNG', extensions: ['png'] }],
+    }).then(
+      (chosen) => {
+        if (typeof chosen !== 'string') return;
+        toPng(svg)
+          .then((bytes) => api.exportPng(chosen, bytes))
+          .then(
+            (written) => setNotice(`Saved to ${written}`),
+            (reason: unknown) => setError(String(reason)),
+          );
+      },
+      (reason: unknown) => setError(String(reason)),
+    );
+  }
+
   function saveStack(chooseWhere: boolean) {
     if (!chooseWhere && view.path !== null) {
       run(() => api.saveStack());
@@ -226,6 +267,8 @@ export function App() {
           run: () => saveStack(false),
         },
         { label: 'Save As…', run: () => saveStack(true) },
+        null,
+        { label: 'Export as PDF…', run: exportPdf },
       ],
     },
     {
@@ -371,10 +414,14 @@ export function App() {
         view={view}
         tool={tool}
         error={error}
+        notice={notice}
         onGoTo={(position) => run(() => api.goToCard(position))}
         onSetTool={setTool}
         onRunMessage={(source) => run(() => api.runMessageBox(source))}
-        onDismissError={() => setError(null)}
+        onDismiss={() => {
+          setError(null);
+          setNotice(null);
+        }}
       />
 
       {aiSettings && (
@@ -395,6 +442,7 @@ export function App() {
           current={view.card.id}
           onGoTo={(position) => run(() => api.goToCard(position))}
           onClose={() => setMap(null)}
+          onSave={saveMap}
         />
       )}
 

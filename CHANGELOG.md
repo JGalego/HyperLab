@@ -7,6 +7,23 @@ does, the entry says so and says what to do about it.
 Each entry is written for the person deciding whether to upgrade, so it
 describes what is now possible rather than which files moved.
 
+## Unreleased
+
+### Getting a stack out of HyperLab
+
+**File ▸ Export as PDF…** writes the whole stack as a document, one page per
+card, the size of the card. The artwork goes in as vector graphics rather than
+a photograph of itself, and the words go in as words — Helvetica, which every
+reader already has — so an exported stack can be searched, copied out of, and
+printed at any size without going soft.
+
+**Go ▸ Map ▸ Save as PNG…** saves the map, at twice the size it is shown, with
+the same greyed dead ends and bold current card.
+
+The two are made in different places on purpose: a card is in the model, so
+[`hyperlab-export`](crates/export) builds it from there, while the map's shape
+is a layout the window worked out and only the window has it.
+
 ## 0.1.0 — 2026-08-01
 
 The first release. Everything below is new, because nothing came before it.

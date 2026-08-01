@@ -94,6 +94,10 @@ particular no assets from HyperCard or any other Apple software.
 
 ## Pinned versions, and why
 
+- **`pdf-writer` is held at 0.12.** `svg2pdf` hands back its own
+  `pdf-writer` types, so `hyperlab-export` has to use the same version
+  svg2pdf does. A newer one compiles and then refuses to meet it. Move them
+  together, and only when svg2pdf moves first.
 - **TypeScript is held at 6.** `typescript-eslint` does not support 7 yet
   ([#10940](https://github.com/typescript-eslint/typescript-eslint/issues/10940)),
   and linting is worth more than a newer compiler. Move both together.
