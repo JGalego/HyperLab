@@ -1,0 +1,97 @@
+{
+  "id": 10,
+  "name": "Mechanical Age",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 50,
+      "name": "Mechanical Age",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "mechanical.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 16,
+        "top": 16,
+        "width": 320,
+        "height": 200
+      }
+    },
+    {
+      "id": 51,
+      "name": "Place",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Mechanical Age",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 352,
+        "top": 16,
+        "width": 232,
+        "height": 24
+      }
+    },
+    {
+      "id": 52,
+      "name": "About",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "A fortress on a pivot. Turn the handle and the whole building faces somewhere new.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 352,
+        "top": 48,
+        "width": 232,
+        "height": 100
+      }
+    },
+    {
+      "id": 53,
+      "name": "Link home",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 352,
+        "top": 162,
+        "width": 232,
+        "height": 26
+      }
+    }
+  ]
+}

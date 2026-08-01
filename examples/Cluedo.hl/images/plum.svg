@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Professor Plum</title>
-  <circle cx="32" cy="32" r="31" fill="#6b3f8f" stroke="#1a1a1a" stroke-width="2"/>
-  <circle cx="32" cy="25" r="9" fill="#f4f1ea"/>
-  <path d="M14 56 a18 18 0 0 1 36 0 z" fill="#f4f1ea"/>
+  <defs><clipPath id="d"><circle cx="32" cy="32" r="29.5"/></clipPath></defs>
+  <circle cx="32" cy="32" r="30.5" fill="#5e3480" stroke="#141414" stroke-width="2.5"/>
+  <g clip-path="url(#d)"><circle cx="32" cy="24" r="9.5" fill="#f4f1ea"/><path d="M12.5 58 a19.5 18 0 0 1 39 0 z" fill="#ddd6c9"/><path d="M23 28 c1.6 8 5.8 11.2 9 11.2 c3.2 0 7.4 -3.2 9 -11.2 c-2.4 3.6 -5.8 4.4 -9 4.4 c-3.2 0 -6.6 -0.8 -9 -4.4 z" fill="#2b1440"/><circle cx="28.2" cy="23" r="4" fill="none" stroke="#2b1440" stroke-width="1.7"/><circle cx="36.8" cy="23" r="4" fill="none" stroke="#2b1440" stroke-width="1.7"/><path d="M32.2 23 h0.6" stroke="#2b1440" stroke-width="1.7"/><path d="M24.2 23 h-2.6 M40.8 23 h2.6" stroke="#2b1440" stroke-width="1.5"/></g>
 </svg>

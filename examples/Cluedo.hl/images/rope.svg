@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Rope</title>
-  <path d="M14 20 c14 -12 24 12 38 0 M14 32 c14 -12 24 12 38 0 M14 44 c14 -12 24 12 38 0" fill="none" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/>
+  <g fill="none" stroke="#1c1c1c" stroke-width="6" stroke-linecap="round"><path d="M12 18 c14 -12 26 12 40 0"/><path d="M12 32 c14 -12 26 12 40 0"/><path d="M12 46 c14 -12 26 12 40 0"/></g><g fill="none" stroke="#8f8f8f" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 4"><path d="M12 16.5 c14 -12 26 12 40 0"/><path d="M12 30.5 c14 -12 26 12 40 0"/><path d="M12 44.5 c14 -12 26 12 40 0"/></g>
 </svg>

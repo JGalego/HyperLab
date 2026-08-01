@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Mr Green</title>
-  <circle cx="32" cy="32" r="31" fill="#2e7d4f" stroke="#1a1a1a" stroke-width="2"/>
-  <circle cx="32" cy="25" r="9" fill="#f4f1ea"/>
-  <path d="M14 56 a18 18 0 0 1 36 0 z" fill="#f4f1ea"/>
+  <defs><clipPath id="d"><circle cx="32" cy="32" r="29.5"/></clipPath></defs>
+  <circle cx="32" cy="32" r="30.5" fill="#256b45" stroke="#141414" stroke-width="2.5"/>
+  <g clip-path="url(#d)"><circle cx="32" cy="24" r="9.5" fill="#f4f1ea"/><path d="M12.5 58 a19.5 18 0 0 1 39 0 z" fill="#ddd6c9"/><circle cx="28.4" cy="23" r="1.35" fill="#0d3020"/><circle cx="35.6" cy="23" r="1.35" fill="#0d3020"/><path d="M18 18.5 h28 v3.2 h-28 z" fill="#0d3020"/><path d="M23.5 18 c0 -9.5 17 -9.5 17 0 z" fill="#0d3020"/><path d="M26.5 44 l5.5 3.2 l-5.5 3.2 z M37.5 44 l-5.5 3.2 l5.5 3.2 z" fill="#0d3020"/><circle cx="32" cy="47.2" r="1.6" fill="#0d3020"/></g>
 </svg>

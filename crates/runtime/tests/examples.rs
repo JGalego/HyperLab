@@ -355,3 +355,31 @@ fn the_game_scores_a_suggestion_and_closes_the_case() {
     assert_eq!(field_text(&runtime, "Suspect"), "");
     assert_eq!(field_text(&runtime, "Replies"), "");
 }
+
+// ---------------------------------------------------------------- the island
+
+#[test]
+fn myst_is_a_hub_with_one_way_in_and_no_way_out() {
+    let mut runtime = open("Myst");
+    assert_eq!(runtime.stack().images().len(), 11, "one picture per place");
+
+    // The route the film takes, which is the only route to the trap book.
+    click(&mut runtime, "Up to the library");
+    click(&mut runtime, "The linking books");
+    click(&mut runtime, "Stoneship");
+    click(&mut runtime, "Open the unlabelled book");
+    assert_eq!(field_text(&runtime, "Place"), "D'ni");
+
+    // And nothing on the card leads away from it.
+    let card = runtime.current_card();
+    assert!(
+        runtime
+            .stack()
+            .card(card)
+            .expect("the card exists")
+            .parts()
+            .iter()
+            .all(|part| part.part_kind() != PartKind::Button),
+        "D'ni has no way out, so it has no buttons"
+    );
+}

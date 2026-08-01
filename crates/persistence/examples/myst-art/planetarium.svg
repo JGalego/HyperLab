@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+  <title>The planetarium</title>
+  <defs>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#191b2e"/><stop offset="1" stop-color="#2c2f4a"/>
+    </linearGradient>
+    <clipPath id="f"><rect x="4" y="4" width="232" height="142"/></clipPath>
+  </defs>
+  <rect width="240" height="150" fill="#efe7d7"/>
+  <g clip-path="url(#f)">
+    <rect x="4" y="4" width="232" height="142" fill="url(#s)"/>
+    <circle cx="6" cy="12" r="1.0" fill="#e8e3d0" opacity="0.9"/><circle cx="59" cy="41" r="1.5" fill="#e8e3d0" opacity="0.9"/><circle cx="112" cy="70" r="2.0" fill="#e8e3d0" opacity="0.9"/><circle cx="165" cy="19" r="1.0" fill="#e8e3d0" opacity="0.9"/><circle cx="218" cy="48" r="1.5" fill="#e8e3d0" opacity="0.9"/><circle cx="39" cy="77" r="2.0" fill="#e8e3d0" opacity="0.9"/><circle cx="92" cy="26" r="1.0" fill="#e8e3d0" opacity="0.9"/><circle cx="145" cy="55" r="1.5" fill="#e8e3d0" opacity="0.9"/><circle cx="198" cy="84" r="2.0" fill="#e8e3d0" opacity="0.9"/><circle cx="19" cy="33" r="1.0" fill="#e8e3d0" opacity="0.9"/><circle cx="72" cy="62" r="1.5" fill="#e8e3d0" opacity="0.9"/><circle cx="125" cy="91" r="2.0" fill="#e8e3d0" opacity="0.9"/><circle cx="178" cy="40" r="1.0" fill="#e8e3d0" opacity="0.9"/><circle cx="231" cy="69" r="1.5" fill="#e8e3d0" opacity="0.9"/><circle cx="52" cy="18" r="2.0" fill="#e8e3d0" opacity="0.9"/><circle cx="105" cy="47" r="1.0" fill="#e8e3d0" opacity="0.9"/><circle cx="158" cy="76" r="1.5" fill="#e8e3d0" opacity="0.9"/><circle cx="211" cy="25" r="2.0" fill="#e8e3d0" opacity="0.9"/><circle cx="32" cy="54" r="1.0" fill="#e8e3d0" opacity="0.9"/><circle cx="85" cy="83" r="1.5" fill="#e8e3d0" opacity="0.9"/><circle cx="138" cy="32" r="2.0" fill="#e8e3d0" opacity="0.9"/><circle cx="191" cy="61" r="1.0" fill="#e8e3d0" opacity="0.9"/><circle cx="12" cy="90" r="1.5" fill="#e8e3d0" opacity="0.9"/><circle cx="65" cy="39" r="2.0" fill="#e8e3d0" opacity="0.9"/><circle cx="118" cy="68" r="1.0" fill="#e8e3d0" opacity="0.9"/><circle cx="171" cy="17" r="1.5" fill="#e8e3d0" opacity="0.9"/><circle cx="224" cy="46" r="2.0" fill="#e8e3d0" opacity="0.9"/><circle cx="45" cy="75" r="1.0" fill="#e8e3d0" opacity="0.9"/><rect x="0" y="120" width="240" height="30" fill="#241f2e"/><path d="M56 120 a64 56 0 0 1 128 0 z" fill="#3a3448" stroke="#23201c" stroke-width="2.5"/><g fill="none" stroke="#8f88a8" stroke-width="1.6"><ellipse cx="120" cy="98" rx="46" ry="13"/><ellipse cx="120" cy="96" rx="28" ry="22"/></g><path d="M120 66 v-22" stroke="#23201c" stroke-width="2.5"/><circle cx="120" cy="40" r="7" fill="#f2d98a"/><path d="M98 120 v-16 h44 v16 z" fill="#23201c"/>
+  </g>
+  <rect x="4" y="4" width="232" height="142" fill="none" stroke="#23201c" stroke-width="3"/>
+</svg>

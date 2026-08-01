@@ -1,0 +1,97 @@
+{
+  "id": 5,
+  "name": "Clock Tower",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 26,
+      "name": "Clock Tower",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "clock-tower.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 16,
+        "top": 16,
+        "width": 320,
+        "height": 200
+      }
+    },
+    {
+      "id": 27,
+      "name": "Place",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Clock Tower",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 352,
+        "top": 16,
+        "width": 232,
+        "height": 24
+      }
+    },
+    {
+      "id": 28,
+      "name": "About",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "The hands answer to two brass wheels on the shore. Somebody has left them at two and two.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 352,
+        "top": 48,
+        "width": 232,
+        "height": 100
+      }
+    },
+    {
+      "id": 29,
+      "name": "Back to the library",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 352,
+        "top": 162,
+        "width": 232,
+        "height": 26
+      }
+    }
+  ]
+}

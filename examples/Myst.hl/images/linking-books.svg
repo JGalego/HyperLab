@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+  <title>The linking books</title>
+  <defs>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b2620"/><stop offset="1" stop-color="#3d352b"/>
+    </linearGradient>
+    <clipPath id="f"><rect x="4" y="4" width="232" height="142"/></clipPath>
+  </defs>
+  <rect width="240" height="150" fill="#efe7d7"/>
+  <g clip-path="url(#f)">
+    <rect x="4" y="4" width="232" height="142" fill="url(#s)"/>
+    <rect x="0" y="112" width="240" height="38" fill="#4a3f31"/><g transform="translate(14,0)"><path d="M0 112 v-16 h44 v16 z" fill="#5a4c38" stroke="#23201c" stroke-width="2"/><path d="M2 96 l20 -10 l20 10 z" fill="#4a6b3c" stroke="#23201c" stroke-width="2"/><path d="M22 86 v10" stroke="#23201c" stroke-width="1.6"/><rect x="12" y="70" width="20" height="14" fill="#cfe4ea" stroke="#23201c" stroke-width="1.6"/></g><g transform="translate(68,0)"><path d="M0 112 v-16 h44 v16 z" fill="#5a4c38" stroke="#23201c" stroke-width="2"/><path d="M2 96 l20 -10 l20 10 z" fill="#6a5a3a" stroke="#23201c" stroke-width="2"/><path d="M22 86 v10" stroke="#23201c" stroke-width="1.6"/><rect x="12" y="70" width="20" height="14" fill="#cfe4ea" stroke="#23201c" stroke-width="1.6"/></g><g transform="translate(122,0)"><path d="M0 112 v-16 h44 v16 z" fill="#5a4c38" stroke="#23201c" stroke-width="2"/><path d="M2 96 l20 -10 l20 10 z" fill="#3a4a6b" stroke="#23201c" stroke-width="2"/><path d="M22 86 v10" stroke="#23201c" stroke-width="1.6"/><rect x="12" y="70" width="20" height="14" fill="#cfe4ea" stroke="#23201c" stroke-width="1.6"/></g><g transform="translate(176,0)"><path d="M0 112 v-16 h44 v16 z" fill="#5a4c38" stroke="#23201c" stroke-width="2"/><path d="M2 96 l20 -10 l20 10 z" fill="#5a3a4a" stroke="#23201c" stroke-width="2"/><path d="M22 86 v10" stroke="#23201c" stroke-width="1.6"/><rect x="12" y="70" width="20" height="14" fill="#cfe4ea" stroke="#23201c" stroke-width="1.6"/></g><circle cx="120" cy="30" r="10" fill="#f2d98a" opacity="0.8"/>
+  </g>
+  <rect x="4" y="4" width="232" height="142" fill="none" stroke="#23201c" stroke-width="3"/>
+</svg>

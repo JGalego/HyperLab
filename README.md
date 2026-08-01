@@ -76,18 +76,29 @@ Then open one of the [examples](#examples).
 
 <h2 id="examples">🃏 Examples</h2>
 
-Four stacks in [`examples/`](examples), each also a test.
-
 <p align="center">
   <img src="docs/cluedo.gif" alt="Playing Cluedo in HyperLab" width="640">
 </p>
 
-| | |
-| --- | --- |
-| **Cluedo** | A drawn board, portraits you click, and a case to close. ([film](docs/cluedo.mp4)) |
-| **Address Book** | A card per person, one shared background. |
-| **Recipe Box** | Chunk expressions doing arithmetic on ingredients. |
-| **Todo** | A list, a dialog, and a loop. |
+**Cluedo** — a drawn mansion with clickable rooms, portraits that are
+themselves the buttons, and a case you close by deduction.
+([film](docs/cluedo.mp4))
+
+<p align="center">
+  <img src="docs/myst.gif" alt="The map of the Myst stack" width="640">
+</p>
+
+**Myst** — an island, four Ages, and one book you should not open. Its
+shape is the point, which is why [DeMystify](https://github.com/glthr/DeMystify)
+and [mystextract](https://github.com/erkyrath/mystextract) both exist to
+recover it from the original. **Go ▸ Map** finds the trap book without
+running a line. ([film](docs/myst.mp4))
+
+**Address Book** — a card per person, one shared background.
+
+**Recipe Box** — chunk expressions doing arithmetic on the ingredients.
+
+**Todo** — a list, a dialog, and a loop.
 
 ```sh
 cargo run -p hyperlab-persistence --example build_examples
@@ -126,7 +137,7 @@ crates/
 
 apps/desktop/       the Tauri shell and the React renderer
 docs/               architecture, roadmap, HyperTalk reference
-examples/           four stacks, which are also tests
+examples/           five stacks, which are also tests
 ```
 
 `hyperlab-parser` depends on nothing at all, so the language can be tested and

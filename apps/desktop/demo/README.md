@@ -3,6 +3,7 @@
 ```sh
 GROQ_API_KEY=… apps/desktop/demo/record.sh          # the tour
 GROQ_API_KEY=… apps/desktop/demo/record.sh cluedo   # the game
+apps/desktop/demo/record.sh myst                    # the island, and its map
 ```
 
 Leaves `target/demo/<film>.mp4` (the whole thing) and `target/demo/<film>.gif`
@@ -10,12 +11,14 @@ Leaves `target/demo/<film>.mp4` (the whole thing) and `target/demo/<film>.gif`
 and nobody scrolls past that). Move the cut with `GIF_FROM`, `GIF_FOR` and
 `GIF_WIDTH`.
 
-Without a key each film shoots everything except the assistant, and says so.
+A key is only needed by the films with an assistant act. Without one they
+shoot everything else and say so.
 
 | Film | Stack | What it is for |
 | --- | --- | --- |
 | `film` | Recipe Box | cards, scripts, undo, the message box, the assistant |
 | `cluedo` | Cluedo | pictures, and a model reading the game off the card |
+| `myst` | Myst | what **Go ▸ Map** knows about a stack it never ran |
 
 ## What is actually being filmed
 
@@ -42,6 +45,7 @@ nothing to know: same components, same `api.ts`, same snapshot type, same
 | `kit.mjs` | the camera: launching, captions, a pointer that travels |
 | `film.mjs` | the tour — what gets done, and in what order |
 | `cluedo.mjs` | the game |
+| `myst.mjs` | the island, and the map of it |
 | `shim.js` | makes a browser look like the Tauri window |
 | `cursor.js` | draws the pointer, which Playwright records but does not paint |
 | `record.sh` | starts the two servers, films, converts, stops them |

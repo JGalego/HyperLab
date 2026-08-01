@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Candlestick</title>
-  <path d="M28 14 h8 v30 h-8 z" fill="#1a1a1a"/><path d="M20 44 h24 v6 h-24 z" fill="#1a1a1a"/><ellipse cx="32" cy="8" rx="4" ry="6" fill="#c8952a"/>
+  <path d="M32 6 c-2 3 -3 5 -3 7 c0 3 6 3 6 0 c0 -2 -1 -4 -3 -7 z" fill="#e8a72c"/><path d="M32 6 c-2 3 -3 5 -3 7 c0 2 1.5 2.5 3 2.5 z" fill="#f5cf7a"/><rect x="29" y="15" width="6" height="4" rx="1" fill="#1c1c1c"/><path d="M27 19 h10 v3 h-10 z" fill="#4d4d4d"/><path d="M29.5 22 h5 v22 h-5 z" fill="#1c1c1c"/><path d="M29.5 22 h1.8 v22 h-1.8 z" fill="#8f8f8f"/><ellipse cx="32" cy="33" rx="6" ry="2.6" fill="#4d4d4d"/><path d="M22 50 c0 -4 4 -6 10 -6 c6 0 10 2 10 6 z" fill="#1c1c1c"/><rect x="20" y="50" width="24" height="4" rx="1.5" fill="#4d4d4d"/>
 </svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+  <title>Channelwood</title>
+  <defs>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c8d6c0"/><stop offset="1" stop-color="#93ab8f"/>
+    </linearGradient>
+    <clipPath id="f"><rect x="4" y="4" width="232" height="142"/></clipPath>
+  </defs>
+  <rect width="240" height="150" fill="#efe7d7"/>
+  <g clip-path="url(#f)">
+    <rect x="4" y="4" width="232" height="142" fill="url(#s)"/>
+    <rect x="0" y="112" width="240" height="38" fill="#6b7f6a"/><rect x="22" y="52" width="9" height="60" fill="#5a4a34"/><path d="M26 52 c-16 -8 -22 -22 -18 -30 c8 2 14 10 18 18 c4 -10 12 -18 20 -20 c4 10 -4 24 -20 32 z" fill="#4a6b42" stroke="#23201c" stroke-width="1.6"/><rect x="96" y="40" width="9" height="72" fill="#5a4a34"/><path d="M100 40 c-16 -8 -22 -22 -18 -30 c8 2 14 10 18 18 c4 -10 12 -18 20 -20 c4 10 -4 24 -20 32 z" fill="#4a6b42" stroke="#23201c" stroke-width="1.6"/><rect x="178" y="58" width="9" height="54" fill="#5a4a34"/><path d="M182 58 c-16 -8 -22 -22 -18 -30 c8 2 14 10 18 18 c4 -10 12 -18 20 -20 c4 10 -4 24 -20 32 z" fill="#4a6b42" stroke="#23201c" stroke-width="1.6"/><path d="M0 96 h240 v7 h-240 z" fill="#7a6647" stroke="#23201c" stroke-width="1.6"/><rect x="6" y="103" width="5" height="12" fill="#5a4a34"/><rect x="30" y="103" width="5" height="12" fill="#5a4a34"/><rect x="54" y="103" width="5" height="12" fill="#5a4a34"/><rect x="78" y="103" width="5" height="12" fill="#5a4a34"/><rect x="102" y="103" width="5" height="12" fill="#5a4a34"/><rect x="126" y="103" width="5" height="12" fill="#5a4a34"/><rect x="150" y="103" width="5" height="12" fill="#5a4a34"/><rect x="174" y="103" width="5" height="12" fill="#5a4a34"/><rect x="198" y="103" width="5" height="12" fill="#5a4a34"/><rect x="222" y="103" width="5" height="12" fill="#5a4a34"/><path d="M0 92 h240" stroke="#8f7a55" stroke-width="2"/>
+  </g>
+  <rect x="4" y="4" width="232" height="142" fill="none" stroke="#23201c" stroke-width="3"/>
+</svg>

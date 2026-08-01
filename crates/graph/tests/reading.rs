@@ -291,3 +291,44 @@ fn the_dot_output_names_every_card_and_marks_what_is_uncertain() {
     assert!(dot.contains("style=dashed"), "the uncertain one");
     assert!(dot.contains("subgraph cluster_"), "grouped by background");
 }
+
+#[test]
+fn the_stacks_own_open_handler_is_not_a_way_out_of_every_card() {
+    // Nearly every stack begins `on openStack go to first card`. Walking the
+    // message path naively makes that a way out of *every* card, so nothing
+    // is ever a dead end and the most useful thing the map knows is quietly
+    // switched off. It runs when the stack opens, not when you are on a card.
+    let mut runtime = stack_of(2);
+    let stranded = runtime.stack().cards()[1].id();
+    runtime
+        .execute(Command::SetScript {
+            object: ObjectId::new(ObjectKind::Stack, runtime.stack().id()),
+            script: "on openStack\n  go to first card\nend openStack".into(),
+        })
+        .unwrap();
+
+    let graph = Graph::of(runtime.stack());
+    assert!(graph.edges.is_empty(), "got {:?}", graph.edges);
+    assert!(
+        !graph.node(stranded).unwrap().leads_anywhere,
+        "a card with no button on it has no way out"
+    );
+}
+
+#[test]
+fn an_ordinary_handler_on_the_stack_still_is() {
+    // The exclusion is about *which message*, not about the stack script:
+    // a mouseUp handler there is reached from every card, as it should be.
+    let mut runtime = stack_of(2);
+    let home = runtime.stack().cards()[0].id();
+    runtime
+        .execute(Command::SetScript {
+            object: ObjectId::new(ObjectKind::Stack, runtime.stack().id()),
+            script: "on mouseUp\n  go to last card\nend mouseUp".into(),
+        })
+        .unwrap();
+
+    let graph = Graph::of(runtime.stack());
+    assert_eq!(graph.edges.len(), 2, "one out of each card");
+    assert!(graph.node(home).unwrap().leads_anywhere);
+}

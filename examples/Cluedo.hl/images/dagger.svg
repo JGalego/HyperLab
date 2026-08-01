@@ -1,4 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Dagger</title>
-  <path d="M32 6 l6 30 h-12 z" fill="#1a1a1a"/><rect x="20" y="36" width="24" height="5" fill="#1a1a1a"/><rect x="29" y="41" width="6" height="16" fill="#1a1a1a"/>
+  <path d="M32 4 l5 30 h-10 z" fill="#4d4d4d"/><path d="M32 4 l0 30 h-5 z" fill="#b9b9b9"/><rect x="19" y="34" width="26" height="5" rx="2" fill="#1c1c1c"/><rect x="19" y="34" width="26" height="2" fill="#4d4d4d"/><path d="M29 39 h6 v15 c0 2 -6 2 -6 0 z" fill="#6b3f22"/><path d="M29 39 h2.2 v16 h-2.2 z" fill="#8a5a34"/><circle cx="32" cy="57" r="3.2" fill="#1c1c1c"/>
 </svg>

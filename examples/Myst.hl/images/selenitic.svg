@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 150" width="240" height="150">
+  <title>The selenitic age</title>
+  <defs>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d8cbb0"/><stop offset="1" stop-color="#b8a583"/>
+    </linearGradient>
+    <clipPath id="f"><rect x="4" y="4" width="232" height="142"/></clipPath>
+  </defs>
+  <rect width="240" height="150" fill="#efe7d7"/>
+  <g clip-path="url(#f)">
+    <rect x="4" y="4" width="232" height="142" fill="url(#s)"/>
+    <rect x="0" y="104" width="240" height="46" fill="#8f7c5c"/><path d="M0 104 q40 -22 78 -2 q30 16 62 0 q40 -20 100 4 v-4 z" fill="#a89373" stroke="#23201c" stroke-width="2"/><path d="M58 104 a34 16 0 0 1 68 0 z" fill="#6d5c42" stroke="#23201c" stroke-width="2"/><path d="M74 104 a18 9 0 0 1 36 0 z" fill="#2e2820"/><g stroke="#23201c" stroke-width="2.5" fill="none"><path d="M180 104 v-38"/><path d="M162 66 a18 18 0 0 1 36 0" fill="#cfc6ae"/><path d="M180 66 v-8"/></g><g stroke="#a8402c" stroke-width="1.6" fill="none" opacity="0.85"><path d="M200 52 q8 -6 8 -14"/><path d="M208 48 q12 -8 12 -20"/></g>
+  </g>
+  <rect x="4" y="4" width="232" height="142" fill="none" stroke="#23201c" stroke-width="3"/>
+</svg>

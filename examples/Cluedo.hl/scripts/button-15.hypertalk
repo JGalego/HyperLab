@@ -1,3 +1,3 @@
 on mouseUp
-  put "Lounge" into field "Room"
+  put "Library" into field "Room"
 end mouseUp
