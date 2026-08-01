@@ -195,6 +195,12 @@ export interface AiSettings {
   providers: Record<string, ProviderConfig>;
 }
 
+/** Where an exported page went, and what had no equivalent on it. */
+export interface Exported {
+  path: string;
+  notes: string[];
+}
+
 /**
  * What the panel may know about saved keys.
  *

@@ -1789,6 +1789,7 @@ dependencies = [
  "hyperlab-assistant",
  "hyperlab-export",
  "hyperlab-graph",
+ "hyperlab-hyperscript",
  "hyperlab-mcp",
  "hyperlab-parser",
  "hyperlab-persistence",
@@ -1820,6 +1821,14 @@ dependencies = [
  "hyperlab-stack",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "hyperlab-hyperscript"
+version = "0.1.0"
+dependencies = [
+ "hyperlab-parser",
+ "hyperlab-stack",
 ]
 
 [[package]]

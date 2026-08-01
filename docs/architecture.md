@@ -535,6 +535,37 @@ The two do not agree to the pixel and are not meant to. The desktop draws a
 card with a browser's idea of a line break and the exporter with a PDF's; they
 agree on what is on the card and where, and differ on where a long line wraps.
 
+## Going somewhere else
+
+[`hyperlab-hyperscript`](../crates/hyperscript) writes a stack as one HTML
+file driven by [_hyperscript](https://hyperscript.org). Carson Gross wrote
+that language for the web after the same HyperTalk this reimplements, so most
+of the translation is a change of address: `put x into y`, `set x to y`,
+`if … then … end`, `repeat while`, `is not`, `starts with` and `contains` all
+survive the trip unaltered.
+
+The interesting part is where they differ, and every difference below was
+found by loading a generated page in a browser rather than by reading the
+documentation — each one parses, or runs, and is quietly wrong.
+
+| HyperTalk | Why it cannot go straight across |
+| --- | --- |
+| `it` | `it` is the previous command's result. `set it to …` is accepted and yields `null`, so it becomes `hlIt`. |
+| `repeat with i = 1 to n` | Not a form _hyperscript has. Counting is left to `repeat … times index`, so `next repeat` cannot skip an increment and loop for ever. |
+| `repeat (a + b) times` | The count has to be a name, not an expression. |
+| `word 2 of x` | Splitting on whitespace needs a regular expression, and a literal one is a parse error inside a handler. |
+| `ask assistant` | Two words, and a page has no model. |
+
+What is left over is a dozen lines of glue at the foot of the page: which card
+is showing, how to reach another, the two card messages HyperLab sends, and
+three helpers for the text operations above. A script calls into them the way
+it calls anything else.
+
+Anything with no equivalent becomes a comment where it belonged **and** a line
+in `Translation::notes`, so a partial translation cannot be mistaken for a
+whole one. Five of the six examples come across with no notes at all; the
+sixth asks a language model on its last card.
+
 ## Keys
 
 A `ProviderConfig` names a `KeySource` — an environment variable, or the

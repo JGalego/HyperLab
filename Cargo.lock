@@ -497,6 +497,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "hyperlab-hyperscript"
+version = "0.1.0"
+dependencies = [
+ "hyperlab-parser",
+ "hyperlab-persistence",
+ "hyperlab-stack",
+]
+
+[[package]]
 name = "hyperlab-mcp"
 version = "0.1.0"
 dependencies = [

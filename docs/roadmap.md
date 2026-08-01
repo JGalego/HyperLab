@@ -198,8 +198,14 @@ A stack that cannot leave HyperLab is a stack you cannot show anyone.
 graphics and the words as words, so a printed card is as sharp as the paper
 and a reader can search it. **Go ▸ Map ▸ Save as PNG…** saves the drawing.
 
-Still to come: one card rather than all of them, and a page size that is a
-page rather than the card.
+**File ▸ Export as a Web Page…** goes further and translates the stack into
+[_hyperscript](https://hyperscript.org), which is what became of HyperTalk on
+the web. The result is one HTML file that runs the stack — buttons, fields,
+pictures, scripts and all — with nothing of HyperLab underneath it.
+
+Still to come: one card rather than all of them, a page size that is a page
+rather than the card, and a copy of _hyperscript in the file so an exported
+page works with no network.
 
 ## Phase 7 — Plugins
 

@@ -1,0 +1,19 @@
+[package]
+name = "hyperlab-hyperscript"
+description = "HyperTalk translated into _hyperscript, and a stack as a web page."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+hyperlab-parser.workspace = true
+hyperlab-stack.workspace = true
+
+[dev-dependencies]
+hyperlab-persistence.workspace = true
+
+[lints]
+workspace = true
