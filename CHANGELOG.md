@@ -27,6 +27,14 @@ across with nothing left behind — Cluedo is playable in a browser, Recipe
 Box still doubles its ingredients. Whatever has no equivalent is a comment in
 the file and a line in the message, never a silent gap.
 
+**File ▸ Export as a Decker Deck…** writes the stack for
+[Decker](https://beyondloom.com/decker/), John Earnest's platform and another
+descendant of HyperCard. Cards become cards, buttons and fields become
+widgets, and the artwork is redrawn in one bit — which suits it. The scripts
+are translated into Lil, which shares nothing with HyperTalk but its ancestry,
+so all six examples were opened in Decker and played: Cluedo names a suspect
+across cards, Todo counts what is left, Recipe Box doubles its ingredients.
+
 Every example is checked in as a PDF beside its film, so the exporter's
 output can be read without building anything.
 

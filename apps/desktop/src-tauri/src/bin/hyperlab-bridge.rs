@@ -522,6 +522,18 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
             std::fs::write(&path, bytes).map_err(|error| error.to_string())?;
             json!(path)
         }
+        "export_web" | "export_deck" => {
+            let (source, notes) = if command == "export_web" {
+                let page = hyperlab_hyperscript::page(runtime.stack());
+                (page.source, page.notes)
+            } else {
+                let deck = hyperlab_decker::deck(runtime.stack());
+                (deck.source, deck.notes)
+            };
+            let path = text("path")?;
+            std::fs::write(&path, source).map_err(|error| error.to_string())?;
+            json!({ "path": path, "notes": notes })
+        }
         "ai_keychain" => keychain(bridge),
         "ai_set_key" => {
             hyperlab_desktop::keys::set(&text("provider")?, &text("key")?)?;

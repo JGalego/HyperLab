@@ -235,6 +235,10 @@ export const exportPng = (path: string, bytes: Uint8Array): Promise<string> =>
 export const exportWeb = (path: string): Promise<Exported> =>
   call('export_web', { path });
 
+/** Writes the stack as a Decker deck. */
+export const exportDeck = (path: string): Promise<Exported> =>
+  call('export_deck', { path });
+
 /** Whether there is a keychain, and which providers have a key in it. */
 export const aiKeychain = (): Promise<KeychainView> => call('ai_keychain');
 
