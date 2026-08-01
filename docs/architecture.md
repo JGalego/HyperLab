@@ -154,23 +154,28 @@ Application
 Stack
     Backgrounds
     Cards
+    Images          the pictures it carries, by name
 
 Background
-    Buttons
-    Fields
+    Parts
 
 Card
-    Buttons
-    Fields
+    Parts
 
-Button
-
-Field
+Part
+    Button
+    Field
+    Image           draws one of the stack's pictures
 
 Script
 ```
 
 Everything derives from Object.
+
+A picture is a *kind of part*, not a kind of object, and that is why it can
+be moved, hidden, scripted, clicked and undone without any of it being
+written twice. The bytes belong to the stack rather than to the part, so two
+cards can draw the same picture and a bundle holds one copy.
 
 ---
 

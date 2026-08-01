@@ -412,5 +412,5 @@ export function App() {
 }
 
 function isPart(kind: Selection['kind']): boolean {
-  return kind === 'button' || kind === 'field';
+  return kind === 'button' || kind === 'field' || kind === 'image';
 }

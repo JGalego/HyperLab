@@ -136,6 +136,7 @@ card 3                     card "Home"            card id 12
 first card                 last card              next card
 this card                  this background        this stack
 button "Go"                field 2                btn 1
+image "Board"              img 1
 card field "Name"          background button "Next"
 field "Name" of card 2
 ```
@@ -161,8 +162,9 @@ put the name of the target into field "Log"
 Every object has `id`, `name` and `script`. Parts also have `left`, `top`,
 `width`, `height`, `right`, `bottom`, `rect`, `visible`, `enabled` and
 `style`; fields add `text`, `locked` and `wrap`; buttons add `showName`,
-`hilite` and `autoHilite`. `the number of` a card or part is its position
-among its siblings, and `the owner of` names what it belongs to.
+`hilite` and `autoHilite`; images add `source`, the name of a picture the
+stack carries. `the number of` a card or part is its position among its
+siblings, and `the owner of` names what it belongs to.
 
 Properties are open-ended: setting one HyperLab has never heard of stores it,
 saves it, and shows it in the inspector. This is how themes, plugins and
@@ -284,6 +286,7 @@ Counting:
 the number of cards
 the number of backgrounds
 the number of buttons        -- of this card and its background
+the number of images
 the number of card fields
 the number of words of field "Notes"
 ```
@@ -367,8 +370,8 @@ through and hands back the reply.
 
 `char`, `chars`, `character`, `characters`, `word`, `words`, `item`, `items`,
 `line` and `lines` introduce chunks, and `card`, `cd`, `background`, `bg`,
-`bkgnd`, `stack`, `button`, `btn`, `field`, `fld`, `me` and `this` introduce
-objects. None of them can be used as a variable name.
+`bkgnd`, `stack`, `button`, `btn`, `field`, `fld`, `image`, `img`, `me` and
+`this` introduce objects. None of them can be used as a variable name.
 
 `assistant` is reserved only where it follows `ask`, so `ask assistant "…"`
 is one command rather than `ask` applied to a variable. Everywhere else it is
