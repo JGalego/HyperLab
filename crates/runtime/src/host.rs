@@ -49,7 +49,11 @@ pub enum Effect {
 /// Answers the questions a script asks.
 ///
 /// Every method has a default, so a host only implements what it can do.
-pub trait Host {
+///
+/// A host must be [`Send`], because the [`Runtime`](crate::Runtime) that owns
+/// it is: the desktop shell keeps one in shared state, and anything that
+/// serves stacks over a socket will too.
+pub trait Host: Send {
     /// Shows a message. The default does nothing; the effect was recorded
     /// either way.
     fn answer(&mut self, message: &str) {

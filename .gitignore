@@ -13,3 +13,6 @@ dist/
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Tauri's build output, which lives inside the shell crate
+apps/desktop/src-tauri/target/

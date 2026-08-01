@@ -27,6 +27,12 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.png"
+    ],
     "category": "DeveloperTool",
     "shortDescription": "An AI-native successor to HyperCard",
     "longDescription": "Build desktop applications out of cards, fields, buttons and scripts."
