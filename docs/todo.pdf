@@ -1,0 +1,171 @@
+%PDF-1.7
+%€€€€
+
+1 0 obj
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+  /Type /Pages
+  /Count 1
+  /Kids [4 0 R]
+>>
+endobj
+
+3 0 obj
+<<
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Helvetica
+>>
+endobj
+
+4 0 obj
+<<
+  /Type /Page
+  /MediaBox [0 0 380 300]
+  /Parent 2 0 R
+  /Contents 5 0 R
+  /Resources <<
+    /Font <<
+      /F1 3 0 R
+    >>
+    /XObject <<>>
+  >>
+>>
+endobj
+
+5 0 obj
+<<
+  /Length 1130
+>>
+stream
+1 g
+0 0 380 300 re
+f
+q
+20 264 200 22 re
+W
+n
+0 g
+BT
+/F1 13 Tf
+17.550001 TL
+24 271 Td
+(Things To Do) Tj
+ET
+Q
+1 g
+0 G
+1 w
+0 J
+29 20 m
+91 20 l
+95.970566 20 100 24.029438 100 29 c
+100 35 l
+100 39.970562 95.970566 44 91 44 c
+29 44 l
+24.029438 44 20 39.970562 20 35 c
+20 29 l
+20 24.029438 24.029438 20 29 20 c
+h
+B*
+q
+0 g
+BT
+/F1 13 Tf
+48.4365 27.450012 Td
+(Add) Tj
+ET
+Q
+1 g
+0 G
+1 w
+0 J
+117 20 m
+199 20 l
+203.97057 20 208 24.029438 208 29 c
+208 35 l
+208 39.970562 203.97057 44 199 44 c
+117 44 l
+112.029434 44 108 39.970562 108 35 c
+108 29 l
+108 24.029438 112.029434 20 117 20 c
+h
+B*
+q
+0 g
+BT
+/F1 13 Tf
+125.1295 27.450012 Td
+(Clear Done) Tj
+ET
+Q
+1 g
+0 G
+1 w
+0 J
+281 20 m
+351 20 l
+355.97055 20 360 24.029438 360 29 c
+360 35 l
+360 39.970562 355.97055 44 351 44 c
+281 44 l
+276.02945 44 272 39.970562 272 35 c
+272 29 l
+272 24.029438 276.02945 20 281 20 c
+h
+B*
+q
+0 g
+BT
+/F1 13 Tf
+285.3005 27.450012 Td
+(How Many) Tj
+ET
+Q
+1 g
+0 G
+1 w
+0 J
+20 60 340 196 re
+B*
+q
+20 60 340 196 re
+W
+n
+0 g
+BT
+/F1 13 Tf
+17.550001 TL
+24 241 Td
+(x read the HyperTalk reference) Tj
+0 -17.550001 Td
+(write a stack of my own) Tj
+0 -17.550001 Td
+(show it to someone) Tj
+ET
+Q
+endstream
+endobj
+
+xref
+0 6
+0000000000 65535 f
+0000000016 00000 n
+0000000070 00000 n
+0000000134 00000 n
+0000000211 00000 n
+0000000382 00000 n
+trailer
+<<
+  /Size 6
+  /Root 1 0 R
+>>
+startxref
+1567
+%%EOF
