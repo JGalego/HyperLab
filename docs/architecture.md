@@ -438,37 +438,59 @@ New messages should require minimal runtime changes.
 
 # AI Architecture
 
-AI is implemented through providers.
+AI is implemented through providers, and HyperLab does not pick one.
 
 ```
-AIProvider
-
-OpenAIProvider
-
-AnthropicProvider
-
-GeminiProvider
-
-OllamaProvider
-
-MockProvider
+                    AiProvider  (crates/ai — the interface)
+                         ▲
+        ┌────────────────┼────────────────┐
+   MockProvider    OpenAiProvider   AnthropicProvider
+   (crates/ai)     └──── crates/ai-providers ────┘
 ```
 
-All providers implement the same interface.
-
-Example
+All providers implement the same interface:
 
 ```rust
-trait AIProvider {
-
-    fn complete(...)
-
-    fn tools(...)
-
-    fn embeddings(...)
-
+pub trait AiProvider: Send + Sync {
+    fn name(&self) -> &str;
+    fn capabilities(&self) -> Capabilities;
+    fn complete<'a>(&'a self, request: CompletionRequest) -> BoxFuture<'a, AiResult<Completion>>;
+    fn embed<'a>(&'a self, texts: Vec<String>) -> BoxFuture<'a, AiResult<Vec<Embedding>>>;
 }
 ```
+
+The split between the two crates is the whole design.
+
+`hyperlab-ai` holds the interface, the message types and the context builder.
+It has no HTTP client, no vendor SDK and no knowledge that OpenAI or Anthropic
+exist. `ProviderKind` is a list of names for settings files, and nothing
+switches on it.
+
+`hyperlab-ai-providers` holds the clients, and is the only crate allowed to
+know a vendor. It ships two, which between them cover most of the field:
+
+| Client | Speaks | Also serves |
+| --- | --- | --- |
+| `OpenAiProvider` | chat completions | OpenRouter, Ollama, LM Studio, llama.cpp, vLLM — anything with a `baseUrl` |
+| `AnthropicProvider` | the Messages API | — |
+
+Adding a third means adding a module and one arm of `build`. Nothing else
+changes, because nothing else knows.
+
+Where the two protocols differ, the difference is handled at the edge and
+never leaks inward: Anthropic hoists system messages into a field of their
+own, carries content as typed blocks, puts a tool result inside a *user* turn,
+and requires `max_tokens`. A `CompletionRequest` knows none of that.
+
+## Keys
+
+A `ProviderConfig` names the environment variable that holds a key. It never
+holds the key, so a settings file can be copied into a bug report. A provider
+can also be handed a key directly — `with_api_key` — for an embedder that
+reads the operating system's keychain instead.
+
+A variable that is named but unset is an error when the provider is built,
+not a puzzling refusal later.
 
 ---
 
@@ -805,6 +827,8 @@ crates/
                     the interpreter       — what it means
     persistence/    the .hl bundle        — where it is kept
     ai/             provider interfaces   — who is asked
+    ai-providers/   OpenAI and Anthropic
+                    clients               — how they are reached
     mcp/            tools                 — what may be done
 
 apps/desktop/
@@ -817,7 +841,7 @@ The dependency graph runs one way, and is enforced by Cargo:
 ```
         stack ←── persistence
           ↑  ↖
-          │    ai
+          │    ai ←── ai-providers
           │     ↑
    parser │     │
        ↘  │     │
@@ -840,6 +864,8 @@ language can be tested, forked or reused on its own.
 | Nothing is evaluated while parsing | `hyperlab-parser` has no dependency it could evaluate against |
 | The renderer cannot mutate | It is given a `StackView`, a serialized snapshot, not an object |
 | A script can wait for a person | Commands run off the message loop, so `Host::ask` may block while the window stays alive |
+| No provider is special | `hyperlab-ai` does not depend on `hyperlab-ai-providers`; the arrow runs the other way |
+| A key is never written to disk | `ProviderConfig` has no field for one — only the name of an environment variable |
 
 ## What is deliberately not built yet
 
