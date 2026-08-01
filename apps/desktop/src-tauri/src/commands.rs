@@ -20,6 +20,7 @@
 //! The single exception is [`dialog_reply`]: it is the message that unblocks
 //! a waiting script, so it must never queue behind one.
 
+use hyperlab_graph::Graph;
 use hyperlab_persistence::{load, save};
 use hyperlab_runtime::{Command, Effect, Message, PartOwner, Runtime, messages};
 use hyperlab_stack::{Id, Object, ObjectId, ObjectKind, PartKind, Point, Rect, Size, Stack, Value};
@@ -129,6 +130,16 @@ pub async fn get_properties(
 #[tauri::command]
 pub fn check_script(source: String) -> CommandResult<()> {
     Runtime::check_script(&source).map_err(|error| error.to_string())
+}
+
+/// Reads the stack as the routes between its cards, for the map.
+///
+/// A pure function of the stack, computed fresh each time it is asked for.
+/// Caching it would mean deciding when the cache is stale, and every script
+/// that runs could make it so.
+#[tauri::command]
+pub async fn stack_graph(state: State<'_, AppState>) -> CommandResult<Graph> {
+    with_session(&state, |session| Ok(Graph::of(session.runtime.stack()))).await
 }
 
 // ----------------------------------------------------------------- browsing

@@ -122,6 +122,29 @@ Persistence should never contain runtime logic.
 
 ---
 
+## Graph
+
+Responsible for:
+
+- reading every `go` out of every script
+- resolving each one to a card, where that can be known
+- reachability, dead ends and broken links
+- DOT output
+
+`hyperlab-graph` is a pure function of a `Stack`: it takes a borrow, runs
+nothing, and holds no state, so its answer can never be stale and there is no
+cache to invalidate. It depends on the parser and the stack model and on
+nothing else — not the runtime, not the interpreter — which is what keeps a
+static reading static.
+
+The limit is the point rather than a gap. A destination the script computes
+is reported as unresolved, and a destination naming a card that is not there
+is reported as missing. Guessing at either would make the drawing a
+liability: an author who trusts a map that invents routes is worse off than
+one with no map.
+
+---
+
 # Core Runtime Objects
 
 ```

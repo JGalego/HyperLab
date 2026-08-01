@@ -144,6 +144,26 @@ is already inside the runtime and letting an assistant restructure a stack
 between two statements would pull the ground out from under the interpreter.
 Edits belong in the sidebar, where nothing is mid-handler.
 
+## The map ✅
+
+Not a phase — a thing that fell out of one. Once the parser is in the same
+process as the stack, every `go` in every script can be read back without
+running it, and a stack stops being a pile of cards and becomes a graph you
+can look at.
+
+[`crates/graph`](../crates/graph) does the reading, **Go ▸ Map** draws it,
+and `hyperlab-graph` writes it as Graphviz, as JSON, or as a report that
+exits non-zero. The three things it finds are the ones a stack cannot tell
+you itself: cards nothing leads to, cards with no way out, and links naming a
+card that is not there.
+
+Nothing is run, so nothing is guessed. `go to next card` is certain once you
+know which card you are standing on; `go to card whicheverOneTheyPicked` is
+not, and says so. Prior art: [a graph of Myst][myst], drawn from the outside
+with `stackimport` and a hand-written parser.
+
+[myst]: https://glthr.com/myst-graph-1
+
 ## Phase 7 — Plugins
 
 Renderers, themes, providers, persistence formats, importers, exporters and

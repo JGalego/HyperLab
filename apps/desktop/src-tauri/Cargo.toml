@@ -24,6 +24,7 @@ tauri-build = { version = "2", features = [] }
 hyperlab-ai = { path = "../../../crates/ai" }
 hyperlab-ai-providers = { path = "../../../crates/ai-providers" }
 hyperlab-assistant = { path = "../../../crates/assistant" }
+hyperlab-graph = { path = "../../../crates/graph" }
 hyperlab-mcp = { path = "../../../crates/mcp" }
 hyperlab-parser = { path = "../../../crates/parser" }
 hyperlab-persistence = { path = "../../../crates/persistence" }

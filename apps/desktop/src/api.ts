@@ -14,6 +14,7 @@ import type {
   AiSettings,
   AiView,
   DialogRequest,
+  Graph,
   Layer,
   ObjectKind,
   Outcome,
@@ -72,6 +73,9 @@ export const getProperties = (kind: ObjectKind, id: number): Promise<PropertyVie
 /** Checks whether a script parses. Resolves if it does. */
 export const checkScript = (source: string): Promise<void> =>
   call('check_script', { source });
+
+/** Reads the stack as the routes between its cards. */
+export const stackGraph = (): Promise<Graph> => call('stack_graph');
 
 /** Sends `mouseUp` to a part, exactly as clicking it does. */
 export const clickPart = (id: number): Promise<Outcome> => call('click_part', { id });

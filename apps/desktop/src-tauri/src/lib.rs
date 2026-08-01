@@ -82,6 +82,7 @@ pub fn run() {
             commands::get_view,
             commands::get_properties,
             commands::check_script,
+            commands::stack_graph,
             commands::click_part,
             commands::set_field_text,
             commands::go_to_card,
