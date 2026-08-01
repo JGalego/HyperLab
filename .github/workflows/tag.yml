@@ -17,6 +17,10 @@ on:
       version:
         description: 'Version to tag, without the leading v (e.g. 0.1.0)'
         required: true
+      move:
+        description: 'Move the tag if it already exists (only sane before the release is published)'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -79,14 +83,33 @@ jobs:
             const { owner, repo } = context.repo;
 
             // A tag that already exists is almost always a re-run by someone
-            // who does not know it worked the first time. Say so, rather than
-            // failing with a 422 they have to go and look up.
+            // who does not know it worked the first time, so the default is to
+            // stop. Moving one is a real thing to want — a build that failed
+            // for a reason since fixed, before anybody could download it — but
+            // it has to be asked for, because moving a tag people already have
+            // gives two of them different code under one name.
+            let existing = null;
             try {
-              await github.rest.git.getRef({ owner, repo, ref: `tags/${tag}` });
-              core.setFailed(`${tag} already exists. Delete it first if you meant to move it.`);
-              return;
+              existing = await github.rest.git.getRef({ owner, repo, ref: `tags/${tag}` });
             } catch (error) {
               if (error.status !== 404) throw error;
+            }
+
+            if (existing && !${{ inputs.move }}) {
+              core.setFailed(`${tag} already exists at ${existing.data.object.sha.slice(0, 7)}. ` +
+                `Re-run with "move" if you mean to move it.`);
+              return;
+            }
+
+            if (existing) {
+              const release = await github.rest.repos.listReleases({ owner, repo, per_page: 100 })
+                .then(r => r.data.find(release => release.tag_name === tag));
+              if (release && !release.draft) {
+                core.setFailed(`${tag} is already published. Ship a new version instead.`);
+                return;
+              }
+              await github.rest.git.deleteRef({ owner, repo, ref: `tags/${tag}` });
+              core.notice(`moved ${tag} off ${existing.data.object.sha.slice(0, 7)}`);
             }
 
             const object = await github.rest.git.createTag({
