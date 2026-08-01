@@ -207,12 +207,16 @@ pub fn new_part(
         },
     };
 
-    let existing = count_parts(session.runtime.stack(), card, part_kind);
+    // The cascade counts *every* part on show, not just this kind, so a new
+    // button and a new field do not land exactly on top of each other. The
+    // name still counts its own kind, so they are "Button 1" and "Field 1".
+    let placed = count_parts(session.runtime.stack(), card, None);
+    let same_kind = count_parts(session.runtime.stack(), card, Some(part_kind));
     let geometry = session
         .runtime
         .stack()
-        .default_part_geometry(part_kind, existing);
-    let name = name.unwrap_or_else(|| format!("{} {}", title_case(&kind), existing + 1));
+        .default_part_geometry(part_kind, placed);
+    let name = name.unwrap_or_else(|| format!("{} {}", title_case(&kind), same_kind + 1));
 
     session
         .runtime
@@ -431,16 +435,19 @@ fn find_part(runtime: &Runtime, id: Id) -> CommandResult<ObjectId> {
         .ok_or_else(|| format!("there is no part with id {id}"))
 }
 
-/// How many parts of a kind the current card shows, including its
-/// background's, so that new parts are numbered sensibly.
-fn count_parts(stack: &Stack, card: Id, kind: PartKind) -> usize {
+/// How many parts the current card shows, including its background's.
+///
+/// With `kind`, only that kind is counted; without, everything is.
+fn count_parts(stack: &Stack, card: Id, kind: Option<PartKind>) -> usize {
     use hyperlab_stack::PartContainer;
-    let on_card = stack
-        .card(card)
-        .map_or(0, |card| card.parts_of_kind(kind).len());
+    let count = |container: &dyn PartContainer| match kind {
+        Some(kind) => container.parts_of_kind(kind).len(),
+        None => container.parts().len(),
+    };
+    let on_card = stack.card(card).map_or(0, |card| count(card));
     let on_background = stack
         .background_of(card)
-        .map_or(0, |background| background.parts_of_kind(kind).len());
+        .map_or(0, |background| count(background));
     on_card + on_background
 }
 
