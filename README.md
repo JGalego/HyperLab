@@ -54,6 +54,12 @@ end mouseUp
 Click it, and it runs. Change it, and the change takes effect immediately —
 there is no build step inside a stack.
 
+A model is part of the language rather than a panel beside it:
+
+```hypertalk
+put ai("Summarize this, in one line: " & field "Notes") into field "Summary"
+```
+
 ---
 
 <h2 id="getting-started">🚀 Getting Started</h2>
@@ -168,7 +174,14 @@ The code is arranged so these hold on their own:
   is undoable and visible. There is no private back door into a stack.
 - **Nothing leaves without a reason.** HyperLab is local-first, works with no
   provider configured, and the [context builder](crates/ai/src/context.rs)
-  omits your field contents unless a question actually needs them.
+  omits your field contents unless a question actually needs them. The
+  sidebar shows the exact text it sent with every question.
+
+There are three ways in, and they are the same machinery underneath: `ai(…)`
+and `ask assistant` in [a script](docs/hypertalk.md#asking-a-language-model),
+the sidebar, and [MCP](crates/mcp) — `hyperlab-mcp --stack Todo.hl` hands the
+same tools to any client that speaks the protocol, read-only until you say
+otherwise.
 
 ---
 
