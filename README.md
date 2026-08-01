@@ -28,38 +28,11 @@ card back](docs/demo.gif)
 
 ## 📑 Contents
 
-- [🧩 What It Looks Like to Use](#what-it-looks-like-to-use)
 - [🚀 Getting Started](#getting-started)
 - [🏗️ How It Is Put Together](#how-it-is-put-together)
-- [📂 Stacks Are Files You Can Read](#stacks-are-files-you-can-read)
 - [🤖 Where the AI Goes](#where-the-ai-goes)
 - [🤝 Contributing](#contributing)
 - [📄 Licence](#licence)
-
----
-
-<h2 id="what-it-looks-like-to-use">🧩 What It Looks Like to Use</h2>
-
-This is [HyperTalk](docs/hypertalk.md), the whole of the *Add* button in
-[the Todo example](examples):
-
-```hypertalk
-on mouseUp
-  ask "What needs doing?" with ""
-  if it is not empty then
-    put it & return after field "Items"
-  end if
-end mouseUp
-```
-
-Click it, and it runs. Change it, and the change takes effect immediately —
-there is no build step inside a stack.
-
-A model is part of the language rather than a panel beside it:
-
-```hypertalk
-put ai("Summarize this, in one line: " & field "Notes") into field "Summary"
-```
 
 ---
 
@@ -132,28 +105,16 @@ examples/           three stacks, which are also tests
 `hyperlab-parser` depends on nothing at all, so the language can be tested and
 reused on its own. The desktop shell contains no logic worth the name.
 
+- **Behaviour is HyperTalk.** `put it & return after field "Items"`, and
+  `put ai("Summarize this") into field "Summary"` — a model is part of the
+  language, not a panel beside it. Edit a script and it takes effect at once;
+  there is no build step inside a stack.
+- **A stack is a directory.** One `.json` per card and scripts kept as plain
+  `.hypertalk` files rather than escaped inside JSON, so a stack diffs,
+  merges and greps like source code.
+
 Read [`docs/architecture.md`](docs/architecture.md) for the reasoning, and
 [`docs/hypertalk.md`](docs/hypertalk.md) for the language.
-
----
-
-<h2 id="stacks-are-files-you-can-read">📂 Stacks Are Files You Can Read</h2>
-
-Open a stack in a file browser and you'll find a plain directory:
-
-```
-Todo.hl/
-    metadata.json
-    stack.json
-    backgrounds/2.json
-    cards/3.json
-    scripts/button-7.hypertalk
-    assets/
-```
-
-One file per card, and scripts kept as plain HyperTalk rather than escaped
-inside JSON — so a stack diffs, merges and greps like source code, because
-that is what it is.
 
 ---
 
