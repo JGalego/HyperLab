@@ -33,6 +33,11 @@ jobs:
       - name: Clippy
         run: cargo clippy --workspace --all-targets --all-features
 
+      - name: Graphviz
+        # `hyperlab-graph` writes DOT, and the only honest check that what it
+        # writes is valid DOT is to hand it to the program that reads it.
+        run: sudo apt-get update && sudo apt-get install -y graphviz
+
       - name: Tests
         run: cargo test --workspace --all-features
 

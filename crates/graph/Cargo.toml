@@ -1,0 +1,26 @@
+[package]
+name = "hyperlab-graph"
+description = "The shape of a stack: which cards lead where, read out of the scripts."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+hyperlab-parser.workspace = true
+# Only the `hyperlab-graph` binary needs these two: the library reads a stack
+# it is handed, and never opens a file or writes JSON. Cargo has no way to say
+# "for this binary only", so they are declared here.
+hyperlab-persistence.workspace = true
+hyperlab-stack.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+# The doctest builds a stack the way anyone would: through commands.
+hyperlab-runtime.workspace = true
+
+[lints]
+workspace = true
