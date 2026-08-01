@@ -1,0 +1,3 @@
+on mouseUp
+  put "Study" into field "Room"
+end mouseUp

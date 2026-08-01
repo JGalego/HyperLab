@@ -25,6 +25,8 @@ export interface PartView {
   enabled: boolean;
   style: string;
   locked: boolean;
+  /** Whether a button draws its name. */
+  showName: boolean;
   /** Which picture an image part draws. Empty for anything else. */
   source: string;
   script: string;

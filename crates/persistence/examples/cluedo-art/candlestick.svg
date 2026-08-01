@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <title>Candlestick</title>
+  <path d="M28 14 h8 v30 h-8 z" fill="#1a1a1a"/><path d="M20 44 h24 v6 h-24 z" fill="#1a1a1a"/><ellipse cx="32" cy="8" rx="4" ry="6" fill="#c8952a"/>
+</svg>

@@ -1,0 +1,7 @@
+on mouseUp
+  if field "Suspect" is item 1 of field "Solution" and field "Weapon" is item 2 of field "Solution" and field "Room" is item 3 of field "Solution" then
+    answer "Case closed. " & item 1 of field "Solution" & ", in the " & item 3 of field "Solution" & ", with the " & item 2 of field "Solution" & "."
+  else
+    answer "No. Somebody is still at large."
+  end if
+end mouseUp

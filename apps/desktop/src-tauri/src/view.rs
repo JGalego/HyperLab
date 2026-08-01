@@ -99,6 +99,9 @@ pub struct PartView {
     pub style: String,
     /// Whether a field refuses typing.
     pub locked: bool,
+    /// Whether a button draws its name. A transparent button with this off
+    /// is a clickable region over artwork, which is how a drawn board works.
+    pub show_name: bool,
     /// Which picture an image part draws, by its name in the stack's
     /// library. Empty for everything else, and for an image with none
     /// chosen yet.
@@ -199,6 +202,7 @@ fn part_view(part: &hyperlab_stack::Part, layer: &str) -> PartView {
         enabled: flag("enabled", true),
         style: part.property("style").unwrap_or(Value::Empty).as_text(),
         locked: flag("locked", false),
+        show_name: flag("showName", true),
         source: if part.part_kind() == PartKind::Image {
             part.property("source").unwrap_or(Value::Empty).as_text()
         } else {

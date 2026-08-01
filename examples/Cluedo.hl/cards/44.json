@@ -1,0 +1,285 @@
+{
+  "id": 44,
+  "name": "Weapons",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 45,
+      "name": "Click a weapon to name it. Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Click a weapon to name it.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 44,
+        "width": 400,
+        "height": 20
+      }
+    },
+    {
+      "id": 46,
+      "name": "Candlestick",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "candlestick.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 73,
+        "top": 82,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 47,
+      "name": "Candlestick Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Candlestick",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 40,
+        "top": 184,
+        "width": 162,
+        "height": 20
+      }
+    },
+    {
+      "id": 48,
+      "name": "Dagger",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "dagger.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 263,
+        "top": 82,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 49,
+      "name": "Dagger Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Dagger",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 230,
+        "top": 184,
+        "width": 162,
+        "height": 20
+      }
+    },
+    {
+      "id": 50,
+      "name": "Lead Pipe",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "lead-pipe.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 453,
+        "top": 82,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 51,
+      "name": "Lead Pipe Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Lead Pipe",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 420,
+        "top": 184,
+        "width": 162,
+        "height": 20
+      }
+    },
+    {
+      "id": 52,
+      "name": "Revolver",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "revolver.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 73,
+        "top": 242,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 53,
+      "name": "Revolver Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Revolver",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 40,
+        "top": 344,
+        "width": 162,
+        "height": 20
+      }
+    },
+    {
+      "id": 54,
+      "name": "Rope",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "rope.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 263,
+        "top": 242,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 55,
+      "name": "Rope Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Rope",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 230,
+        "top": 344,
+        "width": 162,
+        "height": 20
+      }
+    },
+    {
+      "id": 56,
+      "name": "Spanner",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "spanner.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 453,
+        "top": 242,
+        "width": 96,
+        "height": 96
+      }
+    },
+    {
+      "id": 57,
+      "name": "Spanner Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Spanner",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 420,
+        "top": 344,
+        "width": 162,
+        "height": 20
+      }
+    }
+  ]
+}

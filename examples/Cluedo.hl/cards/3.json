@@ -1,0 +1,493 @@
+{
+  "id": 3,
+  "name": "The Mansion",
+  "script": "",
+  "properties": {},
+  "created_at": 1735689600000,
+  "updated_at": 1735689600000,
+  "background": 2,
+  "parts": [
+    {
+      "id": 8,
+      "name": "Board",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "source": "board.svg",
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "image",
+      "geometry": {
+        "left": 16,
+        "top": 40,
+        "width": 360,
+        "height": 300
+      }
+    },
+    {
+      "id": 9,
+      "name": "Kitchen",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": false,
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 19,
+        "top": 43,
+        "width": 114,
+        "height": 94
+      }
+    },
+    {
+      "id": 10,
+      "name": "Ballroom",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": false,
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 139,
+        "top": 43,
+        "width": 114,
+        "height": 94
+      }
+    },
+    {
+      "id": 11,
+      "name": "Conservatory",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": false,
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 259,
+        "top": 43,
+        "width": 114,
+        "height": 94
+      }
+    },
+    {
+      "id": 12,
+      "name": "Dining Room",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": false,
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 19,
+        "top": 143,
+        "width": 114,
+        "height": 94
+      }
+    },
+    {
+      "id": 13,
+      "name": "Cellar",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": false,
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 139,
+        "top": 143,
+        "width": 114,
+        "height": 94
+      }
+    },
+    {
+      "id": 14,
+      "name": "Billiard Room",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": false,
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 259,
+        "top": 143,
+        "width": 114,
+        "height": 94
+      }
+    },
+    {
+      "id": 15,
+      "name": "Lounge",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": false,
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 19,
+        "top": 243,
+        "width": 114,
+        "height": 94
+      }
+    },
+    {
+      "id": 16,
+      "name": "Hall",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": false,
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 139,
+        "top": 243,
+        "width": 114,
+        "height": 94
+      }
+    },
+    {
+      "id": 17,
+      "name": "Study",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": false,
+        "style": "transparent",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 259,
+        "top": 243,
+        "width": 114,
+        "height": 94
+      }
+    },
+    {
+      "id": 18,
+      "name": "Suspect Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Suspect",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 392,
+        "top": 46,
+        "width": 100,
+        "height": 18
+      }
+    },
+    {
+      "id": 19,
+      "name": "Suspect",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "rectangle",
+        "text": null,
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 392,
+        "top": 64,
+        "width": 232,
+        "height": 24
+      }
+    },
+    {
+      "id": 20,
+      "name": "Weapon Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Weapon",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 392,
+        "top": 100,
+        "width": 100,
+        "height": 18
+      }
+    },
+    {
+      "id": 21,
+      "name": "Weapon",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "rectangle",
+        "text": null,
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 392,
+        "top": 118,
+        "width": 232,
+        "height": 24
+      }
+    },
+    {
+      "id": 22,
+      "name": "Room Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Room",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 392,
+        "top": 154,
+        "width": 100,
+        "height": 18
+      }
+    },
+    {
+      "id": 23,
+      "name": "Room",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "rectangle",
+        "text": null,
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 392,
+        "top": 172,
+        "width": 232,
+        "height": 24
+      }
+    },
+    {
+      "id": 24,
+      "name": "Ask",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 392,
+        "top": 214,
+        "width": 110,
+        "height": 26
+      }
+    },
+    {
+      "id": 25,
+      "name": "Accuse",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 514,
+        "top": 214,
+        "width": 110,
+        "height": 26
+      }
+    },
+    {
+      "id": 26,
+      "name": "Replies Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Replies",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 392,
+        "top": 250,
+        "width": 100,
+        "height": 18
+      }
+    },
+    {
+      "id": 27,
+      "name": "Replies",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "rectangle",
+        "text": null,
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 392,
+        "top": 268,
+        "width": 232,
+        "height": 100
+      }
+    },
+    {
+      "id": 28,
+      "name": "Start Over",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "button",
+      "geometry": {
+        "left": 392,
+        "top": 378,
+        "width": 232,
+        "height": 26
+      }
+    },
+    {
+      "id": 29,
+      "name": "Solution",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "rectangle",
+        "text": "Professor Plum,Lead Pipe,Conservatory",
+        "visible": false,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 392,
+        "top": 410,
+        "width": 232,
+        "height": 22
+      }
+    }
+  ]
+}

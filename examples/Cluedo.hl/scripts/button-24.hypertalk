@@ -1,0 +1,11 @@
+on mouseUp
+  if field "Suspect" is empty or field "Weapon" is empty or field "Room" is empty then
+    answer "Name a suspect, a weapon and a room first."
+    exit mouseUp
+  end if
+  put 0 into right
+  if field "Suspect" is item 1 of field "Solution" then add 1 to right
+  if field "Weapon" is item 2 of field "Solution" then add 1 to right
+  if field "Room" is item 3 of field "Solution" then add 1 to right
+  put field "Suspect" & ", " & field "Weapon" & ", " & field "Room" & " — " & right & " of 3" & return before field "Replies"
+end mouseUp

@@ -1,0 +1,3 @@
+on mouseUp
+  answer "The envelope is in the cellar. Nothing happened there."
+end mouseUp

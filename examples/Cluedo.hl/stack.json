@@ -1,0 +1,20 @@
+{
+  "id": 1,
+  "name": "Cluedo",
+  "size": {
+    "width": 640,
+    "height": 460
+  },
+  "properties": {},
+  "nextId": 58,
+  "createdAt": 1735689600000,
+  "updatedAt": 1735689600000,
+  "backgrounds": [
+    2
+  ],
+  "cards": [
+    3,
+    30,
+    44
+  ]
+}
