@@ -79,9 +79,6 @@ Run the desktop application:
 ```sh
 cd apps/desktop
 npm install
-```
-
-```sh
 npm run tauri dev
 ```
 
