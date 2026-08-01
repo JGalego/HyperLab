@@ -1751,7 +1751,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-ai"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-stack",
  "serde",
@@ -1760,7 +1760,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-ai-providers"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-ai",
  "reqwest 0.12.28",
@@ -1770,7 +1770,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-assistant"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-ai",
  "hyperlab-mcp",
@@ -1782,7 +1782,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-decker"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-parser",
  "hyperlab-stack",
@@ -1791,7 +1791,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-desktop"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-ai",
  "hyperlab-ai-providers",
@@ -1815,7 +1815,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-export"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-stack",
  "pdf-writer",
@@ -1824,7 +1824,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-graph"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-parser",
  "hyperlab-persistence",
@@ -1835,7 +1835,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-hyperscript"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-parser",
  "hyperlab-stack",
@@ -1843,7 +1843,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-mcp"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-ai",
  "hyperlab-persistence",
@@ -1855,14 +1855,14 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-parser"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "hyperlab-persistence"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-stack",
  "serde",
@@ -1871,7 +1871,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-runtime"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "hyperlab-parser",
  "hyperlab-stack",
@@ -1880,7 +1880,7 @@ dependencies = [
 
 [[package]]
 name = "hyperlab-stack"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde",
 ]
