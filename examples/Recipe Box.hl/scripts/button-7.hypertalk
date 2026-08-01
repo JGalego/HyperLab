@@ -1,0 +1,10 @@
+on mouseUp
+  put empty into doubled
+  repeat with lineNumber = 1 to the number of lines of field "Ingredients"
+    put line lineNumber of field "Ingredients" into entry
+    put word 1 of entry * 2 into word 1 of entry
+    put entry & return after doubled
+  end repeat
+  put doubled into field "Ingredients"
+  answer "Doubled. There is no undo in the kitchen, but there is one here."
+end mouseUp

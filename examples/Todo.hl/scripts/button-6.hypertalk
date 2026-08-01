@@ -1,0 +1,6 @@
+on mouseUp
+  ask "What needs doing?" with ""
+  if it is not empty then
+    put it & return after field "Items"
+  end if
+end mouseUp

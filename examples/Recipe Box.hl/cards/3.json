@@ -1,0 +1,77 @@
+{
+  "id": 3,
+  "name": "Pancakes",
+  "script": "",
+  "properties": {},
+  "created_at": 1785571815829,
+  "updated_at": 1785571815829,
+  "background": 2,
+  "parts": [
+    {
+      "id": 9,
+      "name": "Title",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Pancakes",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 40,
+        "width": 400,
+        "height": 24
+      }
+    },
+    {
+      "id": 10,
+      "name": "Ingredients",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "200 g flour\n2 eggs\n300 ml milk\n1 pinch of salt",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 76,
+        "width": 190,
+        "height": 200
+      }
+    },
+    {
+      "id": 11,
+      "name": "Method",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Whisk everything together and rest it for twenty minutes.\nFry in a hot pan, one ladle at a time.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 226,
+        "top": 76,
+        "width": 194,
+        "height": 200
+      }
+    }
+  ]
+}

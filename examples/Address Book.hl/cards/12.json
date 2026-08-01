@@ -1,0 +1,99 @@
+{
+  "id": 12,
+  "name": "Bill Atkinson",
+  "script": "",
+  "properties": {},
+  "created_at": 1785571815829,
+  "updated_at": 1785571815829,
+  "background": 2,
+  "parts": [
+    {
+      "id": 21,
+      "name": "Name",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Bill Atkinson",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 90,
+        "top": 24,
+        "width": 300,
+        "height": 22
+      }
+    },
+    {
+      "id": 22,
+      "name": "Phone",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "+1 408 555 0117",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 90,
+        "top": 56,
+        "width": 300,
+        "height": 22
+      }
+    },
+    {
+      "id": 23,
+      "name": "Email",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "bill@hypercard.example",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 90,
+        "top": 88,
+        "width": 300,
+        "height": 22
+      }
+    },
+    {
+      "id": 24,
+      "name": "Notes",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Built HyperCard, which this project is a letter to.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 90,
+        "top": 120,
+        "width": 300,
+        "height": 90
+      }
+    }
+  ]
+}

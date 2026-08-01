@@ -1,0 +1,99 @@
+{
+  "id": 3,
+  "name": "Ada Lovelace",
+  "script": "",
+  "properties": {},
+  "created_at": 1785571815829,
+  "updated_at": 1785571815829,
+  "background": 2,
+  "parts": [
+    {
+      "id": 13,
+      "name": "Name",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Ada Lovelace",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 90,
+        "top": 24,
+        "width": 300,
+        "height": 22
+      }
+    },
+    {
+      "id": 14,
+      "name": "Phone",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "+44 20 7946 0100",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 90,
+        "top": 56,
+        "width": 300,
+        "height": 22
+      }
+    },
+    {
+      "id": 15,
+      "name": "Email",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "ada@analytical.engine",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 90,
+        "top": 88,
+        "width": 300,
+        "height": 22
+      }
+    },
+    {
+      "id": 16,
+      "name": "Notes",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Wrote the first program.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 90,
+        "top": 120,
+        "width": 300,
+        "height": 90
+      }
+    }
+  ]
+}

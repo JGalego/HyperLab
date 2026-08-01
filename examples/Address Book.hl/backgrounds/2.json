@@ -1,0 +1,164 @@
+{
+  "id": 2,
+  "name": "Person",
+  "script": "",
+  "properties": {},
+  "created_at": 1785571815829,
+  "updated_at": 1785571815829,
+  "parts": [
+    {
+      "id": 4,
+      "name": "Name Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Name",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 24,
+        "width": 64,
+        "height": 22
+      }
+    },
+    {
+      "id": 5,
+      "name": "Phone Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Phone",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 56,
+        "width": 64,
+        "height": 22
+      }
+    },
+    {
+      "id": 6,
+      "name": "Email Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Email",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 88,
+        "width": 64,
+        "height": 22
+      }
+    },
+    {
+      "id": 7,
+      "name": "Notes Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Notes",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 120,
+        "width": 64,
+        "height": 22
+      }
+    },
+    {
+      "id": 8,
+      "name": "Previous",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "button",
+      "geometry": {
+        "left": 20,
+        "top": 248,
+        "width": 84,
+        "height": 24
+      }
+    },
+    {
+      "id": 9,
+      "name": "Next",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "button",
+      "geometry": {
+        "left": 112,
+        "top": 248,
+        "width": 84,
+        "height": 24
+      }
+    },
+    {
+      "id": 10,
+      "name": "How Many",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "button",
+      "geometry": {
+        "left": 300,
+        "top": 248,
+        "width": 96,
+        "height": 24
+      }
+    }
+  ]
+}

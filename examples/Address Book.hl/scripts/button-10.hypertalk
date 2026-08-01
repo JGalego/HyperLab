@@ -1,0 +1,3 @@
+on mouseUp
+  answer "This book holds " & the number of cards & " people."
+end mouseUp

@@ -1,0 +1,18 @@
+{
+  "id": 1,
+  "name": "Todo",
+  "size": {
+    "width": 380,
+    "height": 300
+  },
+  "properties": {},
+  "nextId": 9,
+  "createdAt": 1785571815829,
+  "updatedAt": 1785571815829,
+  "backgrounds": [
+    2
+  ],
+  "cards": [
+    3
+  ]
+}
