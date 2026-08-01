@@ -129,6 +129,11 @@ export function Part({
         className={classes}
         style={style}
         disabled={!part.enabled}
+        // A transparent button laid over artwork shows no text, so its name
+        // is the only thing that says what it does. Without this a screen
+        // reader — and anything else driving the window — sees nine
+        // identical unlabelled buttons on a drawn board.
+        aria-label={part.showName ? undefined : part.name}
         onClick={() => onClick(part)}
       >
         {part.showName ? part.name : ''}

@@ -1,15 +1,21 @@
 # Filming HyperLab
 
 ```sh
-GROQ_API_KEY=… apps/desktop/demo/record.sh
+GROQ_API_KEY=… apps/desktop/demo/record.sh          # the tour
+GROQ_API_KEY=… apps/desktop/demo/record.sh cluedo   # the game
 ```
 
-Leaves `target/demo/hyperlab.mp4` (the whole film) and
-`target/demo/hyperlab.gif` (the assistant act, which is the part worth
-putting in a README — all ninety seconds at a legible size would be twenty
-megabytes). Move the cut with `GIF_FROM`, `GIF_FOR` and `GIF_WIDTH`.
+Leaves `target/demo/<film>.mp4` (the whole thing) and `target/demo/<film>.gif`
+(a highlight — the whole film at a legible size would be twenty megabytes,
+and nobody scrolls past that). Move the cut with `GIF_FROM`, `GIF_FOR` and
+`GIF_WIDTH`.
 
-Without a key it films everything except the assistant, and says so.
+Without a key each film shoots everything except the assistant, and says so.
+
+| Film | Stack | What it is for |
+| --- | --- | --- |
+| `film` | Recipe Box | cards, scripts, undo, the message box, the assistant |
+| `cluedo` | Cluedo | pictures, and a model reading the game off the card |
 
 ## What is actually being filmed
 
@@ -33,7 +39,9 @@ nothing to know: same components, same `api.ts`, same snapshot type, same
 
 | | |
 | --- | --- |
-| `film.mjs` | the Playwright script — what gets done, and in what order |
+| `kit.mjs` | the camera: launching, captions, a pointer that travels |
+| `film.mjs` | the tour — what gets done, and in what order |
+| `cluedo.mjs` | the game |
 | `shim.js` | makes a browser look like the Tauri window |
 | `cursor.js` | draws the pointer, which Playwright records but does not paint |
 | `record.sh` | starts the two servers, films, converts, stops them |
@@ -44,9 +52,9 @@ loopback, has no authentication, and carries only the commands a browser
 needs to drive the interface. It is a development tool you start on purpose,
 not a way to run HyperLab.
 
-## Changing the film
+## Changing a film
 
-`film.mjs` reads top to bottom in the order things happen. `say()` puts a
+Each film reads top to bottom in the order things happen. `say()` puts a
 caption up, `press()` moves the pointer before clicking so the cut is
 followable, and `write()` types rather than pasting.
 
