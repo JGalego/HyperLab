@@ -172,8 +172,8 @@ The code is arranged so these hold on their own:
 <h2 id="contributing">🤝 Contributing</h2>
 
 Please do — see [CONTRIBUTING.md](CONTRIBUTING.md) and the
-[Code of Conduct](CODE_OF_CONDUCT.md). Good places to start are listed in the
-roadmap: a debugger, the AI sidebar, `find` and `sort`, a second theme.
+[Code of Conduct](CODE_OF_CONDUCT.md). The [roadmap](docs/roadmap.md) lists
+good places to start.
 
 <h2 id="licence">📄 Licence</h2>
 
