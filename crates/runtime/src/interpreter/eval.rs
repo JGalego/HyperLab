@@ -1,7 +1,7 @@
 //! Evaluating expressions.
 
-use hyperlab_parser::ast::{BinaryOp, CountTarget, Expr, Layer, PartKind as AstPartKind, UnaryOp};
-use hyperlab_stack::{Object, ObjectKind, PartContainer, PartKind, Value};
+use hyperlab_parser::ast::{BinaryOp, CountTarget, Expr, Layer, UnaryOp};
+use hyperlab_stack::{Object, ObjectKind, PartContainer, Value};
 
 use super::{Interpreter, builtins};
 use crate::{
@@ -189,10 +189,7 @@ impl Interpreter<'_> {
                 chunk::count(&text, *kind)
             }
             CountTarget::Parts { kind, layer, owner } => {
-                let kind = match kind {
-                    AstPartKind::Button => PartKind::Button,
-                    AstPartKind::Field => PartKind::Field,
-                };
+                let kind = super::objects::part_kind(*kind);
                 let (card, background) = match owner {
                     Some(reference) => {
                         let owner = self.resolve_object(reference)?;

@@ -9,7 +9,7 @@
 //!     backgrounds/7.json     one file per background
 //!     cards/9.json           one file per card, with its buttons and fields
 //!     scripts/card-9.hypertalk
-//!     assets/                images and other files, later
+//!     images/study.svg       the pictures the stack carries
 //! ```
 //!
 //! Two decisions are worth explaining, because they cost a little code and
@@ -22,6 +22,9 @@
 //!   escaped inside JSON strings, so it can be read, diffed, reviewed and
 //!   searched with ordinary tools. The JSON describes structure; the
 //!   `.hypertalk` files hold behaviour.
+//! * **Pictures as pictures.** A `.png` in `images/` opens in an image
+//!   viewer and an `.svg` diffs like the text it is. Base64 inside JSON
+//!   would have been less code here and worse everywhere else.
 
 use hyperlab_stack::{PropertyBag, Size};
 use serde::{Deserialize, Serialize};

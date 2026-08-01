@@ -9,17 +9,18 @@
 //!
 //! ```text
 //! Stack
+//!     Image (the pictures it carries)
 //!     Background
-//!         Part (button / field)
+//!         Part (button / field / image)
 //!     Card
-//!         Part (button / field)
+//!         Part (button / field / image)
 //! ```
 //!
 //! Every object shares the same [`ObjectCore`]: an [`Id`], a name, a script,
-//! a [`PropertyBag`] and timestamps. Buttons and fields are both [`Part`]s;
-//! they differ only by their [`PartKind`] and their default properties. That
-//! uniformity is deliberate — a new kind of part should not require a new
-//! kind of object.
+//! a [`PropertyBag`] and timestamps. Buttons, fields and images are all
+//! [`Part`]s; they differ only by their [`PartKind`] and their default
+//! properties. That uniformity is deliberate, and it paid: adding pictures
+//! needed a new [`PartKind`], not a new kind of object.
 //!
 //! # Example
 //!
@@ -46,6 +47,7 @@ mod container;
 mod error;
 mod geometry;
 mod id;
+mod image;
 mod object;
 mod part;
 mod property;
@@ -59,6 +61,7 @@ pub use container::PartContainer;
 pub use error::{StackError, StackResult};
 pub use geometry::{Point, Rect, Size};
 pub use id::{Id, IdGenerator};
+pub use image::{Image, ImageError, ImageFormat, MAX_IMAGE_BYTES, data_uri};
 pub use object::{Object, ObjectCore, ObjectId, ObjectKind};
 pub use part::{Part, PartKind};
 pub use property::PropertyBag;

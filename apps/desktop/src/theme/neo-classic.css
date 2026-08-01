@@ -243,6 +243,43 @@ body {
   outline-offset: 1px;
 }
 
+/* ---------------------------------------------------------------- pictures */
+
+.image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+
+.image--framed {
+  border: var(--border);
+  background: var(--paper);
+}
+
+.image__picture {
+  width: 100%;
+  height: 100%;
+  /* The whole picture, in proportion. Cropping artwork the author placed
+     would be the renderer deciding what the card looks like. */
+  object-fit: contain;
+  image-rendering: auto;
+  -webkit-user-drag: none;
+}
+
+.image__missing {
+  padding: var(--space-hair) var(--space-tight);
+  border: 1px dashed var(--shade);
+  color: var(--shade);
+  font-size: var(--text-small);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .part--background::after {
   /* A corner mark: this part is shared with every card on this background. */
   content: '';

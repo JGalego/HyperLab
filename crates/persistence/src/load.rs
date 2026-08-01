@@ -2,7 +2,7 @@
 
 use std::{fs, path::Path};
 
-use hyperlab_stack::{Background, Card, Id, Object, ObjectKind, PartContainer, Stack};
+use hyperlab_stack::{Background, Card, Id, Image, Object, ObjectKind, PartContainer, Stack};
 
 use crate::{
     error::{PersistenceError, PersistenceResult},
@@ -53,6 +53,12 @@ pub fn load(path: impl AsRef<Path>) -> PersistenceResult<Stack> {
 
     if let Some(source) = read_script(root, ObjectKind::Stack, stack.id())? {
         stack.set_script(&source);
+    }
+
+    for (name, bytes) in read_images(root)? {
+        let image = Image::new(&name, bytes)
+            .map_err(|error| PersistenceError::Incomplete(error.to_string()))?;
+        stack.set_image(&name, Some(image));
     }
 
     // Ids are never reused, so start where the last session left off.
@@ -122,6 +128,39 @@ fn set_script_without_touching(object: &mut impl Object, source: &str) {
     let updated_at = object.core().updated_at;
     object.set_script(source);
     object.core_mut().updated_at = updated_at;
+}
+
+/// Reads every picture in the bundle, in name order.
+///
+/// A bundle with no `images/` directory is not broken; it is every bundle
+/// written before there were pictures, and every stack that has none.
+fn read_images(root: &Path) -> PersistenceResult<Vec<(String, Vec<u8>)>> {
+    let directory = root.join("images");
+    let entries = match fs::read_dir(&directory) {
+        Ok(entries) => entries,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(Vec::new()),
+        Err(error) => return Err(PersistenceError::io(directory, error)),
+    };
+
+    let mut images = Vec::new();
+    for entry in entries {
+        let entry = entry.map_err(|error| PersistenceError::io(&directory, error))?;
+        let path = entry.path();
+        // Only files, and only ones whose name survives a round trip through
+        // the OS — a directory or an unnameable entry is not a picture.
+        let Some(name) = path.file_name().and_then(|name| name.to_str()) else {
+            continue;
+        };
+        if !path.is_file() || name.starts_with('.') {
+            continue;
+        }
+        let bytes = fs::read(&path).map_err(|error| PersistenceError::io(&path, error))?;
+        images.push((name.to_string(), bytes));
+    }
+    // Directory order is whatever the filesystem feels like; the model keeps
+    // pictures in name order, and loading should not depend on the disk.
+    images.sort_by(|(left, _), (right, _)| left.cmp(right));
+    Ok(images)
 }
 
 /// Reads an object's script file, if it has one.

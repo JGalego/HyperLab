@@ -26,13 +26,20 @@ use crate::{
 pub fn save(path: impl AsRef<Path>, stack: &Stack) -> PersistenceResult<()> {
     let root = path.as_ref();
     create_dir(root)?;
-    for directory in ["cards", "backgrounds", "scripts", "assets"] {
-        // Clearing first is what makes a save a replacement rather than a
-        // merge. `assets` is kept: it holds files HyperLab did not write.
-        if directory != "assets" {
-            remove_dir(&root.join(directory))?;
-        }
+    // Clearing first is what makes a save a replacement rather than a merge:
+    // a card, script or picture that is no longer in the stack must not
+    // survive in the bundle.
+    for directory in ["cards", "backgrounds", "scripts", "images"] {
+        remove_dir(&root.join(directory))?;
         create_dir(&root.join(directory))?;
+    }
+
+    for (name, image) in stack.images() {
+        // The name was checked when the picture entered the model, so it is
+        // a file name and cannot climb out of the bundle. Checking again
+        // here costs nothing and means a hand-built `Stack` cannot either.
+        let path = root.join("images").join(safe_file_name(name)?);
+        fs::write(&path, image.bytes()).map_err(|error| PersistenceError::io(path, error))?;
     }
 
     for background in stack.backgrounds() {
@@ -100,6 +107,28 @@ pub fn save(path: impl AsRef<Path>, stack: &Stack) -> PersistenceResult<()> {
 /// Returns a [`PersistenceError`] if the stack cannot be written.
 pub fn save_single_file(path: impl AsRef<Path>, stack: &Stack) -> PersistenceResult<()> {
     write_json(path.as_ref(), stack)
+}
+
+/// Refuses a name that is not a plain file name.
+///
+/// A picture's name reaches this function from a `Stack`, and a `Stack` can
+/// be built in memory by anything — a hand-edited file, an MCP client, a
+/// future importer. `Image::new` already refuses a path, so this is the
+/// second of two locks on the same door, and the one standing closest to
+/// the filesystem call.
+fn safe_file_name(name: &str) -> PersistenceResult<&str> {
+    let sane = !name.is_empty()
+        && !name.starts_with('.')
+        && !name.contains('/')
+        && !name.contains('\\')
+        && Path::new(name).file_name().is_some_and(|only| only == name);
+    if sane {
+        Ok(name)
+    } else {
+        Err(PersistenceError::Incomplete(format!(
+            "\"{name}\" is not a file name, so it cannot be written into the bundle"
+        )))
+    }
 }
 
 /// A file name and the script that goes in it.

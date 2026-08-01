@@ -7,15 +7,15 @@
  */
 
 /** What kind of object something is. */
-export type ObjectKind = 'stack' | 'background' | 'card' | 'button' | 'field';
+export type ObjectKind = 'stack' | 'background' | 'card' | 'button' | 'field' | 'image';
 
 /** Whether a part belongs to one card or to a shared background. */
 export type Layer = 'card' | 'background';
 
-/** A button or a field, ready to draw. */
+/** One part, ready to draw. */
 export interface PartView {
   id: number;
-  kind: 'button' | 'field';
+  kind: 'button' | 'field' | 'image';
   layer: Layer;
   name: string;
   text: string;
@@ -25,6 +25,8 @@ export interface PartView {
   enabled: boolean;
   style: string;
   locked: boolean;
+  /** Which picture an image part draws. Empty for anything else. */
+  source: string;
   script: string;
   properties: PropertyView[];
 }
@@ -36,7 +38,7 @@ export interface PropertyView {
   readOnly: boolean;
 }
 
-/** A card or a background, with everything on it. */
+/** A card or a background, with every part on it. */
 export interface CardView {
   id: number;
   kind: 'card' | 'background';

@@ -23,6 +23,8 @@ pub enum ObjectKind {
     Button,
     /// An editable or displayed text part.
     Field,
+    /// A picture.
+    Image,
 }
 
 impl ObjectKind {
@@ -35,6 +37,7 @@ impl ObjectKind {
             Self::Card => "card",
             Self::Button => "button",
             Self::Field => "field",
+            Self::Image => "image",
         }
     }
 }

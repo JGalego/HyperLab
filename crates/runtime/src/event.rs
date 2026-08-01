@@ -78,7 +78,7 @@ pub fn message_path(stack: &Stack, target: ObjectId, current_card: Id) -> Vec<Ob
     let stack_id = ObjectId::new(ObjectKind::Stack, hyperlab_stack::Object::id(stack));
 
     match target.kind {
-        ObjectKind::Button | ObjectKind::Field => {
+        ObjectKind::Button | ObjectKind::Field | ObjectKind::Image => {
             // A part sits on either a card or a background. Either way the
             // message continues through the current card's layers.
             let card = stack

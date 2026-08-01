@@ -356,9 +356,9 @@ ast_node! {
         Card(Box<Specifier>),
         /// A background.
         Background(Box<Specifier>),
-        /// A button or a field.
+        /// A button, a field or an image.
         Part {
-            /// Button or field.
+            /// Which kind.
             kind: PartKind,
             /// Whether the script said `card`, `background`, or neither.
             layer: Layer,
@@ -371,16 +371,19 @@ ast_node! {
 }
 
 ast_node! {
-    /// Buttons and fields, as the grammar sees them.
+    /// Parts, as the grammar sees them.
     ///
     /// This mirrors the object model's part kinds but does not depend on it:
-    /// the parser knows the *syntax* `button`/`field`, not the object model.
+    /// the parser knows the *syntax* `button`/`field`/`image`, not the object
+    /// model.
     #[derive(Copy, Eq)]
     pub enum PartKind {
         /// `button`, `btn`
         Button,
         /// `field`, `fld`
         Field,
+        /// `image`, `img`
+        Image,
     }
 }
 
@@ -542,7 +545,7 @@ ast_node! {
         Backgrounds,
         /// `the number of buttons [of <object>]`.
         Parts {
-            /// Buttons or fields.
+            /// Which kind to count.
             kind: PartKind,
             /// Which layer to count.
             layer: Layer,
