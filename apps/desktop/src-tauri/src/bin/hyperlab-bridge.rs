@@ -485,9 +485,41 @@ fn dispatch(bridge: &Bridge, command: &str, arguments: &Json) -> Result<Json, St
             bridge.ai.reconfigure(settings, registry, problems);
             serde_json::to_value(bridge.ai.view()).map_err(|error| error.to_string())?
         }
+        // The settings panel asks on the way up, so a film that opens it
+        // would draw nothing without these three.
+        "ai_keychain" => keychain(bridge),
+        "ai_set_key" => {
+            hyperlab_desktop::keys::set(&text("provider")?, &text("key")?)?;
+            keychain(bridge)
+        }
+        "ai_forget_key" => {
+            hyperlab_desktop::keys::forget(&text("provider")?)?;
+            keychain(bridge)
+        }
         other => return Err(format!("the bridge does not carry \"{other}\"")),
     };
     Ok(value)
+}
+
+/// The same summary the Tauri command returns: whether there is a keychain,
+/// and which providers have a key in it. Never a key.
+fn keychain(bridge: &Bridge) -> serde_json::Value {
+    let problem = hyperlab_desktop::keys::available().err();
+    let holding: Vec<String> = match problem {
+        Some(_) => Vec::new(),
+        None => bridge
+            .ai
+            .settings()
+            .providers
+            .into_keys()
+            .filter(|name| hyperlab_desktop::keys::holds(name))
+            .collect(),
+    };
+    serde_json::json!({
+        "available": problem.is_none(),
+        "problem": problem,
+        "holding": holding,
+    })
 }
 
 fn object_id(kind: &str, id: u64) -> Result<ObjectId, String> {

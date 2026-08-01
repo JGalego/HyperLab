@@ -184,8 +184,9 @@ The code is arranged so these hold on their own:
   [their own crate](crates/ai-providers), which the rest of HyperLab does
   not depend on; one of them speaks the OpenAI chat-completions protocol, so
   pointing a `baseUrl` at Ollama or a local server is all it takes to run
-  with no network at all. A key is read from an environment variable you
-  name, and is never written to a settings file.
+  with no network at all. A key goes into the keychain your operating system
+  already runs, or into an environment variable you name; the settings file
+  records which, and never the key.
 - **An assistant can do exactly what you can do.** It works through
   [MCP tools](crates/mcp) that wrap runtime commands, so everything it does
   is undoable and visible. There is no private back door into a stack.

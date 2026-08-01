@@ -67,7 +67,8 @@ The model is set through the same settings the window writes, so it is an
 
 ```js
 { kind: 'openAiCompatible', model: 'openai/gpt-oss-120b',
-  baseUrl: 'https://api.groq.com/openai/v1', apiKeyEnv: 'GROQ_API_KEY' }
+  baseUrl: 'https://api.groq.com/openai/v1',
+  key: { in: 'environment', name: 'GROQ_API_KEY' } }
 ```
 
 Pick a model that calls tools properly. Llama 3.3 on Groq, asked to write a

@@ -15,6 +15,7 @@ import type {
   AiView,
   DialogRequest,
   Graph,
+  KeychainView,
   Layer,
   ObjectKind,
   Outcome,
@@ -216,3 +217,19 @@ export const aiSettings = (): Promise<AiSettings> => call('ai_settings');
 /** Saves provider settings and rebuilds the providers. */
 export const aiSaveSettings = (settings: AiSettings): Promise<AiView> =>
   call('ai_save_settings', { settings });
+
+/** Whether there is a keychain, and which providers have a key in it. */
+export const aiKeychain = (): Promise<KeychainView> => call('ai_keychain');
+
+/**
+ * Saves a provider's key in the operating system's keychain.
+ *
+ * The key goes one way. What comes back says which providers have one, and
+ * there is no call anywhere that reads a key out again.
+ */
+export const aiSetKey = (provider: string, key: string): Promise<KeychainView> =>
+  call('ai_set_key', { provider, key });
+
+/** Removes a provider's key from the keychain. */
+export const aiForgetKey = (provider: string): Promise<KeychainView> =>
+  call('ai_forget_key', { provider });
