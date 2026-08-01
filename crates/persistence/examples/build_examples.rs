@@ -31,15 +31,50 @@ fn main() {
     let examples = root.join("examples");
     std::fs::create_dir_all(&examples).expect("the examples directory should be writable");
 
-    for (name, stack) in [
+    for (name, mut stack) in [
         ("Address Book", address_book()),
         ("Recipe Box", recipe_box()),
         ("Todo", todo()),
     ] {
+        freeze_timestamps(&mut stack);
         let path = examples.join(format!("{name}.hl"));
         save(&path, &stack).unwrap_or_else(|error| panic!("could not write {name}: {error}"));
         println!("wrote {}", path.display());
     }
+}
+
+/// The time every object in an example claims to have been made.
+///
+/// Real objects are stamped with the clock. The examples are stamped with a
+/// constant so that regenerating them produces byte-identical files, which is
+/// what lets CI check that `examples/` still matches this program.
+const EXAMPLE_TIME: u64 = 1_735_689_600_000; // 2025-01-01T00:00:00Z
+
+/// Gives every object in the stack the same timestamps.
+fn freeze_timestamps(stack: &mut Stack) {
+    let backgrounds: Vec<Id> = stack.backgrounds().iter().map(Object::id).collect();
+    let cards: Vec<Id> = stack.cards().iter().map(Object::id).collect();
+
+    stamp(stack);
+    for id in backgrounds {
+        let background = stack.background_mut(id).expect("it was just listed");
+        stamp(background);
+        for part in background.parts_mut() {
+            stamp(part);
+        }
+    }
+    for id in cards {
+        let card = stack.card_mut(id).expect("it was just listed");
+        stamp(card);
+        for part in card.parts_mut() {
+            stamp(part);
+        }
+    }
+}
+
+fn stamp(object: &mut impl Object) {
+    object.core_mut().created_at = EXAMPLE_TIME;
+    object.core_mut().updated_at = EXAMPLE_TIME;
 }
 
 /// The repository root, found from where Cargo says this crate lives.

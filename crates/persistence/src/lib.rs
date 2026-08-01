@@ -1,11 +1,11 @@
 //! Reading and writing HyperLab stacks.
 //!
 //! A stack is saved as a `.hl` *bundle*: a directory of small JSON files
-//! plus one `.hypertalk` file per script. See [`format`] for the layout and
+//! plus one `.hypertalk` file per script. See [`mod@format`] for the layout and
 //! why it is shaped that way.
 //!
-//! Persistence contains no runtime logic. It turns a [`Stack`] into files and
-//! files back into a [`Stack`], and does nothing else — no defaults beyond
+//! Persistence contains no runtime logic. It turns a [`Stack`](hyperlab_stack::Stack) into files and
+//! files back into one, and does nothing else — no defaults beyond
 //! what the object model itself supplies, no evaluation, no editing.
 //!
 //! ```
