@@ -20,6 +20,9 @@ printed at any size without going soft.
 **Go ▸ Map ▸ Save as PNG…** saves the map, at twice the size it is shown, with
 the same greyed dead ends and bold current card.
 
+Every example is checked in as a PDF beside its film, so the exporter's
+output can be read without building anything.
+
 The two are made in different places on purpose: a card is in the model, so
 [`hyperlab-export`](crates/export) builds it from there, while the map's shape
 is a layout the window worked out and only the window has it.

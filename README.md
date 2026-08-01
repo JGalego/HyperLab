@@ -119,8 +119,12 @@ deep. The last one asks a real model, and says so plainly when none is set up.
 
 **Todo** — a list, a dialog, and a loop.
 
+Every one of them is also a PDF in [`docs/`](docs) — the same cards, exported
+by HyperLab itself, if you would rather read them than run them.
+
 ```sh
 cargo run -p hyperlab-persistence --example build_examples
+cargo run -p hyperlab-export --example export_examples
 ```
 
 ---
