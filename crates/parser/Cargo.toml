@@ -1,0 +1,21 @@
+[package]
+name = "hyperlab-parser"
+description = "A modern HyperTalk lexer and parser producing an immutable AST."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde = { workspace = true, optional = true }
+
+[features]
+default = []
+# Makes the AST serializable, which the desktop app uses to show parse
+# results and which future tooling can use to ship ASTs across a wire.
+serde = ["dep:serde"]
+
+[lints]
+workspace = true

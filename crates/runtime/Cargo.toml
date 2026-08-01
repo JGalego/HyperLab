@@ -1,0 +1,20 @@
+[package]
+name = "hyperlab-runtime"
+description = "The HyperLab runtime: commands, undo, message dispatch and the HyperTalk interpreter."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+hyperlab-parser = { workspace = true, features = ["serde"] }
+hyperlab-stack.workspace = true
+serde.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
+
+[lints]
+workspace = true
