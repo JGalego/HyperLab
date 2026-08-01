@@ -8,7 +8,7 @@ members = ["crates/*"]
 exclude = ["apps/desktop/src-tauri"]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.88"
 license = "MIT"
@@ -16,18 +16,18 @@ repository = "https://github.com/JGalego/hyperlab"
 authors = ["HyperLab contributors"]
 
 [workspace.dependencies]
-hyperlab-ai = { path = "crates/ai", version = "0.1.0" }
-hyperlab-ai-providers = { path = "crates/ai-providers", version = "0.1.0" }
-hyperlab-assistant = { path = "crates/assistant", version = "0.1.0" }
-hyperlab-decker = { path = "crates/decker", version = "0.1.0" }
-hyperlab-export = { path = "crates/export", version = "0.1.0" }
-hyperlab-graph = { path = "crates/graph", version = "0.1.0" }
-hyperlab-hyperscript = { path = "crates/hyperscript", version = "0.1.0" }
-hyperlab-mcp = { path = "crates/mcp", version = "0.1.0" }
-hyperlab-parser = { path = "crates/parser", version = "0.1.0" }
-hyperlab-persistence = { path = "crates/persistence", version = "0.1.0" }
-hyperlab-runtime = { path = "crates/runtime", version = "0.1.0" }
-hyperlab-stack = { path = "crates/stack", version = "0.1.0" }
+hyperlab-ai = { path = "crates/ai", version = "0.2.0" }
+hyperlab-ai-providers = { path = "crates/ai-providers", version = "0.2.0" }
+hyperlab-assistant = { path = "crates/assistant", version = "0.2.0" }
+hyperlab-decker = { path = "crates/decker", version = "0.2.0" }
+hyperlab-export = { path = "crates/export", version = "0.2.0" }
+hyperlab-graph = { path = "crates/graph", version = "0.2.0" }
+hyperlab-hyperscript = { path = "crates/hyperscript", version = "0.2.0" }
+hyperlab-mcp = { path = "crates/mcp", version = "0.2.0" }
+hyperlab-parser = { path = "crates/parser", version = "0.2.0" }
+hyperlab-persistence = { path = "crates/persistence", version = "0.2.0" }
+hyperlab-runtime = { path = "crates/runtime", version = "0.2.0" }
+hyperlab-stack = { path = "crates/stack", version = "0.2.0" }
 
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

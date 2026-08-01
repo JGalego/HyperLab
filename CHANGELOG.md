@@ -7,7 +7,7 @@ does, the entry says so and says what to do about it.
 Each entry is written for the person deciding whether to upgrade, so it
 describes what is now possible rather than which files moved.
 
-## Unreleased
+## 0.2.0 — 2026-08-01
 
 ### Getting a stack out of HyperLab
 
