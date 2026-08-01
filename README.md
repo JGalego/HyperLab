@@ -65,9 +65,6 @@ Clone the repository:
 
 ```sh
 git clone https://github.com/JGalego/hyperlab
-```
-
-```sh
 cd hyperlab
 ```
 
@@ -81,9 +78,6 @@ Run the desktop application:
 
 ```sh
 cd apps/desktop
-```
-
-```sh
 npm install
 ```
 
