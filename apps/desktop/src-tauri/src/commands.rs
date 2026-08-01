@@ -706,3 +706,60 @@ fn title_case(word: &str) -> String {
         first.to_uppercase().collect::<String>() + characters.as_str()
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// A file in a directory that cleans itself up.
+    struct Scratch(std::path::PathBuf);
+
+    impl Scratch {
+        fn holding(bytes: &[u8]) -> Self {
+            let path = std::env::temp_dir().join(format!(
+                "hyperlab-commands-{}-{:?}",
+                std::process::id(),
+                std::thread::current().id()
+            ));
+            std::fs::create_dir_all(&path).expect("temp should be writable");
+            let file = path.join("thing.png");
+            std::fs::write(&file, bytes).expect("temp should be writable");
+            Self(path)
+        }
+
+        fn file(&self) -> std::path::PathBuf {
+            self.0.join("thing.png")
+        }
+    }
+
+    impl Drop for Scratch {
+        fn drop(&mut self) {
+            std::fs::remove_dir_all(&self.0).ok();
+        }
+    }
+
+    #[test]
+    fn a_small_file_is_read_whole() {
+        let scratch = Scratch::holding(b"a picture, notionally");
+        assert_eq!(
+            read_at_most(&scratch.file(), 1024).unwrap(),
+            b"a picture, notionally"
+        );
+    }
+
+    #[test]
+    fn a_file_over_the_limit_is_refused_before_it_is_read() {
+        // The length is checked first on purpose: pointing this at a disk
+        // image should refuse, not allocate several gigabytes and then
+        // refuse.
+        let scratch = Scratch::holding(&[0u8; 4096]);
+        let error = read_at_most(&scratch.file(), 1024).unwrap_err();
+        assert!(error.contains("MB"), "unhelpful: {error}");
+    }
+
+    #[test]
+    fn a_file_that_is_not_there_says_which_one() {
+        let error = read_at_most(std::path::Path::new("/nowhere/at/all.png"), 1024).unwrap_err();
+        assert!(error.contains("all.png"), "unhelpful: {error}");
+    }
+}
