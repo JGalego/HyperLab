@@ -19,27 +19,33 @@ import { Dialog } from './components/Dialog';
 import { Inspector } from './components/Inspector';
 import { MenuBar, type MenuEntry } from './components/MenuBar';
 import { StatusBar } from './components/StatusBar';
-import type { Effect, Outcome, PartView, Selection, StackView, Tool } from './types';
-
-/** Effects that need the user to press OK. */
-type Modal = Extract<Effect, { kind: 'answer' } | { kind: 'ask' }>;
+import type {
+  DialogRequest,
+  Outcome,
+  PartView,
+  Selection,
+  StackView,
+  Tool,
+} from './types';
 
 export function App() {
   const [view, setView] = useState<StackView>(api.emptyView);
   const [selection, setSelection] = useState<Selection | null>(null);
   const [tool, setTool] = useState<Tool>('browse');
   const [error, setError] = useState<string | null>(null);
-  const [dialogs, setDialogs] = useState<Modal[]>([]);
+  const [dialog, setDialog] = useState<DialogRequest | null>(null);
   const [ready, setReady] = useState(false);
 
-  /** Applies whatever a command gave back. */
+  /**
+   * Applies whatever a command gave back.
+   *
+   * Dialogs are not in here: a script that shows one is *blocked* until it is
+   * answered, so it arrives as an event while the command is still running.
+   * By the time an outcome comes back, the dialogs are long dismissed.
+   */
   const apply = useCallback((outcome: Outcome) => {
     setView(outcome.view);
     setError(null);
-    const modals = outcome.effects.filter(
-      (effect): effect is Modal => effect.kind === 'answer' || effect.kind === 'ask',
-    );
-    if (modals.length > 0) setDialogs((queued) => [...queued, ...modals]);
   }, []);
 
   /** Runs a command, showing anything that went wrong rather than throwing. */
@@ -49,6 +55,21 @@ export function App() {
     },
     [apply],
   );
+
+  // Watching for dialogs comes first: a stack whose openStack handler asks a
+  // question would otherwise block with nothing listening.
+  useEffect(() => {
+    let stop: (() => void) | undefined;
+    let cancelled = false;
+    api.onDialog(setDialog).then((unlisten) => {
+      if (cancelled) unlisten();
+      else stop = unlisten;
+    });
+    return () => {
+      cancelled = true;
+      stop?.();
+    };
+  }, []);
 
   useEffect(() => {
     if (!api.inDesktopApp()) {
@@ -210,8 +231,6 @@ export function App() {
     },
   ];
 
-  const dialog = dialogs[0];
-
   return (
     <div className="app">
       <MenuBar view={view} menus={menus} />
@@ -257,8 +276,11 @@ export function App() {
 
       {dialog && (
         <Dialog
-          effect={dialog}
-          onDismiss={() => setDialogs((queued) => queued.slice(1))}
+          request={dialog}
+          onReply={(text) => {
+            setDialog(null);
+            api.dialogReply(text).catch((reason: unknown) => setError(String(reason)));
+          }}
         />
       )}
     </div>

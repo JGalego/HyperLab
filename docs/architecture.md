@@ -839,15 +839,17 @@ language can be tested, forked or reused on its own.
 | AI can do no more than a person | `hyperlab-mcp` tools are wrappers around commands |
 | Nothing is evaluated while parsing | `hyperlab-parser` has no dependency it could evaluate against |
 | The renderer cannot mutate | It is given a `StackView`, a serialized snapshot, not an object |
+| A script can wait for a person | Commands run off the message loop, so `Host::ask` may block while the window stays alive |
 
 ## What is deliberately not built yet
 
 Naming these is part of the design: an architecture is as much about the
 seams left open as about the code written.
 
-- **Suspending a handler.** `ask` records the question and the script carries
-  on. Returning an answer mid-handler needs the interpreter to be resumable;
-  the `Effect`/`Host` split is the seam where that will go.
+- **Interrupting a running script.** A loop that will not stop can only be
+  ended by the million-iteration limit. Stopping one on request needs a flag
+  the interpreter checks between statements — the same place the future
+  debugger will pause.
 - **Parsed-script caching.** Scripts are parsed on every dispatch. This is
   fast enough for stacks of any size a person will write by hand, and the
   moment it is not, the cache belongs in `Runtime` behind `script_of`.

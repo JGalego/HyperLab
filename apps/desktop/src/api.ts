@@ -8,8 +8,19 @@
  */
 
 import { invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
 
-import type { Layer, ObjectKind, Outcome, PropertyView, StackView } from './types';
+import type {
+  DialogRequest,
+  Layer,
+  ObjectKind,
+  Outcome,
+  PropertyView,
+  StackView,
+} from './types';
+
+/** The event the shell emits when a script wants a dialog shown. */
+const DIALOG_EVENT = 'hyperlab://dialog';
 
 /**
  * Whether we are running inside the desktop shell.
@@ -30,6 +41,24 @@ async function call<T>(command: string, args?: Record<string, unknown>): Promise
   }
   return invoke<T>(command, args);
 }
+
+/**
+ * Watches for dialogs a running script wants shown.
+ *
+ * Resolves to a function that stops watching. The script stays blocked until
+ * {@link dialogReply} is called, so a handler that never replies leaves it
+ * waiting.
+ */
+export async function onDialog(
+  handler: (request: DialogRequest) => void,
+): Promise<() => void> {
+  if (!inDesktopApp()) return () => {};
+  return listen<DialogRequest>(DIALOG_EVENT, (event) => handler(event.payload));
+}
+
+/** Answers the dialog a script is waiting on. `null` means cancelled. */
+export const dialogReply = (text: string | null): Promise<boolean> =>
+  call('dialog_reply', { text });
 
 /** Takes a fresh snapshot without changing anything. */
 export const getView = (): Promise<Outcome> => call('get_view');

@@ -567,6 +567,23 @@ body {
   user-select: text;
 }
 
+.dialog__field {
+  width: 100%;
+  margin-bottom: var(--space-wide);
+  padding: var(--space-hair) var(--space-tight);
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: var(--border);
+  border-radius: 0;
+  user-select: text;
+}
+
+.dialog__field:focus {
+  outline: 2px solid var(--ink);
+  outline-offset: -1px;
+}
+
 .dialog__buttons {
   display: flex;
   justify-content: flex-end;

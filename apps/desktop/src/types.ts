@@ -63,7 +63,22 @@ export interface StackView {
   path: string | null;
 }
 
-/** Something a script asked the world to do. */
+/**
+ * A modal dialog the runtime is waiting on.
+ *
+ * Unlike an {@link Effect}, this arrives *while* a script is running: the
+ * script is blocked until the answer goes back.
+ */
+export type DialogRequest =
+  { kind: 'answer'; message: string } | { kind: 'ask'; prompt: string; default: string };
+
+/**
+ * Something a script asked the world to do, collected while it ran.
+ *
+ * `answer` and `ask` appear here too, for callers with no window — tests,
+ * and the MCP tools. The desktop shows them as they happen instead, through
+ * {@link DialogRequest}, so this list is not replayed on screen.
+ */
 export type Effect =
   | { kind: 'answer'; message: string }
   | { kind: 'ask'; prompt: string; default: string }

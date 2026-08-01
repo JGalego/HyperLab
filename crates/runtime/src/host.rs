@@ -5,8 +5,16 @@
 //! records an [`Effect`] for everything it wants the world to do, and asks a
 //! [`Host`] for the answers it needs back.
 //!
-//! The desktop app replays the effects after a handler finishes. Tests read
-//! them directly. Nothing about the runtime changes between the two.
+//! The two serve different purposes, and both are needed:
+//!
+//! * The **host** is called *while the script runs*. It may block: `answer`
+//!   and `ask` are modal, and the answer to `ask` has to reach the next line.
+//! * The **effects** are a record, read once the handler has finished. They
+//!   are how a caller with no window — a test, an MCP tool — finds out what a
+//!   script did.
+//!
+//! A host that cannot ask anything ([`SilentHost`]) cancels every question,
+//! which is the behaviour every script must already cope with.
 
 use hyperlab_stack::Id;
 use serde::{Deserialize, Serialize};

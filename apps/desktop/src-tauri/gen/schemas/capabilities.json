@@ -1,1 +1,1 @@
-{}
+{"default":{"identifier":"default","description":"What the HyperLab window is allowed to ask the shell for. Everything that touches a stack goes through this crate's own commands, which are not listed here because they are not plugin commands — this file grants only the platform facilities the interface needs.","local":true,"windows":["main"],"permissions":["core:default","dialog:allow-open","dialog:allow-save"]}}
