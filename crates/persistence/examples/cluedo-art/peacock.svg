@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <title>Mrs Peacock</title>
-  <defs><clipPath id="d"><circle cx="32" cy="32" r="29.5"/></clipPath></defs>
-  <circle cx="32" cy="32" r="30.5" fill="#24548f" stroke="#141414" stroke-width="2.5"/>
-  <g clip-path="url(#d)"><circle cx="32" cy="24" r="9.5" fill="#f4f1ea"/><path d="M12.5 58 a19.5 18 0 0 1 39 0 z" fill="#ddd6c9"/><circle cx="28.4" cy="23" r="1.35" fill="#0e2949"/><circle cx="35.6" cy="23" r="1.35" fill="#0e2949"/><path d="M11 20 c7.5 -7.5 34.5 -7.5 42 0 c-7.5 3.6 -34.5 3.6 -42 0 z" fill="#0e2949"/><path d="M40 17 c7.5 -12.5 14.5 -9 11.5 -1.8 c-2.6 6.2 -8.4 5.6 -11.5 1.8 z" fill="#0e2949"/><path d="M23 41 c5.2 5 13.8 5 18 0" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-dasharray="1.4 2.6" stroke-linecap="round"/><path d="M29.5 28.5 c1.6 1.1 3.4 1.1 5 0" fill="none" stroke="#0e2949" stroke-width="1.3" stroke-linecap="round"/></g>
+  <defs><pattern id="cross" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#fff"/><path d="M0 7 L7 0 M0 0 L7 7" stroke="#000" stroke-width="1.6"/></pattern><clipPath id="d"><circle cx="32" cy="32" r="28"/></clipPath></defs>
+  <circle cx="32" cy="32" r="30" fill="#fff" stroke="#000" stroke-width="4"/>
+  <g clip-path="url(#d)" fill="#fff" stroke="#000" stroke-width="2.4"
+     stroke-linejoin="round"><path d="M13 60 a19 17 0 0 1 38 0 z" fill="url(#cross)"/><circle cx="32" cy="24" r="9"/><circle cx="28.6" cy="22.5" r="1.5" fill="#000" stroke="none"/><circle cx="35.4" cy="22.5" r="1.5" fill="#000" stroke="none"/><path d="M28.5 30.5 q3.5 2 7 0" fill="none" stroke-width="1.8"/><path d="M11 19 c8 -8 34 -8 42 0 c-8 4 -34 4 -42 0 z" fill="#000"/><path d="M41 16 c8 -13 15 -9 12 -1.5 c-3 6.5 -9 6 -12 1.5 z" fill="#000"/><path d="M23 40 c5 5.5 13 5.5 18 0" fill="none" stroke-width="2.6" stroke-dasharray="1.6 3.2" stroke-linecap="round"/></g>
 </svg>
