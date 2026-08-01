@@ -10,6 +10,10 @@ authors.workspace = true
 
 [dependencies]
 hyperlab-ai.workspace = true
+# Only the `hyperlab-mcp` binary needs this: a server has to be able to open
+# the stack it is serving. Cargo has no way to say "for this binary only", so
+# it is declared here rather than in a crate of its own for one `main`.
+hyperlab-persistence.workspace = true
 hyperlab-runtime.workspace = true
 hyperlab-stack.workspace = true
 serde.workspace = true
