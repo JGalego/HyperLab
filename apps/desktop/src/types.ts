@@ -1,0 +1,88 @@
+/**
+ * The shapes the runtime sends to the renderer.
+ *
+ * These mirror the Rust types in `src-tauri/src/view.rs`. They are the only
+ * description of a stack the interface ever sees: there is no client-side
+ * model, no store holding a second copy, and nothing to keep in step.
+ */
+
+/** What kind of object something is. */
+export type ObjectKind = 'stack' | 'background' | 'card' | 'button' | 'field';
+
+/** Whether a part belongs to one card or to a shared background. */
+export type Layer = 'card' | 'background';
+
+/** A button or a field, ready to draw. */
+export interface PartView {
+  id: number;
+  kind: 'button' | 'field';
+  layer: Layer;
+  name: string;
+  text: string;
+  /** left, top, width, height, in card space. */
+  rect: [number, number, number, number];
+  visible: boolean;
+  enabled: boolean;
+  style: string;
+  locked: boolean;
+  script: string;
+  properties: PropertyView[];
+}
+
+/** One row of the property editor. */
+export interface PropertyView {
+  name: string;
+  value: string | number | boolean | null;
+  readOnly: boolean;
+}
+
+/** A card or a background, with everything on it. */
+export interface CardView {
+  id: number;
+  kind: 'card' | 'background';
+  name: string;
+  script: string;
+  parts: PartView[];
+}
+
+/** Everything the window needs to draw itself. */
+export interface StackView {
+  stackName: string;
+  stackId: number;
+  stackScript: string;
+  cardSize: { width: number; height: number };
+  cardCount: number;
+  cardNumber: number;
+  card: CardView;
+  background: CardView | null;
+  messageBox: string;
+  /** What undo would do, or null if there is nothing to undo. */
+  undo: string | null;
+  redo: string | null;
+  dirty: boolean;
+  path: string | null;
+}
+
+/** Something a script asked the world to do. */
+export type Effect =
+  | { kind: 'answer'; message: string }
+  | { kind: 'ask'; prompt: string; default: string }
+  | { kind: 'beep' }
+  | { kind: 'wait'; ticks: number }
+  | { kind: 'navigated'; card: number }
+  | { kind: 'messageBox'; text: string };
+
+/** What every command gives back. */
+export interface Outcome {
+  view: StackView;
+  effects: Effect[];
+}
+
+/** What the inspector is looking at. */
+export interface Selection {
+  kind: ObjectKind;
+  id: number;
+}
+
+/** Whether clicking runs a script or picks an object up. */
+export type Tool = 'browse' | 'edit';

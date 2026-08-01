@@ -1,0 +1,40 @@
+[package]
+name = "hyperlab-desktop"
+description = "The HyperLab desktop application."
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+repository = "https://github.com/JGalego/hyperlab"
+authors = ["HyperLab contributors"]
+
+# This crate is its own workspace: it needs Tauri, which needs system
+# libraries the core crates do not. `cargo test` at the repository root
+# therefore works on any machine, with or without a GUI toolchain.
+[workspace]
+
+[lib]
+name = "hyperlab_desktop"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+hyperlab-ai = { path = "../../../crates/ai" }
+hyperlab-mcp = { path = "../../../crates/mcp" }
+hyperlab-persistence = { path = "../../../crates/persistence" }
+hyperlab-runtime = { path = "../../../crates/runtime" }
+hyperlab-stack = { path = "../../../crates/stack" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+
+[lints.rust]
+missing_docs = "warn"
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
