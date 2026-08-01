@@ -1,8 +1,12 @@
 name: Release
 
-# Tag a commit and this builds something people can install:
+# Builds something people can install, either way round:
 #
-#     git tag v0.2.0 && git push origin v0.2.0
+#     git tag v0.2.0 && git push origin v0.2.0     # tag first
+#     …or run this workflow from a branch          # tag made here
+#
+# The tag comes from `tauri.conf.json` in the second case, so a release is
+# always named after the version it actually contains.
 #
 # It leaves a *draft* release with the installers and the command-line tools
 # attached. A person writes the notes and presses publish, because a build
@@ -12,9 +16,6 @@ on:
     tags: ['v*']
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'Tag to build (must already exist)'
-        required: true
       publish:
         description: 'Publish the draft that is already built, instead of building'
         type: boolean
@@ -33,16 +34,15 @@ jobs:
       version: ${{ steps.read.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.tag || github.ref }}
 
       - id: read
         run: |
-          tag="${{ inputs.tag || github.ref_name }}"
           configured=$(jq -r .version apps/desktop/src-tauri/tauri.conf.json)
           echo "version=$configured" >> "$GITHUB_OUTPUT"
-          if [ "$tag" != "v$configured" ]; then
-            echo "::error::tag $tag does not match tauri.conf.json version $configured."
+          # Only a tag can disagree. Run from a branch and the tag is made
+          # from this number, so there is nothing to disagree with.
+          if [ "${{ github.ref_type }}" = "tag" ] && [ "${{ github.ref_name }}" != "v$configured" ]; then
+            echo "::error::tag ${{ github.ref_name }} does not match tauri.conf.json version $configured."
             echo "::error::Set the version in apps/desktop/{package.json,src-tauri/Cargo.toml,src-tauri/tauri.conf.json} and re-tag."
             exit 1
           fi
@@ -51,7 +51,8 @@ jobs:
   # Eight build jobs upload to one release. If each of them is allowed to
   # create-it-if-missing, several will decide it is missing at the same
   # moment and GitHub will happily keep every draft they make. So the draft
-  # is made once, here, and the builders only ever attach to it.
+  # is made once, here — along with the tag, when there is not one yet — and
+  # the builders only ever attach to it.
   draft:
     name: Open the draft
     needs: check-version
@@ -98,8 +99,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.tag || github.ref }}
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -188,8 +187,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.tag || github.ref }}
 
       - uses: dtolnay/rust-toolchain@stable
         with:
