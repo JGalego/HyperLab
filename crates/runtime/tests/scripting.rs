@@ -112,6 +112,10 @@ impl Fixture {
             .as_text()
     }
 
+    fn property_of(&self, object: ObjectId, name: &str) -> Option<Value> {
+        self.runtime.object(object).unwrap().property(name)
+    }
+
     fn set_text(&mut self, field: ObjectId, text: &str) {
         self.runtime
             .execute(Command::SetProperty {
@@ -891,4 +895,81 @@ fn a_host_sees_dialogs_in_the_order_the_script_showed_them() {
         vec!["answer: first", "ask: second", "answer: third"]
     );
     assert_eq!(fixture.text_of(fixture.name_field), "typed");
+}
+
+// ------------------------------------------------------------------ pictures
+
+#[test]
+fn a_script_can_address_an_image_like_any_other_part() {
+    // The payoff for making a picture a `Part` rather than a new kind of
+    // object: hiding, showing and swapping artwork needed no new grammar.
+    let mut fixture = Fixture::new();
+    let card = fixture.runtime.current_card();
+    let image = fixture
+        .runtime
+        .execute(Command::CreatePart {
+            owner: PartOwner::Card { id: card },
+            kind: PartKind::Image,
+            name: "Board".into(),
+            geometry: Rect::new(0, 0, 100, 100),
+        })
+        .unwrap()
+        .unwrap();
+    fixture
+        .runtime
+        .execute(Command::SetProperty {
+            object: image,
+            property: "source".into(),
+            value: Some(Value::text("study.svg")),
+        })
+        .unwrap();
+
+    fixture.run("hide image \"Board\"");
+    assert_eq!(
+        fixture.property_of(image, "visible"),
+        Some(Value::Bool(false)),
+        "`hide` should work on a picture"
+    );
+
+    fixture.run("set the source of image \"Board\" to \"library.svg\"");
+    assert_eq!(
+        fixture.property_of(image, "source"),
+        Some(Value::text("library.svg"))
+    );
+
+    fixture.run("put the number of images into field \"Notes\"");
+    assert_eq!(fixture.text_of(fixture.notes_field), "1");
+
+    // The abbreviation, and reaching it by number rather than by name.
+    fixture.run("show img 1");
+    assert_eq!(
+        fixture.property_of(image, "visible"),
+        Some(Value::Bool(true))
+    );
+}
+
+#[test]
+fn clicking_a_picture_runs_its_script() {
+    let mut fixture = Fixture::new();
+    let card = fixture.runtime.current_card();
+    let image = fixture
+        .runtime
+        .execute(Command::CreatePart {
+            owner: PartOwner::Card { id: card },
+            kind: PartKind::Image,
+            name: "Study".into(),
+            geometry: Rect::new(0, 0, 100, 100),
+        })
+        .unwrap()
+        .unwrap();
+    fixture.script(
+        image,
+        "on mouseUp\n  put \"the study\" into field \"Notes\"\nend mouseUp",
+    );
+
+    fixture
+        .runtime
+        .send_message(&Message::new("mouseUp"), image)
+        .unwrap();
+    assert_eq!(fixture.text_of(fixture.notes_field), "the study");
 }

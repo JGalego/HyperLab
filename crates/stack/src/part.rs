@@ -8,9 +8,11 @@ use crate::{
 
 /// Which kind of part this is.
 ///
-/// Buttons and fields share one type because they share almost everything:
-/// geometry, properties, a script and a place in the message path. Only their
-/// defaults and their rendering differ.
+/// The kinds share one type because they share almost everything: geometry,
+/// properties, a script and a place in the message path. Only their defaults
+/// and their rendering differ — which is why a picture is a part rather than
+/// a new kind of object, and why a picture can be clicked, moved, hidden and
+/// scripted without any of that being written twice.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub enum PartKind {
@@ -18,6 +20,8 @@ pub enum PartKind {
     Button,
     /// Something to read or type into.
     Field,
+    /// A picture, drawn from the stack's own image library.
+    Image,
 }
 
 impl PartKind {
@@ -27,6 +31,7 @@ impl PartKind {
         match self {
             Self::Button => ObjectKind::Button,
             Self::Field => ObjectKind::Field,
+            Self::Image => ObjectKind::Image,
         }
     }
 
@@ -36,6 +41,7 @@ impl PartKind {
         match self {
             Self::Button => Size::new(96, 24),
             Self::Field => Size::new(160, 22),
+            Self::Image => Size::new(128, 96),
         }
     }
 }
@@ -80,11 +86,16 @@ impl Part {
     }
 
     /// The text a field holds, or the label a button shows.
+    ///
+    /// A picture has none. Its content is a file, reachable as its `source`
+    /// property, and pretending otherwise would make `the text of image 1`
+    /// mean something it does not.
     #[must_use]
     pub fn text(&self) -> String {
         match self.kind {
             PartKind::Field => self.property("text").unwrap_or(Value::Empty).as_text(),
             PartKind::Button => self.core.name.clone(),
+            PartKind::Image => String::new(),
         }
     }
 
@@ -108,6 +119,13 @@ impl Part {
                 bag.set_default("text", Value::Empty);
                 bag.set_default("locked", false);
                 bag.set_default("wrap", true);
+            }
+            PartKind::Image => {
+                // Which picture, by the name it has in the stack's library.
+                // Empty means the part is a placeholder, which is what a
+                // freshly drawn one is until a picture is chosen.
+                bag.set_default("source", Value::Empty);
+                bag.set_default("style", "transparent");
             }
         }
     }

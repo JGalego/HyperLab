@@ -1,4 +1,4 @@
-/** Drawing one button or field. */
+/** Drawing one part. */
 
 import { useEffect, useRef, useState } from 'react';
 
@@ -8,6 +8,8 @@ interface Props {
   part: PartView;
   tool: Tool;
   selected: boolean;
+  /** The picture an image part draws, once it has been fetched. */
+  picture: string | undefined;
   /** Browse mode: the part was clicked. */
   onClick: (part: PartView) => void;
   /** Edit mode: the part was picked. */
@@ -23,7 +25,16 @@ interface Props {
  * changes anything: even dragging only reports where the part ended up, and
  * the runtime decides what that means.
  */
-export function Part({ part, tool, selected, onClick, onSelect, onMove, onEdit }: Props) {
+export function Part({
+  part,
+  tool,
+  selected,
+  picture,
+  onClick,
+  onSelect,
+  onMove,
+  onEdit,
+}: Props) {
   const [left, top, width, height] = part.rect;
   const [offset, setOffset] = useState<{ dx: number; dy: number } | null>(null);
   const origin = useRef({ x: 0, y: 0 });
@@ -69,7 +80,7 @@ export function Part({ part, tool, selected, onClick, onSelect, onMove, onEdit }
   };
   const classes = [
     'part',
-    part.kind === 'button' ? 'button' : 'field',
+    part.kind,
     styleClass(part),
     part.visible ? '' : 'part--hidden',
     selected ? 'part--selected' : '',
@@ -91,7 +102,22 @@ export function Part({ part, tool, selected, onClick, onSelect, onMove, onEdit }
           setOffset({ dx: 0, dy: 0 });
         }}
       >
-        {part.kind === 'button' ? part.name : part.text}
+        {part.kind === 'image' ? <Picture part={part} picture={picture} /> : null}
+        {part.kind === 'button' ? part.name : ''}
+        {part.kind === 'field' ? part.text : ''}
+      </div>
+    );
+  }
+
+  if (part.kind === 'image') {
+    return (
+      <div
+        className={classes}
+        style={style}
+        role={part.script === '' ? undefined : 'button'}
+        onClick={() => onClick(part)}
+      >
+        <Picture part={part} picture={picture} />
       </div>
     );
   }
@@ -125,6 +151,28 @@ export function Part({ part, tool, selected, onClick, onSelect, onMove, onEdit }
   );
 }
 
+/**
+ * The picture itself.
+ *
+ * Always an `<img>`, never an inlined `<svg>`. A browser runs no script and
+ * fetches nothing for an image loaded this way, so a stack someone sent you
+ * cannot phone home or reach into the window — and the model refuses bytes
+ * that are not the format they claim, so the two checks stand together.
+ */
+function Picture({ part, picture }: { part: PartView; picture: string | undefined }) {
+  if (part.source === '') {
+    return <span className="image__missing">no picture chosen</span>;
+  }
+  if (picture === undefined) {
+    // Fetched by name after the snapshot arrives, so there is a moment with
+    // nothing to draw. Saying which picture beats an empty box.
+    return <span className="image__missing">{part.source}</span>;
+  }
+  return (
+    <img className="image__picture" src={picture} alt={part.name} draggable={false} />
+  );
+}
+
 /** Turns the `style` property into a class the theme can dress. */
 function styleClass(part: PartView): string {
   const style = part.style.toLowerCase();
@@ -132,6 +180,9 @@ function styleClass(part: PartView): string {
     if (style === 'rectangle') return 'button--rectangle';
     if (style === 'transparent') return 'button--transparent';
     return '';
+  }
+  if (part.kind === 'image') {
+    return style === 'rectangle' ? 'image--framed' : '';
   }
   if (style === 'transparent') return 'field--transparent';
   if (style === 'shadow') return 'field--shadow';

@@ -53,7 +53,28 @@ const OBJECT_WORDS: &[&str] = &[
     "btn",
     "field",
     "fld",
+    "image",
+    "img",
 ];
+
+/// The words that introduce a part, with their abbreviations.
+///
+/// One table rather than a spelling test on the first letter: `image` and
+/// `button` would both have to be told apart from `field` somehow, and a
+/// table says which is which without anyone having to work it out.
+const PART_WORDS: &[&str] = &["button", "btn", "field", "fld", "image", "img"];
+
+/// The same words in the plural, for `the number of buttons`.
+const PART_PLURALS: &[&str] = &["buttons", "btns", "fields", "flds", "images", "imgs"];
+
+/// Which kind of part a word from [`PART_WORDS`] names.
+fn part_kind(word: &str) -> PartKind {
+    match word {
+        "button" | "btn" => PartKind::Button,
+        "image" | "img" => PartKind::Image,
+        _ => PartKind::Field,
+    }
+}
 
 /// Named constants. The runtime gives them values; the parser only needs to
 /// know they are not variables.
@@ -768,13 +789,11 @@ impl Parser {
 
         // A leading `card` or `background` may qualify a part instead of
         // naming one: `card field 1` is a field, not a card.
-        let layer = if self.peek().is_any(&["card", "cd"])
-            && self.peek_at(1).is_any(&["button", "btn", "field", "fld"])
-        {
+        let layer = if self.peek().is_any(&["card", "cd"]) && self.peek_at(1).is_any(PART_WORDS) {
             self.advance();
             Layer::Card
         } else if self.peek().is_any(&["background", "bkgnd", "bg"])
-            && self.peek_at(1).is_any(&["button", "btn", "field", "fld"])
+            && self.peek_at(1).is_any(PART_WORDS)
         {
             self.advance();
             Layer::Background
@@ -782,12 +801,8 @@ impl Parser {
             Layer::Unspecified
         };
 
-        if let Some(word) = self.accept_any(&["button", "btn", "field", "fld"]) {
-            let kind = if word.starts_with('b') {
-                PartKind::Button
-            } else {
-                PartKind::Field
-            };
+        if let Some(word) = self.accept_any(PART_WORDS) {
+            let kind = part_kind(&word);
             let specifier = Box::new(self.parse_specifier()?);
             let owner = if self.accept("of") {
                 Some(Box::new(self.parse_object_ref()?))
@@ -1132,17 +1147,11 @@ impl Parser {
     }
 
     fn parse_count_target(&mut self) -> ParseResult<CountTarget> {
-        let layer = if self.peek().is_any(&["card", "cd"])
-            && self
-                .peek_at(1)
-                .is_any(&["buttons", "btns", "fields", "flds"])
-        {
+        let layer = if self.peek().is_any(&["card", "cd"]) && self.peek_at(1).is_any(PART_PLURALS) {
             self.advance();
             Layer::Card
         } else if self.peek().is_any(&["background", "bkgnd", "bg"])
-            && self
-                .peek_at(1)
-                .is_any(&["buttons", "btns", "fields", "flds"])
+            && self.peek_at(1).is_any(PART_PLURALS)
         {
             self.advance();
             Layer::Background
@@ -1156,6 +1165,7 @@ impl Parser {
             "backgrounds" | "bkgnds" | "bgs" => return Ok(CountTarget::Backgrounds),
             "buttons" | "btns" => PartKind::Button,
             "fields" | "flds" => PartKind::Field,
+            "images" | "imgs" => PartKind::Image,
             "chars" | "characters" => return self.parse_chunk_count(ChunkKind::Char),
             "words" => return self.parse_chunk_count(ChunkKind::Word),
             "items" => return self.parse_chunk_count(ChunkKind::Item),

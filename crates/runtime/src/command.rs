@@ -10,8 +10,8 @@
 //! the same path through the system.
 
 use hyperlab_stack::{
-    Card, Id, Object, ObjectId, ObjectKind, Part, PartContainer, PartKind, Rect, Size, Stack,
-    StackError, Value,
+    Card, Id, Image, Object, ObjectId, ObjectKind, Part, PartContainer, PartKind, Rect, Size,
+    Stack, StackError, Value,
 };
 use serde::{Deserialize, Serialize};
 
@@ -144,6 +144,17 @@ pub enum Command {
         /// The new card size.
         size: Size,
     },
+    /// Puts a picture in the stack's library, or takes one out.
+    ///
+    /// Pictures travel with the stack, so importing one changes the document
+    /// and belongs in the undo history alongside everything else.
+    SetImage {
+        /// What the picture is called, which is also its file name in the
+        /// bundle.
+        name: String,
+        /// The picture, or `None` to remove it.
+        image: Option<Box<Image>>,
+    },
 }
 
 /// What applying a command produced.
@@ -180,6 +191,8 @@ impl Command {
             Self::SetScript { .. } => "Edit Script",
             Self::Rename { .. } => "Rename",
             Self::SetStackSize { .. } => "Resize Stack",
+            Self::SetImage { image: Some(_), .. } => "Add Image",
+            Self::SetImage { image: None, .. } => "Remove Image",
         }
     }
 
@@ -376,6 +389,19 @@ impl Command {
                     created: None,
                 })
             }
+
+            Self::SetImage { name, image } => {
+                let previous = stack.set_image(&name, image.map(|image| *image));
+                Ok(Applied {
+                    // Putting back exactly what was there, including nothing:
+                    // undoing an import must not leave the picture behind.
+                    inverse: Self::SetImage {
+                        name,
+                        image: previous.map(Box::new),
+                    },
+                    created: None,
+                })
+            }
         }
     }
 }
@@ -560,6 +586,43 @@ mod tests {
         assert_eq!(stack.object(card.kind, card.id).unwrap().name(), "Home");
         apply(&mut stack, applied.inverse);
         assert_eq!(stack.object(card.kind, card.id).unwrap().name(), "Card 1");
+    }
+
+    #[test]
+    fn importing_a_picture_undoes_to_no_picture_at_all() {
+        let mut stack = stack();
+        let mark = Image::new("mark.svg", b"<svg/>".to_vec()).unwrap();
+
+        let applied = Command::SetImage {
+            name: "mark.svg".into(),
+            image: Some(Box::new(mark.clone())),
+        }
+        .apply(&mut stack)
+        .unwrap();
+        assert_eq!(stack.image("mark.svg"), Some(&mark));
+
+        apply(&mut stack, applied.inverse);
+        assert!(
+            stack.image("mark.svg").is_none(),
+            "undoing an import must not leave the picture behind"
+        );
+    }
+
+    #[test]
+    fn replacing_a_picture_undoes_to_the_old_one() {
+        let mut stack = stack();
+        let first = Image::new("mark.svg", b"<svg id=\"1\"/>".to_vec()).unwrap();
+        let second = Image::new("mark.svg", b"<svg id=\"2\"/>".to_vec()).unwrap();
+        stack.set_image("mark.svg", Some(first.clone()));
+
+        let applied = Command::SetImage {
+            name: "mark.svg".into(),
+            image: Some(Box::new(second)),
+        }
+        .apply(&mut stack)
+        .unwrap();
+        apply(&mut stack, applied.inverse);
+        assert_eq!(stack.image("mark.svg"), Some(&first));
     }
 
     #[test]

@@ -1,10 +1,12 @@
 //! Stacks: the document.
 
+use std::collections::BTreeMap;
+
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    Background, Card, Id, IdGenerator, Object, ObjectCore, ObjectKind, Part, PartKind, Rect, Size,
-    StackError, StackResult, Value, geometry::Point,
+    Background, Card, Id, IdGenerator, Image, Object, ObjectCore, ObjectKind, Part, PartKind, Rect,
+    Size, StackError, StackResult, Value, geometry::Point,
 };
 
 /// A HyperLab document: one or more cards drawn on one or more backgrounds.
@@ -20,6 +22,12 @@ pub struct Stack {
     ids: IdGenerator,
     backgrounds: Vec<Background>,
     cards: Vec<Card>,
+    /// The pictures this stack carries, by name.
+    ///
+    /// Ordered, so a save writes them in the same order every time and a
+    /// bundle that has not changed produces no diff.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    images: BTreeMap<String, Image>,
 }
 
 impl Stack {
@@ -36,6 +44,7 @@ impl Stack {
             ids,
             backgrounds: vec![background],
             cards: vec![card],
+            images: BTreeMap::new(),
         }
     }
 
@@ -53,6 +62,7 @@ impl Stack {
             ids,
             backgrounds: Vec::new(),
             cards: Vec::new(),
+            images: BTreeMap::new(),
         }
     }
 
@@ -301,6 +311,14 @@ impl Stack {
         None
     }
 
+    /// Every part in the stack, cards first and then backgrounds.
+    pub fn parts(&self) -> impl Iterator<Item = &Part> {
+        use crate::PartContainer;
+        let cards = self.cards.iter().flat_map(PartContainer::parts);
+        let backgrounds = self.backgrounds.iter().flat_map(PartContainer::parts);
+        cards.chain(backgrounds)
+    }
+
     /// A part anywhere in the stack.
     #[must_use]
     pub fn part(&self, id: Id) -> Option<&Part> {
@@ -320,6 +338,57 @@ impl Stack {
         }
     }
 
+    // ------------------------------------------------------------ pictures
+
+    /// Every picture this stack carries, in name order.
+    #[must_use]
+    pub fn images(&self) -> &BTreeMap<String, Image> {
+        &self.images
+    }
+
+    /// One picture, by name.
+    #[must_use]
+    pub fn image(&self, name: &str) -> Option<&Image> {
+        self.images.get(name)
+    }
+
+    /// Puts a picture in the library, or takes one out.
+    ///
+    /// Returns whatever was there before, which is what makes the change
+    /// undoable. Only [`Command::SetImage`] should call this; everything else
+    /// goes through the command bus like every other change.
+    ///
+    /// [`Command::SetImage`]: ../hyperlab_runtime/enum.Command.html
+    pub fn set_image(&mut self, name: &str, image: Option<Image>) -> Option<Image> {
+        let previous = match image {
+            Some(image) => self.images.insert(name.to_string(), image),
+            None => self.images.remove(name),
+        };
+        self.touch();
+        previous
+    }
+
+    /// The names of pictures that no image part uses.
+    ///
+    /// Worth knowing before a save: a stack that has been edited for a while
+    /// accumulates pictures nothing draws.
+    #[must_use]
+    pub fn unused_images(&self) -> Vec<&str> {
+        let mut used = std::collections::BTreeSet::new();
+        for part in self.parts() {
+            if part.part_kind() == PartKind::Image
+                && let Some(source) = part.property("source")
+            {
+                used.insert(source.as_text());
+            }
+        }
+        self.images
+            .keys()
+            .filter(|name| !used.contains(*name))
+            .map(String::as_str)
+            .collect()
+    }
+
     /// Any object in the stack, by kind and id, as a plain [`Object`].
     ///
     /// The inspector and the script engine use this when they only need the
@@ -331,7 +400,7 @@ impl Stack {
             ObjectKind::Stack => None,
             ObjectKind::Background => self.background(id).map(|b| b as &dyn Object),
             ObjectKind::Card => self.card(id).map(|c| c as &dyn Object),
-            ObjectKind::Button | ObjectKind::Field => self
+            ObjectKind::Button | ObjectKind::Field | ObjectKind::Image => self
                 .part(id)
                 .filter(|part| part.kind() == kind)
                 .map(|p| p as &dyn Object),
@@ -345,7 +414,7 @@ impl Stack {
             ObjectKind::Stack => None,
             ObjectKind::Background => self.background_mut(id).map(|b| b as &mut dyn Object),
             ObjectKind::Card => self.card_mut(id).map(|c| c as &mut dyn Object),
-            ObjectKind::Button | ObjectKind::Field => self
+            ObjectKind::Button | ObjectKind::Field | ObjectKind::Image => self
                 .part_mut(id)
                 .filter(|part| part.kind() == kind)
                 .map(|p| p as &mut dyn Object),
@@ -538,11 +607,52 @@ mod tests {
     }
 
     #[test]
+    fn the_picture_library_holds_and_gives_back() {
+        let mut stack = Stack::new("Test");
+        let mark = Image::new("mark.svg", b"<svg/>".to_vec()).unwrap();
+
+        assert!(stack.set_image("mark.svg", Some(mark.clone())).is_none());
+        assert_eq!(stack.image("mark.svg"), Some(&mark));
+
+        // Replacing hands back what was there, which is what undo needs.
+        let other = Image::new("mark.svg", b"<svg id=\"2\"/>".to_vec()).unwrap();
+        assert_eq!(stack.set_image("mark.svg", Some(other)), Some(mark));
+        assert!(stack.set_image("mark.svg", None).is_some());
+        assert!(stack.images().is_empty());
+    }
+
+    #[test]
+    fn a_picture_nothing_draws_is_reported() {
+        let mut stack = Stack::new("Test");
+        stack.set_image(
+            "used.svg",
+            Some(Image::new("used.svg", b"<svg/>".to_vec()).unwrap()),
+        );
+        stack.set_image(
+            "spare.svg",
+            Some(Image::new("spare.svg", b"<svg/>".to_vec()).unwrap()),
+        );
+
+        let card_id = stack.cards()[0].id();
+        let mut part = stack.new_part(PartKind::Image, "Board", Rect::new(0, 0, 10, 10));
+        part.set_property("source", Value::text("used.svg"))
+            .unwrap();
+        stack.card_mut(card_id).unwrap().add_part(part);
+
+        assert_eq!(stack.unused_images(), vec!["spare.svg"]);
+    }
+
+    #[test]
     fn a_stack_survives_a_json_round_trip() {
         let mut stack = Stack::new("Test");
         let card_id = stack.cards()[0].id();
         let button = stack.new_part(PartKind::Button, "Go", Rect::new(1, 2, 3, 4));
         stack.card_mut(card_id).unwrap().add_part(button);
+
+        stack.set_image(
+            "mark.svg",
+            Some(Image::new("mark.svg", b"<svg/>".to_vec()).unwrap()),
+        );
 
         let json = serde_json::to_string(&stack).unwrap();
         let restored: Stack = serde_json::from_str(&json).unwrap();

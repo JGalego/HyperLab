@@ -46,6 +46,10 @@ export function App() {
   // Read when the map is opened and thrown away when it closes: it is a
   // reading of the stack as it is now, and a script may have changed it.
   const [map, setMap] = useState<Graph | null>(null);
+  // Pictures are fetched by name and kept, because a snapshot arrives after
+  // every command and re-encoding a card of artwork each time would be
+  // absurd. Cleared when a different stack is opened.
+  const [pictures, setPictures] = useState(new Map<string, string>());
 
   /**
    * Applies whatever a command gave back.
@@ -102,6 +106,33 @@ export function App() {
     );
   }, [apply]);
 
+  // Whatever the current card draws, fetched once. A picture the model has
+  // already accepted, so the only thing that can go wrong is that it was
+  // removed between the snapshot and the ask.
+  useEffect(() => {
+    const wanted = [...(view.background?.parts ?? []), ...view.card.parts]
+      .map((part) => part.source)
+      .filter((source) => source !== '' && !pictures.has(source));
+    if (wanted.length === 0) return;
+
+    let cancelled = false;
+    Promise.all(
+      [...new Set(wanted)].map((source) =>
+        api.stackImage(source).then(
+          (uri) => [source, uri] as const,
+          () => null,
+        ),
+      ),
+    ).then((fetched) => {
+      const found = fetched.filter((one) => one !== null);
+      if (cancelled || found.length === 0) return;
+      setPictures((known) => new Map([...known, ...found]));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [view.card, view.background, pictures]);
+
   // Keyboard shortcuts, kept in one place so the menus and the keys cannot
   // drift apart: both call the same functions.
   useEffect(() => {
@@ -128,7 +159,25 @@ export function App() {
   function openStack() {
     openFileDialog({ directory: true, title: 'Open a HyperLab stack' }).then(
       (chosen) => {
-        if (typeof chosen === 'string') run(() => api.openStack(chosen));
+        if (typeof chosen !== 'string') return;
+        // A different stack has different pictures, and the names may well
+        // collide: "board.png" in one is not "board.png" in another.
+        setPictures(new Map());
+        run(() => api.openStack(chosen));
+      },
+      (reason: unknown) => setError(String(reason)),
+    );
+  }
+
+  function importImage(layer: 'card' | 'background') {
+    openFileDialog({
+      title: 'Choose a picture',
+      filters: [
+        { name: 'Pictures', extensions: ['svg', 'png', 'jpg', 'jpeg', 'gif', 'webp'] },
+      ],
+    }).then(
+      (chosen) => {
+        if (typeof chosen === 'string') run(() => api.importImage(chosen, layer));
       },
       (reason: unknown) => setError(String(reason)),
     );
@@ -218,6 +267,12 @@ export function App() {
           run: () => run(() => api.newPart('field', 'background')),
         },
         null,
+        { label: 'Import Picture…', run: () => importImage('card') },
+        {
+          label: 'Import Background Picture…',
+          run: () => importImage('background'),
+        },
+        null,
         {
           label: 'Delete Selected Part',
           disabled: selection === null || !isPart(selection.kind),
@@ -279,6 +334,7 @@ export function App() {
             view={view}
             tool={tool}
             selection={selection}
+            pictures={pictures}
             onClickPart={(part) => run(() => api.clickPart(part.id))}
             onSelectPart={(part: PartView) =>
               setSelection({ kind: part.kind, id: part.id })

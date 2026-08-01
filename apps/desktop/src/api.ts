@@ -77,6 +77,23 @@ export const checkScript = (source: string): Promise<void> =>
 /** Reads the stack as the routes between its cards. */
 export const stackGraph = (): Promise<Graph> => call('stack_graph');
 
+/**
+ * One of the stack's pictures, as a `data:` URI.
+ *
+ * Asked for by name rather than sent with every snapshot: a snapshot is
+ * taken after every command, and a card of artwork would be re-encoded on
+ * every keystroke.
+ */
+export const stackImage = (name: string): Promise<string> =>
+  call('stack_image', { name });
+
+/** The names of every picture the stack carries. */
+export const stackImages = (): Promise<string[]> => call('stack_images');
+
+/** Brings a picture into the stack and puts it on the current card. */
+export const importImage = (path: string, layer: Layer): Promise<Outcome> =>
+  call('import_image', { path, layer });
+
 /** Sends `mouseUp` to a part, exactly as clicking it does. */
 export const clickPart = (id: number): Promise<Outcome> => call('click_part', { id });
 
@@ -98,9 +115,9 @@ export const newCard = (): Promise<Outcome> => call('new_card');
 /** Deletes the current card. */
 export const deleteCard = (): Promise<Outcome> => call('delete_card');
 
-/** Adds a button or a field. */
+/** Adds a part. */
 export const newPart = (
-  kind: 'button' | 'field',
+  kind: 'button' | 'field' | 'image',
   layer: Layer,
   name?: string,
 ): Promise<Outcome> => call('new_part', { kind, layer, name: name ?? null });

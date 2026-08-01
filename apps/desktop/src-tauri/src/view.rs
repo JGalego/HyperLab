@@ -70,17 +70,17 @@ pub struct CardView {
     pub name: String,
     /// Its script.
     pub script: String,
-    /// Its buttons and fields, furthest back first.
+    /// Its parts, furthest back first.
     pub parts: Vec<PartView>,
 }
 
-/// One button or field, ready to draw.
+/// One part, ready to draw.
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PartView {
     /// Its id.
     pub id: u64,
-    /// `"button"` or `"field"`.
+    /// `"button"`, `"field"` or `"image"`.
     pub kind: String,
     /// Whether it belongs to the card or to the background, which decides
     /// whether editing it changes every card.
@@ -99,6 +99,10 @@ pub struct PartView {
     pub style: String,
     /// Whether a field refuses typing.
     pub locked: bool,
+    /// Which picture an image part draws, by its name in the stack's
+    /// library. Empty for everything else, and for an image with none
+    /// chosen yet.
+    pub source: String,
     /// Its script, so the inspector need not ask again.
     pub script: String,
     /// Every property, for the property editor. Values are JSON so that
@@ -195,6 +199,11 @@ fn part_view(part: &hyperlab_stack::Part, layer: &str) -> PartView {
         enabled: flag("enabled", true),
         style: part.property("style").unwrap_or(Value::Empty).as_text(),
         locked: flag("locked", false),
+        source: if part.part_kind() == PartKind::Image {
+            part.property("source").unwrap_or(Value::Empty).as_text()
+        } else {
+            String::new()
+        },
         script: part.script().to_string(),
         properties: properties_of(part),
     }

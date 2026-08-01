@@ -5,7 +5,7 @@ use std::{fs, path::PathBuf};
 use hyperlab_persistence::{
     PersistenceError, load, load_single_file, read_metadata, save, save_single_file,
 };
-use hyperlab_stack::{Object, PartContainer, PartKind, Rect, Size, Stack, Value};
+use hyperlab_stack::{Image, Object, PartContainer, PartKind, Rect, Size, Stack, Value};
 
 /// A temporary directory that cleans up after itself, so the tests leave
 /// nothing behind even when they fail.
@@ -86,7 +86,7 @@ fn the_bundle_has_the_documented_shape() {
         "cards",
         "backgrounds",
         "scripts",
-        "assets",
+        "images",
     ] {
         assert!(
             path.join(expected).exists(),
@@ -271,4 +271,110 @@ fn parts_saved_without_todays_properties_are_brought_up_to_date() {
         Some(Value::Bool(true)),
         "loading fills in properties that older files lack"
     );
+}
+
+// ------------------------------------------------------------------ pictures
+
+/// The smallest real PNG: one transparent pixel.
+const PIXEL: &[u8] = &[
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52,
+    0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x06, 0x00, 0x00, 0x00, 0x1f, 0x15, 0xc4,
+    0x89, 0x00, 0x00, 0x00, 0x0a, 0x49, 0x44, 0x41, 0x54, 0x78, 0x9c, 0x63, 0x00, 0x01, 0x00, 0x00,
+    0x05, 0x00, 0x01, 0x0d, 0x0a, 0x2d, 0xb4, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae,
+    0x42, 0x60, 0x82,
+];
+
+#[test]
+fn pictures_are_written_as_pictures_and_come_back() {
+    let mut stack = sample();
+    stack.set_image(
+        "dot.png",
+        Some(Image::new("dot.png", PIXEL.to_vec()).unwrap()),
+    );
+    stack.set_image(
+        "mark.svg",
+        Some(Image::new("mark.svg", b"<svg viewBox=\"0 0 1 1\"/>".to_vec()).unwrap()),
+    );
+
+    let temp = TempDir::new("pictures");
+    let path = temp.path("Sample.hl");
+    save(&path, &stack).unwrap();
+
+    // A real file, byte for byte, that any image viewer opens.
+    assert_eq!(fs::read(path.join("images/dot.png")).unwrap(), PIXEL);
+    assert!(
+        fs::read_to_string(path.join("images/mark.svg"))
+            .unwrap()
+            .starts_with("<svg"),
+        "an SVG should stay text"
+    );
+
+    let loaded = load(&path).unwrap();
+    assert_eq!(loaded.images().len(), 2);
+    assert_eq!(loaded.image("dot.png").unwrap().bytes(), PIXEL);
+}
+
+#[test]
+fn a_picture_removed_from_the_stack_leaves_the_bundle() {
+    let mut stack = sample();
+    stack.set_image(
+        "dot.png",
+        Some(Image::new("dot.png", PIXEL.to_vec()).unwrap()),
+    );
+    let temp = TempDir::new("removed");
+    let path = temp.path("Sample.hl");
+    save(&path, &stack).unwrap();
+
+    stack.set_image("dot.png", None);
+    save(&path, &stack).unwrap();
+
+    assert!(
+        !path.join("images/dot.png").exists(),
+        "a save is a replacement, not a merge"
+    );
+    assert!(load(&path).unwrap().images().is_empty());
+}
+
+#[test]
+fn a_bundle_from_before_pictures_still_opens() {
+    let temp = TempDir::new("no-images");
+    let path = temp.path("Sample.hl");
+    save(&path, &sample()).unwrap();
+    fs::remove_dir_all(path.join("images")).unwrap();
+
+    let loaded = load(&path).unwrap();
+    assert!(loaded.images().is_empty());
+}
+
+#[test]
+fn a_picture_smuggled_into_the_bundle_by_hand_is_refused() {
+    let temp = TempDir::new("smuggled");
+    let path = temp.path("Sample.hl");
+    save(&path, &sample()).unwrap();
+    // Named like a picture, and is not one. Opening must say so rather than
+    // hand a web view something it did not expect.
+    fs::write(path.join("images/evil.png"), b"<script>alert(1)</script>").unwrap();
+
+    let error = load(&path).unwrap_err();
+    assert!(
+        matches!(error, PersistenceError::Incomplete(ref why) if why.contains("evil.png")),
+        "got {error}"
+    );
+}
+
+#[test]
+fn a_stack_written_by_hand_cannot_write_outside_the_bundle() {
+    // `Image::new` refuses a path, so getting one into a `Stack` means going
+    // around it — a hand-edited file, or a future importer. The saver must
+    // refuse too, because it is the code holding the pen.
+    let mut stack = sample();
+    stack.set_image(
+        "../escaped.png",
+        Some(Image::new("dot.png", PIXEL.to_vec()).unwrap()),
+    );
+    let temp = TempDir::new("escape");
+    let path = temp.path("Sample.hl");
+
+    assert!(save(&path, &stack).is_err());
+    assert!(!temp.path("escaped.png").exists());
 }

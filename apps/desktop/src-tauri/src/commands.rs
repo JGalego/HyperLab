@@ -142,6 +142,33 @@ pub async fn stack_graph(state: State<'_, AppState>) -> CommandResult<Graph> {
     with_session(&state, |session| Ok(Graph::of(session.runtime.stack()))).await
 }
 
+/// One of the stack's pictures, as a `data:` URI the renderer can draw.
+///
+/// Asked for by name and cached in the window, rather than sent with every
+/// snapshot: a snapshot is taken after every command, and a card of artwork
+/// would be re-encoded on every keystroke.
+#[tauri::command]
+pub async fn stack_image(state: State<'_, AppState>, name: String) -> CommandResult<String> {
+    with_session(&state, move |session| {
+        session
+            .runtime
+            .stack()
+            .image(&name)
+            .map(hyperlab_stack::data_uri)
+            .ok_or_else(|| format!("this stack has no picture called \"{name}\""))
+    })
+    .await
+}
+
+/// The names of every picture the stack carries.
+#[tauri::command]
+pub async fn stack_images(state: State<'_, AppState>) -> CommandResult<Vec<String>> {
+    with_session(&state, |session| {
+        Ok(session.runtime.stack().images().keys().cloned().collect())
+    })
+    .await
+}
+
 // ----------------------------------------------------------------- browsing
 
 /// Sends `mouseUp` to a part, exactly as clicking it does.
@@ -254,7 +281,7 @@ pub async fn delete_card(state: State<'_, AppState>) -> CommandResult<Outcome> {
     .await
 }
 
-/// Adds a button or a field to the card or its background.
+/// Adds a part to the card or its background.
 #[tauri::command]
 pub async fn new_part(
     state: State<'_, AppState>,
@@ -266,21 +293,12 @@ pub async fn new_part(
         let part_kind = match kind.as_str() {
             "button" => PartKind::Button,
             "field" => PartKind::Field,
+            "image" => PartKind::Image,
             other => return Err(format!("\"{other}\" is not a kind of part")),
         };
 
         let card = session.runtime.current_card();
-        let owner = match layer {
-            Layer::Card => PartOwner::Card { id: card },
-            Layer::Background => PartOwner::Background {
-                id: session
-                    .runtime
-                    .stack()
-                    .background_of(card)
-                    .map(Object::id)
-                    .ok_or("this card has no background")?,
-            },
-        };
+        let owner = owner_for(session, card, layer)?;
 
         // The cascade counts *every* part on show, not just this kind, so a
         // new button and a new field do not land exactly on top of each
@@ -307,6 +325,104 @@ pub async fn new_part(
         Ok(finish(session))
     })
     .await
+}
+
+/// Which container a new part on `card` belongs to.
+fn owner_for(session: &Session, card: Id, layer: Layer) -> CommandResult<PartOwner> {
+    Ok(match layer {
+        Layer::Card => PartOwner::Card { id: card },
+        Layer::Background => PartOwner::Background {
+            id: session
+                .runtime
+                .stack()
+                .background_of(card)
+                .map(Object::id)
+                .ok_or("this card has no background")?,
+        },
+    })
+}
+
+/// Brings a picture into the stack and puts an image part on the card.
+///
+/// The file is read here rather than in the window, so the bytes go straight
+/// from disk into the model and the renderer only ever sees a picture the
+/// model has already checked.
+#[tauri::command]
+pub async fn import_image(
+    state: State<'_, AppState>,
+    path: String,
+    layer: Layer,
+) -> CommandResult<Outcome> {
+    with_session(&state, move |session| {
+        let path = std::path::PathBuf::from(path);
+        let name = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .ok_or("that file has no name I can use")?
+            .to_string();
+
+        // Read no more than a picture may be, so pointing this at a disk
+        // image does not try to hold one in memory before refusing it.
+        let bytes = read_at_most(&path, hyperlab_stack::MAX_IMAGE_BYTES)?;
+        let image = hyperlab_stack::Image::new(&name, bytes).map_err(|error| error.to_string())?;
+
+        let card = session.runtime.current_card();
+        let owner = owner_for(session, card, layer)?;
+        let placed = count_parts(session.runtime.stack(), card, None);
+        let geometry = session
+            .runtime
+            .stack()
+            .default_part_geometry(PartKind::Image, placed);
+
+        session
+            .runtime
+            .execute(Command::SetImage {
+                name: name.clone(),
+                image: Some(Box::new(image)),
+            })
+            .map_err(|error| error.to_string())?;
+        let created = session
+            .runtime
+            .execute(Command::CreatePart {
+                owner,
+                kind: PartKind::Image,
+                name: name.clone(),
+                geometry,
+            })
+            .map_err(|error| error.to_string())?;
+
+        if let Some(part) = created {
+            session
+                .runtime
+                .execute(Command::SetProperty {
+                    object: part,
+                    property: "source".into(),
+                    value: Some(Value::text(name)),
+                })
+                .map_err(|error| error.to_string())?;
+        }
+        session.touch();
+        Ok(finish(session))
+    })
+    .await
+}
+
+/// Reads a file, refusing one that is bigger than `most`.
+///
+/// The length is checked before the read rather than after, so a file that
+/// is far too big is never held in memory at all.
+fn read_at_most(path: &std::path::Path, most: usize) -> CommandResult<Vec<u8>> {
+    let length = std::fs::metadata(path)
+        .map_err(|error| format!("could not open {}: {error}", path.display()))?
+        .len();
+    if length > most as u64 {
+        return Err(format!(
+            "that file is {} MB, and the most a stack will hold is {} MB",
+            length / (1024 * 1024),
+            most / (1024 * 1024)
+        ));
+    }
+    std::fs::read(path).map_err(|error| format!("could not read {}: {error}", path.display()))
 }
 
 /// Removes a part.
@@ -541,6 +657,7 @@ fn object_id(kind: &str, id: u64) -> CommandResult<ObjectId> {
         "card" => ObjectKind::Card,
         "button" => ObjectKind::Button,
         "field" => ObjectKind::Field,
+        "image" => ObjectKind::Image,
         other => return Err(format!("\"{other}\" is not a kind of object")),
     };
     Ok(ObjectId::new(kind, Id::new(id)))

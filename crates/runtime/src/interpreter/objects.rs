@@ -135,10 +135,7 @@ impl Interpreter<'_> {
         specifier: &Specifier,
         owner: Option<&ObjectRef>,
     ) -> RuntimeResult<ObjectId> {
-        let kind = match kind {
-            AstPartKind::Button => PartKind::Button,
-            AstPartKind::Field => PartKind::Field,
-        };
+        let kind = part_kind(kind);
         let resolved = self.resolve_specifier(specifier)?;
 
         // Work out which card and background to look in.
@@ -365,15 +362,17 @@ impl Interpreter<'_> {
                 .iter()
                 .position(|background| background.id() == object.id)
                 .map(|index| index + 1),
-            ObjectKind::Button | ObjectKind::Field => match stack.locate_part(object.id) {
-                Some(hyperlab_stack::PartLocation::Card(card)) => stack
-                    .card(card)
-                    .and_then(|card| card.part_number(object.id)),
-                Some(hyperlab_stack::PartLocation::Background(background)) => stack
-                    .background(background)
-                    .and_then(|background| background.part_number(object.id)),
-                None => None,
-            },
+            ObjectKind::Button | ObjectKind::Field | ObjectKind::Image => {
+                match stack.locate_part(object.id) {
+                    Some(hyperlab_stack::PartLocation::Card(card)) => stack
+                        .card(card)
+                        .and_then(|card| card.part_number(object.id)),
+                    Some(hyperlab_stack::PartLocation::Background(background)) => stack
+                        .background(background)
+                        .and_then(|background| background.part_number(object.id)),
+                    None => None,
+                }
+            }
             ObjectKind::Stack => Some(1),
         };
         position
@@ -385,15 +384,17 @@ impl Interpreter<'_> {
     fn owner_of(&self, object: ObjectId) -> RuntimeResult<Value> {
         let stack = self.runtime.stack();
         let owner = match object.kind {
-            ObjectKind::Button | ObjectKind::Field => match stack.locate_part(object.id) {
-                Some(hyperlab_stack::PartLocation::Card(card)) => stack
-                    .card(card)
-                    .map(|card| format!("card \"{}\"", card.name())),
-                Some(hyperlab_stack::PartLocation::Background(background)) => stack
-                    .background(background)
-                    .map(|background| format!("background \"{}\"", background.name())),
-                None => None,
-            },
+            ObjectKind::Button | ObjectKind::Field | ObjectKind::Image => {
+                match stack.locate_part(object.id) {
+                    Some(hyperlab_stack::PartLocation::Card(card)) => stack
+                        .card(card)
+                        .map(|card| format!("card \"{}\"", card.name())),
+                    Some(hyperlab_stack::PartLocation::Background(background)) => stack
+                        .background(background)
+                        .map(|background| format!("background \"{}\"", background.name())),
+                    None => None,
+                }
+            }
             ObjectKind::Card => stack
                 .background_of(object.id)
                 .map(|background| format!("background \"{}\"", background.name())),
@@ -454,5 +455,17 @@ fn describe(resolved: &Resolved) -> String {
         Resolved::Number(position) => format!("number {position}"),
         Resolved::Name(name) => format!("\"{name}\""),
         Resolved::Ordinal(_) => "there".to_string(),
+    }
+}
+
+/// The object model's part kind for the one the grammar produced.
+///
+/// The two enums are deliberately separate — the parser depends on nothing —
+/// so something has to join them, and it should be one thing.
+pub(crate) const fn part_kind(written: AstPartKind) -> PartKind {
+    match written {
+        AstPartKind::Button => PartKind::Button,
+        AstPartKind::Field => PartKind::Field,
+        AstPartKind::Image => PartKind::Image,
     }
 }

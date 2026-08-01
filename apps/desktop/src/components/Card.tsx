@@ -7,6 +7,8 @@ interface Props {
   view: StackView;
   tool: Tool;
   selection: Selection | null;
+  /** The pictures fetched so far, by the name an image part names. */
+  pictures: Map<string, string>;
   onClickPart: (part: PartView) => void;
   onSelectPart: (part: PartView) => void;
   onMovePart: (part: PartView, left: number, top: number) => void;
@@ -25,6 +27,7 @@ export function Card({
   view,
   tool,
   selection,
+  pictures,
   onClickPart,
   onSelectPart,
   onMovePart,
@@ -49,6 +52,7 @@ export function Card({
           part={part}
           tool={tool}
           selected={selection?.id === part.id && selection.kind === part.kind}
+          picture={pictures.get(part.source)}
           onClick={onClickPart}
           onSelect={onSelectPart}
           onMove={onMovePart}
