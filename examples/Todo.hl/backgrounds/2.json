@@ -1,0 +1,98 @@
+{
+  "id": 2,
+  "name": "List",
+  "script": "",
+  "properties": {},
+  "created_at": 1785571815829,
+  "updated_at": 1785571815829,
+  "parts": [
+    {
+      "id": 4,
+      "name": "Things To Do Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Things To Do",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 14,
+        "width": 200,
+        "height": 22
+      }
+    },
+    {
+      "id": 6,
+      "name": "Add",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "button",
+      "geometry": {
+        "left": 20,
+        "top": 256,
+        "width": 80,
+        "height": 24
+      }
+    },
+    {
+      "id": 7,
+      "name": "Clear Done",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "button",
+      "geometry": {
+        "left": 108,
+        "top": 256,
+        "width": 100,
+        "height": 24
+      }
+    },
+    {
+      "id": 8,
+      "name": "How Many",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "button",
+      "geometry": {
+        "left": 272,
+        "top": 256,
+        "width": 88,
+        "height": 24
+      }
+    }
+  ]
+}

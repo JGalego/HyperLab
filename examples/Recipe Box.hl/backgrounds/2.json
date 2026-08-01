@@ -1,0 +1,98 @@
+{
+  "id": 2,
+  "name": "Recipe",
+  "script": "",
+  "properties": {},
+  "created_at": 1785571815829,
+  "updated_at": 1785571815829,
+  "parts": [
+    {
+      "id": 4,
+      "name": "Recipe Box Caption",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Recipe Box",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 12,
+        "width": 200,
+        "height": 22
+      }
+    },
+    {
+      "id": 5,
+      "name": "Previous",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "button",
+      "geometry": {
+        "left": 20,
+        "top": 296,
+        "width": 84,
+        "height": 24
+      }
+    },
+    {
+      "id": 6,
+      "name": "Next",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "button",
+      "geometry": {
+        "left": 112,
+        "top": 296,
+        "width": 84,
+        "height": 24
+      }
+    },
+    {
+      "id": 7,
+      "name": "Double It",
+      "script": "",
+      "properties": {
+        "autohilite": true,
+        "enabled": true,
+        "hilite": false,
+        "showname": true,
+        "style": "roundRect",
+        "visible": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "button",
+      "geometry": {
+        "left": 316,
+        "top": 296,
+        "width": 100,
+        "height": 24
+      }
+    }
+  ]
+}

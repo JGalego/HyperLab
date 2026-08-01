@@ -1,0 +1,19 @@
+{
+  "id": 1,
+  "name": "Recipe Box",
+  "size": {
+    "width": 440,
+    "height": 340
+  },
+  "properties": {},
+  "nextId": 15,
+  "createdAt": 1785571815829,
+  "updatedAt": 1785571815829,
+  "backgrounds": [
+    2
+  ],
+  "cards": [
+    3,
+    8
+  ]
+}

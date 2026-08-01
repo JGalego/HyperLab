@@ -14,6 +14,7 @@ hyperlab-stack.workspace = true
 serde.workspace = true
 
 [dev-dependencies]
+hyperlab-persistence.workspace = true
 serde_json.workspace = true
 
 [lints]

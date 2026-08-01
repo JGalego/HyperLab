@@ -1,0 +1,33 @@
+{
+  "id": 3,
+  "name": "Today",
+  "script": "",
+  "properties": {},
+  "created_at": 1785571815829,
+  "updated_at": 1785571815829,
+  "background": 2,
+  "parts": [
+    {
+      "id": 5,
+      "name": "Items",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "x read the HyperTalk reference\nwrite a stack of my own\nshow it to someone",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 44,
+        "width": 340,
+        "height": 196
+      }
+    }
+  ]
+}

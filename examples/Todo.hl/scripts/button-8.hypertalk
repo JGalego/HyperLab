@@ -1,0 +1,10 @@
+on mouseUp
+  put 0 into leftToDo
+  repeat with lineNumber = 1 to the number of lines of field "Items"
+    put line lineNumber of field "Items" into entry
+    if entry is empty then next repeat
+    if entry starts with "x " then next repeat
+    add 1 to leftToDo
+  end repeat
+  answer leftToDo & " left to do."
+end mouseUp

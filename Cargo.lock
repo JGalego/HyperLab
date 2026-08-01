@@ -43,6 +43,7 @@ name = "hyperlab-runtime"
 version = "0.1.0"
 dependencies = [
  "hyperlab-parser",
+ "hyperlab-persistence",
  "hyperlab-stack",
  "serde",
  "serde_json",

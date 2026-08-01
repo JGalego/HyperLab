@@ -1,0 +1,10 @@
+on mouseUp
+  put empty into remaining
+  repeat with lineNumber = 1 to the number of lines of field "Items"
+    put line lineNumber of field "Items" into entry
+    if entry is empty then next repeat
+    if entry starts with "x " then next repeat
+    put entry & return after remaining
+  end repeat
+  put remaining into field "Items"
+end mouseUp

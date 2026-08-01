@@ -1,0 +1,77 @@
+{
+  "id": 8,
+  "name": "Bread",
+  "script": "",
+  "properties": {},
+  "created_at": 1785571815829,
+  "updated_at": 1785571815829,
+  "background": 2,
+  "parts": [
+    {
+      "id": 12,
+      "name": "Title",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Bread",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 40,
+        "width": 400,
+        "height": 24
+      }
+    },
+    {
+      "id": 13,
+      "name": "Ingredients",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "500 g flour\n7 g yeast\n325 ml water\n10 g salt",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 20,
+        "top": 76,
+        "width": 190,
+        "height": 200
+      }
+    },
+    {
+      "id": 14,
+      "name": "Method",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": false,
+        "style": "rectangle",
+        "text": "Mix, then leave it overnight.\nShape, prove for two hours, bake hot for forty minutes.",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1785571815829,
+      "updated_at": 1785571815829,
+      "kind": "field",
+      "geometry": {
+        "left": 226,
+        "top": 76,
+        "width": 194,
+        "height": 200
+      }
+    }
+  ]
+}
