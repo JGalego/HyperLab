@@ -3,10 +3,11 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/JGalego/HyperLab/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/JGalego/HyperLab/ci.yml?branch=main&label=CI&style=flat-square&color=000000" alt="CI status"></a>
+  <a href="https://github.com/JGalego/HyperLab/actions/workflows/ci.yml"><img src="https://github.com/JGalego/HyperLab/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-000000?style=flat-square" alt="Licence: MIT"></a>
   <img src="https://img.shields.io/badge/rust-1.85%2B-000000?style=flat-square&logo=rust&logoColor=white" alt="Rust 1.85+">
-  <img src="https://img.shields.io/badge/status-0.1-000000?style=flat-square" alt="Status: 0.1">
+  <img src="https://img.shields.io/badge/tauri-2-000000?style=flat-square&logo=tauri&logoColor=white" alt="Tauri 2">
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-000000?style=flat-square" alt="PRs welcome"></a>
 </p>
 
 Build a desktop application the way you would build a stack of index cards:
@@ -20,17 +21,24 @@ buttons, scripts, message passing, everything inspectable and everything
 changeable while it runs — and adds language models as a first-class part of
 the programming model rather than a panel bolted on the side.
 
-> **Status: 0.1, and honest about it.** The runtime, the language and the
-> editor work and are covered by 300-odd tests. Two providers ship — an
-> OpenAI-compatible client and an Anthropic one — but the sidebar that would
-> use them does not. See the [roadmap](docs/roadmap.md).
-
 ![HyperLab: a card with a button and a field, the object inspector showing
 the button's script](docs/screenshot.png)
 
 ---
 
-## What it looks like to use
+## 📑 Contents
+
+- [🧩 What It Looks Like to Use](#what-it-looks-like-to-use)
+- [🚀 Getting Started](#getting-started)
+- [🏗️ How It Is Put Together](#how-it-is-put-together)
+- [📂 Stacks Are Files You Can Read](#stacks-are-files-you-can-read)
+- [🤖 Where the AI Goes](#where-the-ai-goes)
+- [🤝 Contributing](#contributing)
+- [📄 Licence](#licence)
+
+---
+
+<h2 id="what-it-looks-like-to-use">🧩 What It Looks Like to Use</h2>
 
 ```hypertalk
 on mouseUp
@@ -47,22 +55,39 @@ no build step inside a stack.
 
 ---
 
-## Getting started
+<h2 id="getting-started">🚀 Getting Started</h2>
 
 You will need [Rust](https://rustup.rs) 1.85 or newer and Node 20 or newer,
 plus [Tauri's system dependencies](https://tauri.app/start/prerequisites/) for
 your platform.
 
+Clone the repository:
+
 ```sh
 git clone https://github.com/JGalego/hyperlab
+```
+
+```sh
 cd hyperlab
+```
 
-# The core: runtime, language, persistence. No GUI toolchain needed.
+Run the core — runtime, language, persistence. No GUI toolchain needed:
+
+```sh
 cargo test
+```
 
-# The application.
+Run the desktop application:
+
+```sh
 cd apps/desktop
+```
+
+```sh
 npm install
+```
+
+```sh
 npm run tauri dev
 ```
 
@@ -72,7 +97,7 @@ shows chunk expressions doing real work.
 
 ---
 
-## How it is put together
+<h2 id="how-it-is-put-together">🏗️ How It Is Put Together</h2>
 
 ```
 UI  →  Commands  →  Runtime  →  Model  →  Renderer
@@ -109,7 +134,7 @@ Read [`docs/architecture.md`](docs/architecture.md) for the reasoning, and
 
 ---
 
-## Stacks are files you can read
+<h2 id="stacks-are-files-you-can-read">📂 Stacks Are Files You Can Read</h2>
 
 A stack is a directory, not a blob:
 
@@ -129,36 +154,35 @@ that is what it is.
 
 ---
 
-## Where the AI goes
+<h2 id="where-the-ai-goes">🤖 Where the AI Goes</h2>
 
-Three commitments, enforced by the way the code is arranged rather than by
-good intentions:
+Enforced by the way the code is arranged, not by good intentions:
 
-1. **No provider is special.** A provider implements
-   [`AiProvider`](crates/ai/src/provider.rs) and nothing in HyperLab switches
-   on which one it is. OpenAI, Anthropic, Google, Ollama, OpenRouter and local
-   models are names in a settings file, not branches in the runtime. The
-   clients live in [their own crate](crates/ai-providers), which the rest of
-   HyperLab does not depend on; one of them speaks the OpenAI chat-completions
-   protocol, so pointing a `baseUrl` at Ollama or a local server is all it
-   takes to run with no network at all. A key is read from an environment
-   variable you name, and is never written to a settings file.
-2. **An assistant can do exactly what you can do.** It works through
-   [MCP tools](crates/mcp) that wrap runtime commands, so everything it does
-   is undoable and visible. There is no private back door into a stack.
-3. **Nothing leaves without a reason.** HyperLab is local-first, works with no
-   provider configured, and the [context builder](crates/ai/src/context.rs)
-   omits your field contents unless a question actually needs them.
+- **No provider is special.** A provider implements
+  [`AiProvider`](crates/ai/src/provider.rs) and nothing in HyperLab switches
+  on which one it is. OpenAI, Anthropic, Google, Ollama, OpenRouter and local
+  models are names in a settings file, not branches in the runtime. The
+  clients live in [their own crate](crates/ai-providers), which the rest of
+  HyperLab does not depend on; one of them speaks the OpenAI chat-completions
+  protocol, so pointing a `baseUrl` at Ollama or a local server is all it
+  takes to run with no network at all. A key is read from an environment
+  variable you name, and is never written to a settings file.
+- **An assistant can do exactly what you can do.** It works through
+  [MCP tools](crates/mcp) that wrap runtime commands, so everything it does
+  is undoable and visible. There is no private back door into a stack.
+- **Nothing leaves without a reason.** HyperLab is local-first, works with no
+  provider configured, and the [context builder](crates/ai/src/context.rs)
+  omits your field contents unless a question actually needs them.
 
 ---
 
-## Contributing
+<h2 id="contributing">🤝 Contributing</h2>
 
 Please do — see [CONTRIBUTING.md](CONTRIBUTING.md) and the
 [Code of Conduct](CODE_OF_CONDUCT.md). Good places to start are listed in the
 roadmap: a debugger, the AI sidebar, `find` and `sort`, a second theme.
 
-## Licence
+<h2 id="licence">📄 Licence</h2>
 
 [MIT](LICENSE).
 
