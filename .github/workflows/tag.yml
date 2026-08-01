@@ -1,0 +1,105 @@
+name: Tag a release
+
+# Cutting the tag is the one step of a release with nothing checking it.
+#
+# `release.yml` compares the tag against `tauri.conf.json`, but it can only do
+# that once the tag exists — so a version typed wrong, or a manifest somebody
+# forgot to bump, is found after the fact and costs a deleted tag and a second
+# attempt. This runs the same comparison *before* the tag exists, across every
+# file that carries the version, and refuses to tag at all if they disagree.
+#
+# Actions ▸ Tag a release ▸ Run workflow, and give it 0.1.0 — no leading v.
+# The tag is annotated and points at the commit you dispatch from, so dispatch
+# from the branch you mean to release.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to tag, without the leading v (e.g. 0.1.0)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    name: Check the manifests agree, then tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Five kinds of place carry the version: the workspace, the nine path
+      # dependencies that name each other by it, the shell's crate, its npm
+      # package and its Tauri config. Bumping all but one of them builds an
+      # installer that lies about what it is, which is what this prevents.
+      - name: Every manifest says ${{ inputs.version }}
+        run: |
+          python3 - "${{ inputs.version }}" <<'PY'
+          import json, pathlib, sys, tomllib
+
+          want, wrong = sys.argv[1], []
+
+          def check(where, got):
+              if got != want:
+                  wrong.append(f"  {where}: {got!r}")
+
+          root = tomllib.loads(pathlib.Path("Cargo.toml").read_text())
+          check("Cargo.toml [workspace.package]", root["workspace"]["package"]["version"])
+          for name, spec in root["workspace"]["dependencies"].items():
+              if isinstance(spec, dict) and "path" in spec:
+                  check(f"Cargo.toml [workspace.dependencies] {name}", spec.get("version"))
+
+          shell = tomllib.loads(pathlib.Path("apps/desktop/src-tauri/Cargo.toml").read_text())
+          check("apps/desktop/src-tauri/Cargo.toml", shell["package"]["version"])
+
+          for path, key in [("apps/desktop/package.json", "version"),
+                            ("apps/desktop/src-tauri/tauri.conf.json", "version")]:
+              check(path, json.loads(pathlib.Path(path).read_text())[key])
+
+          if wrong:
+              print(f"::error::these do not say {want}:")
+              print("\n".join(wrong))
+              sys.exit(1)
+          print(f"every manifest agrees on {want}")
+          PY
+
+      - name: There is a CHANGELOG entry for it
+        run: |
+          if ! grep -q "^## ${{ inputs.version }}" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no '## ${{ inputs.version }}' heading."
+            echo "::error::The release page links to it, so an empty one is a broken promise."
+            exit 1
+          fi
+
+      - name: Tag it
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = `v${{ inputs.version }}`;
+            const { owner, repo } = context.repo;
+
+            // A tag that already exists is almost always a re-run by someone
+            // who does not know it worked the first time. Say so, rather than
+            // failing with a 422 they have to go and look up.
+            try {
+              await github.rest.git.getRef({ owner, repo, ref: `tags/${tag}` });
+              core.setFailed(`${tag} already exists. Delete it first if you meant to move it.`);
+              return;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+
+            const object = await github.rest.git.createTag({
+              owner, repo, tag, type: 'commit', object: context.sha,
+              message: `HyperLab ${tag}\n\nSee CHANGELOG.md for what is in it, and what is not.`,
+            });
+            await github.rest.git.createRef({
+              owner, repo, ref: `refs/tags/${tag}`, sha: object.data.sha,
+            });
+
+            // A tag pushed with GITHUB_TOKEN does not start another workflow —
+            // GitHub stops that, so a workflow cannot trigger itself in a loop.
+            // Release therefore has to be asked, and it takes a tag for exactly
+            // this reason.
+            core.notice(`${tag} created at ${context.sha.slice(0, 7)}. ` +
+              `Now run Actions ▸ Release ▸ Run workflow with tag ${tag}.`);
