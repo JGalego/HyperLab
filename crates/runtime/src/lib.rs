@@ -56,5 +56,5 @@ pub use command::{Applied, Command, PartOwner};
 pub use error::{RuntimeError, RuntimeResult};
 pub use event::{Message, message_path, messages};
 pub use history::History;
-pub use host::{Effect, Host, SilentHost};
+pub use host::{AiIntent, AiRequest, Effect, Host, SilentHost};
 pub use runtime::Runtime;

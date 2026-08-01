@@ -10,7 +10,7 @@ use hyperlab_stack::Value;
 use super::{Flow, Interpreter};
 use crate::{
     error::{RuntimeError, RuntimeResult},
-    host::Effect,
+    host::{AiRequest, Effect},
 };
 
 /// The value of a named constant, or `None` if the name is not one.
@@ -237,6 +237,27 @@ impl Interpreter<'_> {
                     }
                 }
             }
+            "ask assistant" => {
+                let prompt = text_at(0);
+                if prompt.trim().is_empty() {
+                    return Err(RuntimeError::new(
+                        "\"ask assistant\" needs something to ask for",
+                    ));
+                }
+                // Answered exactly like `ask`: the reply lands in `it`, and a
+                // refusal says so in `the result` rather than stopping the
+                // handler, so a stack still runs where no model is set up.
+                match self.ask_assistant(&AiRequest::edit(prompt)) {
+                    Ok(reply) => {
+                        self.set_variable("it", Value::text(reply))?;
+                        self.runtime.set_result(Value::Empty);
+                    }
+                    Err(refusal) => {
+                        self.set_variable("it", Value::Empty)?;
+                        self.runtime.set_result(Value::text(refusal));
+                    }
+                }
+            }
             "beep" => {
                 self.runtime.push_effect(Effect::Beep);
                 self.runtime.host_mut().beep();
@@ -269,6 +290,19 @@ impl Interpreter<'_> {
             }
         }
         Ok(Flow::Normal)
+    }
+
+    /// Puts a question to a language model, and records that it was asked.
+    ///
+    /// The effect is pushed before the host is called, so a question that is
+    /// refused — or that never comes back — still shows up in the record of
+    /// what the script did.
+    pub(crate) fn ask_assistant(&mut self, request: &AiRequest) -> Result<String, String> {
+        self.runtime.push_effect(Effect::Assistant {
+            prompt: request.prompt.clone(),
+            intent: request.intent,
+        });
+        self.runtime.host_mut().ai(request)
     }
 
     /// Sends a message outwards from the object whose script is running.

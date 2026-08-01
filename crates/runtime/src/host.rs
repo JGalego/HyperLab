@@ -52,6 +52,60 @@ pub enum Effect {
         /// The new contents.
         text: String,
     },
+    /// A script asked a language model something.
+    ///
+    /// Recorded whether or not an answer came back, because the question
+    /// having been asked is the part a person needs to be able to see.
+    Assistant {
+        /// What the script asked, word for word.
+        prompt: String,
+        /// What it was allowed to do about it.
+        intent: AiIntent,
+    },
+}
+
+/// What a script is asking a language model to do.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum AiIntent {
+    /// `ai("…")`: answer in words, and change nothing.
+    Answer,
+    /// `ask assistant "…"`: the assistant may change the stack while it
+    /// answers — through commands, so the change is undoable like any other.
+    Edit,
+}
+
+/// A question a script put to a language model.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AiRequest {
+    /// Exactly the words the script used, with nothing added.
+    ///
+    /// Wrapping these in a prompt — deciding what the model is told about
+    /// the stack, and in what order — is the shell's business. The runtime
+    /// does not know what a prompt looks like and must not learn.
+    pub prompt: String,
+    /// Whether answering may change the stack.
+    pub intent: AiIntent,
+}
+
+impl AiRequest {
+    /// A question that must be answered without touching the stack.
+    #[must_use]
+    pub fn answer(prompt: impl Into<String>) -> Self {
+        Self {
+            prompt: prompt.into(),
+            intent: AiIntent::Answer,
+        }
+    }
+
+    /// A request the assistant may act on.
+    #[must_use]
+    pub fn edit(prompt: impl Into<String>) -> Self {
+        Self {
+            prompt: prompt.into(),
+            intent: AiIntent::Edit,
+        }
+    }
 }
 
 /// Answers the questions a script asks.
@@ -77,13 +131,30 @@ pub trait Host: Send {
 
     /// Makes a noise.
     fn beep(&mut self) {}
+
+    /// Asks a language model something on a script's behalf.
+    ///
+    /// Blocking, for the same reason [`ask`](Host::ask) is: `ai("…")` is an
+    /// expression, and its value has to reach the rest of the line.
+    ///
+    /// The error is a sentence to show someone, not a type to match on. The
+    /// runtime cannot know what went wrong — it does not depend on any AI
+    /// crate, and that arrow must keep pointing the way it does — so it
+    /// passes the words through and attaches the script line.
+    ///
+    /// The default refuses. HyperLab works with no provider configured, and
+    /// always will, so refusing is the ordinary case rather than a failure.
+    fn ai(&mut self, request: &AiRequest) -> Result<String, String> {
+        let _ = request;
+        Err("no assistant is set up".to_string())
+    }
 }
 
 /// A host that does nothing and answers nothing.
 ///
-/// This is the right host for tests, for headless automation and for the
-/// desktop app, which replays the recorded effects on the UI thread instead
-/// of blocking the runtime.
+/// The right host for tests and for headless automation: every question is
+/// cancelled and no assistant answers, which is behaviour every script has to
+/// cope with anyway.
 #[derive(Debug, Default, Clone, Copy)]
 pub struct SilentHost;
 
@@ -105,5 +176,24 @@ mod tests {
     #[test]
     fn the_silent_host_cancels_every_question() {
         assert_eq!(SilentHost.ask("Name?", "Bob"), None);
+    }
+
+    #[test]
+    fn a_host_with_no_assistant_says_so_rather_than_pretending() {
+        let refusal = SilentHost.ai(&AiRequest::answer("Summarize this card"));
+        assert_eq!(refusal, Err("no assistant is set up".to_string()));
+    }
+
+    #[test]
+    fn an_assistant_effect_records_what_was_asked_and_on_what_terms() {
+        let json = serde_json::to_string(&Effect::Assistant {
+            prompt: "Generate five cards".into(),
+            intent: AiIntent::Edit,
+        })
+        .unwrap();
+        assert_eq!(
+            json,
+            r#"{"kind":"assistant","prompt":"Generate five cards","intent":"edit"}"#
+        );
     }
 }

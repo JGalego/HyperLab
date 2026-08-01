@@ -775,25 +775,46 @@ Avoid leaking implementation details.
 
 ---
 
-# Future AI-Native HyperTalk
+# AI-Native HyperTalk
 
-The architecture should allow future syntax such as:
+The syntax the architecture was shaped for, and which it now accepts:
 
 ```hypertalk
 put ai("Summarize this card") into field "Summary"
 
-ask assistant
-    "Generate three cards"
+ask assistant "Generate three cards"
 
-ask assistant
-    "Explain this script"
+ask assistant "Explain this script"
 
-if ai("Should this customer receive a discount?") then
+if ai("Should this customer receive a discount?") is "yes" then
     ...
 end if
 ```
 
-This should require adding parser nodes—not rewriting the runtime.
+It required no new runtime, and almost no new grammar. `ai("…")` was already
+a well-formed call — `Expr::Call` — so it is one arm in `call_function`,
+placed there rather than in the built-in table because everything in that
+table is a pure function of its arguments and this one has to reach the
+outside world. `ask assistant` is the single two-word command name in the
+language, joined in the parser so that `assistant` is not read as a variable.
+
+The seam is `Host::ai`, which sits beside `answer` and `ask` and blocks the
+same way for the same reason: the value has to reach the next line. What
+crosses it is an `AiRequest` — the author's words, and whether answering may
+change the stack. The runtime adds nothing to those words. It cannot: it does
+not depend on `hyperlab-ai`, and the arrow must keep pointing the way it does.
+
+| | `ai("…")` | `ask assistant "…"` |
+| --- | --- | --- |
+| Is a | function | command |
+| May change the stack | no | yes, through commands |
+| Answer lands in | the expression | `it` |
+| When nothing is set up | the handler stops | `the result` says why |
+
+The last row is the difference that matters. A command can report a failure
+and let the handler carry on, exactly as a cancelled `ask` does, so a stack
+that uses the assistant still runs where no model is configured. An
+expression in the middle of a line has no honest value to be.
 
 ---
 
