@@ -112,13 +112,9 @@ mod tests {
 
     /// Runs a future to completion without pulling in an async runtime.
     fn block_on<F: std::future::Future>(future: F) -> F::Output {
-        use std::task::{Context, Poll, Wake, Waker};
-        struct Noop;
-        impl Wake for Noop {
-            fn wake(self: std::sync::Arc<Self>) {}
-        }
-        let waker = Waker::from(std::sync::Arc::new(Noop));
-        let mut context = Context::from_waker(&waker);
+        use std::task::{Context, Poll, Waker};
+        let waker = Waker::noop();
+        let mut context = Context::from_waker(waker);
         let mut future = Box::pin(future);
         loop {
             if let Poll::Ready(value) = future.as_mut().poll(&mut context) {
