@@ -156,7 +156,7 @@ crates/
 
 apps/desktop/       the Tauri shell and the React renderer
 docs/               architecture, roadmap, HyperTalk reference
-examples/           five stacks, which are also tests
+examples/           six stacks, which are also tests
 ```
 
 `hyperlab-parser` depends on nothing at all, so the language can be tested and

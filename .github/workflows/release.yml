@@ -63,6 +63,9 @@ jobs:
             Install the file for your platform below. Nothing phones home,
             and HyperLab works with no AI provider configured.
 
+            What is in this release, and what is not:
+            [CHANGELOG.md](https://github.com/JGalego/HyperLab/blob/v${{ needs.check-version.outputs.version }}/CHANGELOG.md).
+
   desktop:
     name: ${{ matrix.name }}
     needs: [check-version, draft]
