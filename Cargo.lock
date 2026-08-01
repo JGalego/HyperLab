@@ -291,6 +291,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "hyperlab-graph"
+version = "0.1.0"
+dependencies = [
+ "hyperlab-parser",
+ "hyperlab-persistence",
+ "hyperlab-runtime",
+ "hyperlab-stack",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "hyperlab-mcp"
 version = "0.1.0"
 dependencies = [
