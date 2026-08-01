@@ -29,6 +29,7 @@ card back](docs/demo.gif)
 ## 📑 Contents
 
 - [🚀 Getting Started](#getting-started)
+- [🃏 Examples](#examples)
 - [🏗️ How It Is Put Together](#how-it-is-put-together)
 - [🤖 Where the AI Goes](#where-the-ai-goes)
 - [🤝 Contributing](#contributing)
@@ -64,9 +65,28 @@ npm install
 npm run tauri dev
 ```
 
-Then open one of the stacks in [`examples/`](examples) — *Todo* is the
-smallest, *Address Book* shows what backgrounds are for, and *Recipe Box*
-shows chunk expressions doing real work.
+Then open one of the [examples](#examples).
+
+---
+
+<h2 id="examples">🃏 Examples</h2>
+
+Four stacks in [`examples/`](examples), each also a test.
+
+<p align="center">
+  <img src="docs/cluedo.gif" alt="Playing Cluedo in HyperLab" width="640">
+</p>
+
+| | |
+| --- | --- |
+| **Cluedo** | A drawn board, portraits you click, and a case to close. ([film](docs/cluedo.mp4)) |
+| **Address Book** | A card per person, one shared background. |
+| **Recipe Box** | Chunk expressions doing arithmetic on ingredients. |
+| **Todo** | A list, a dialog, and a loop. |
+
+```sh
+cargo run -p hyperlab-persistence --example build_examples
+```
 
 ---
 
@@ -101,7 +121,7 @@ crates/
 
 apps/desktop/       the Tauri shell and the React renderer
 docs/               architecture, roadmap, HyperTalk reference
-examples/           three stacks, which are also tests
+examples/           four stacks, which are also tests
 ```
 
 `hyperlab-parser` depends on nothing at all, so the language can be tested and

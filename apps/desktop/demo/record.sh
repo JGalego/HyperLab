@@ -2,7 +2,11 @@
 #
 # Films HyperLab, and turns the recording into an mp4 and a gif.
 #
-#   GROQ_API_KEY=... apps/desktop/demo/record.sh
+#   GROQ_API_KEY=... apps/desktop/demo/record.sh [film] [stack]
+#
+# `film` is a script in this directory without its extension — `film` (the
+# tour, the default) or `cluedo` (the game). `stack` is the bundle to open;
+# each film has one it expects.
 #
 # Starts the two things the film needs — the Vite dev server for the
 # interface, and hyperlab-bridge for a real runtime behind it — drives them
@@ -19,7 +23,18 @@ out="$root/target/demo"
 : "${GROQ_MODEL:=openai/gpt-oss-120b}"
 export GROQ_API_KEY GROQ_MODEL
 
-stack="${1:-$root/examples/Recipe Box.hl}"
+film="${1:-film}"
+[[ -f "$here/$film.mjs" ]] || {
+  echo "there is no film called \"$film\"; try: $(cd "$here" && ls *.mjs | grep -v kit | sed 's/\.mjs//' | tr '\n' ' ')" >&2
+  exit 1
+}
+
+# Each film expects a particular stack, so the default follows the film.
+case "$film" in
+cluedo) default_stack="$root/examples/Cluedo.hl" ;;
+*) default_stack="$root/examples/Recipe Box.hl" ;;
+esac
+stack="${2:-$default_stack}"
 ffmpeg="${FFMPEG:-$(command -v ffmpeg || echo /opt/pw-browsers/ffmpeg-1011/ffmpeg-linux)}"
 
 rm -rf "$out"
@@ -51,8 +66,8 @@ for _ in $(seq 1 60); do
   sleep 0.5
 done
 
-echo "filming…"
-(cd "$app" && node demo/film.mjs)
+echo "filming $film…"
+(cd "$app" && node "demo/$film.mjs")
 
 webm="$(find "$out" -name '*.webm' -print -quit)"
 [[ -n "$webm" ]] || {
@@ -66,15 +81,16 @@ echo "converting…"
 "$ffmpeg" -y -loglevel error -i "$webm" \
   -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2,fps=24" \
   -c:v libx264 -pix_fmt yuv420p -crf 24 -movflags +faststart \
-  "$out/hyperlab.mp4"
+  "$out/$film.mp4"
 
-# The gif is a highlight, not the whole film: the assistant act, which is the
-# part worth putting in a README. All ninety seconds at a legible size would
-# be twenty megabytes, and nobody scrolls past that.
+# The gif is a highlight, not the whole film: the whole thing at a legible
+# size would be twenty megabytes, and nobody scrolls past that.
 #
 # GIF_FROM and GIF_FOR move the window if the film changes length.
-: "${GIF_FROM:=66}"
-: "${GIF_FOR:=26}"
+case "$film" in
+cluedo) : "${GIF_FROM:=2}" "${GIF_FOR:=34}" ;;
+*) : "${GIF_FROM:=66}" "${GIF_FOR:=26}" ;;
+esac
 : "${GIF_WIDTH:=640}"
 
 # A shared palette, or a black-and-white interface dithers into mush — and a
@@ -86,9 +102,9 @@ echo "converting…"
   "$out/palette.png"
 "$ffmpeg" -y -loglevel error -ss "$GIF_FROM" -t "$GIF_FOR" -i "$webm" -i "$out/palette.png" \
   -lavfi "fps=10,scale=$GIF_WIDTH:-1:flags=lanczos[x];[x][1:v]paletteuse=dither=none" \
-  "$out/hyperlab.gif"
+  "$out/$film.gif"
 rm -f "$out/palette.png"
 
 echo
-echo "  $out/hyperlab.mp4"
-echo "  $out/hyperlab.gif"
+echo "  $out/$film.mp4"
+echo "  $out/$film.gif"
