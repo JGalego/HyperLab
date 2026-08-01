@@ -7,7 +7,21 @@ does, the entry says so and says what to do about it.
 Each entry is written for the person deciding whether to upgrade, so it
 describes what is now possible rather than which files moved.
 
-## Unreleased
+## 0.2.0 — 2026-08-01
+
+A stack that cannot leave HyperLab is a stack you cannot show anyone. This
+release is four ways out, and nothing you had before has changed.
+
+- **File ▸ Export as PDF…** — the cards as a document, one page each.
+- **File ▸ Export as a Web Page…** — the whole stack as one HTML file,
+  running on [_hyperscript](https://hyperscript.org).
+- **File ▸ Export as a Decker Deck…** — the whole stack as a
+  [Decker](https://beyondloom.com/decker/) deck, scripts translated into Lil.
+- **Go ▸ Map ▸ Save as PNG…** — the map as a picture.
+- Every example is checked in as a PDF, so the exporter's output can be read
+  without building anything.
+- A release can now be cut from a branch: the pipeline reads the version out
+  of the bundle and makes the tag itself.
 
 ### Getting a stack out of HyperLab
 
@@ -24,15 +38,24 @@ the same greyed dead ends and bold current card.
 [_hyperscript](https://hyperscript.org), HyperTalk's descendant on the web,
 and writes one HTML file that runs on its own. Five of the six examples come
 across with nothing left behind — Cluedo is playable in a browser, Recipe
-Box still doubles its ingredients. Whatever has no equivalent is a comment in
-the file and a line in the message, never a silent gap.
+Box still doubles its ingredients.
 
-Every example is checked in as a PDF beside its film, so the exporter's
-output can be read without building anything.
+**File ▸ Export as a Decker Deck…** writes the stack for
+[Decker](https://beyondloom.com/decker/), John Earnest's platform and another
+descendant of HyperCard. Cards become cards, buttons and fields become
+widgets, and the artwork is redrawn in one bit — which suits it. The scripts
+are translated into Lil, which shares nothing with HyperTalk but its ancestry,
+so all six examples were opened in Decker and played: Cluedo names a suspect
+across cards, Todo counts what is left, Recipe Box doubles its ingredients.
 
-The two are made in different places on purpose: a card is in the model, so
-[`hyperlab-export`](crates/export) builds it from there, while the map's shape
-is a layout the window worked out and only the window has it.
+Each of the four says what it could not carry. A page has no language model
+and a deck has neither that nor a moment of opening, so those become a
+comment where they belonged and a line in the message — a partial translation
+is never dressed as a whole one.
+
+### In memoriam
+
+This release is dedicated to Bill Atkinson, 1951–2025, who wrote HyperCard.
 
 ## 0.1.0 — 2026-08-01
 

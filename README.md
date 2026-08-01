@@ -28,6 +28,7 @@ card back](docs/demo.gif)
 
 ## 📑 Contents
 
+- [✨ Features](#features)
 - [🚀 Getting Started](#getting-started)
 - [🃏 Examples](#examples)
 - [🏗️ How It Is Put Together](#how-it-is-put-together)
@@ -35,6 +36,33 @@ card back](docs/demo.gif)
 - [🤝 Contributing](#contributing)
 - [📄 Licence](#licence)
 - [🕯️ In Memoriam](#in-memoriam)
+
+---
+
+<h2 id="features">✨ Features</h2>
+
+- **Behaviour is HyperTalk.** `put it & return after field "Items"`, and
+  `put ai("Summarize this") into field "Summary"` — a model is part of the
+  language rather than a panel beside it. Edit a script and it takes effect at
+  once; there is no build step inside a stack.
+- **Everything is one kind of change.** Typing in a field, dragging a button,
+  a script, and the assistant all reach a stack the same way, so all of it is
+  undoable and none of it is a special case.
+- **A stack is a directory.** One `.json` per card and scripts kept as plain
+  `.hypertalk` files rather than escaped inside JSON, so a stack diffs, merges
+  and greps like source code.
+- **A stack is also a graph.** **Go ▸ Map** reads every `go` back out without
+  running a line, and names the cards nothing leads to, the cards with no way
+  out, and the links pointing at a card deleted last week.
+- **A stack can leave.** The cards as a PDF, the map as a PNG, the whole thing
+  as a web page driven by [_hyperscript](https://hyperscript.org), or as a
+  [Decker](https://beyondloom.com/decker/) deck.
+- **A stack can be driven from outside.** `hyperlab-mcp` serves one over MCP,
+  read-only until you say otherwise, so any client that speaks the protocol
+  can open it, read it and edit it.
+- **Local first.** No provider configured is a working HyperLab. When one is,
+  the key goes in your operating system's keychain and the sidebar shows the
+  exact text it sent.
 
 ---
 
@@ -67,16 +95,24 @@ cargo install --git https://github.com/JGalego/HyperLab hyperlab-graph
 
 🔨 **Building the application** — needs 🦀 Rust 1.88, 🟢
 [Node](https://nodejs.org) 20, and
-[Tauri's system dependencies](https://tauri.app/start/prerequisites/):
+[Tauri's system dependencies](https://tauri.app/start/prerequisites/).
+
+Clone it:
 
 ```sh
 git clone https://github.com/JGalego/hyperlab
 cd hyperlab
 ```
 
+Check that the core is sound before spending anything on a build — this
+needs no Node and no system libraries:
+
 ```sh
 cargo test
 ```
+
+Then start the application. The first build takes a while; after that it
+reloads as you edit:
 
 ```sh
 cd apps/desktop
@@ -161,6 +197,8 @@ crates/
     export/         a stack as a PDF      — how it leaves
     hyperscript/    HyperTalk as
                     _hyperscript          — where it goes next
+    decker/         a stack as a Decker
+                    deck                  — where else it goes
 
 apps/desktop/       the Tauri shell and the React renderer
 docs/               architecture, roadmap, HyperTalk reference
@@ -169,25 +207,6 @@ examples/           six stacks, which are also tests
 
 `hyperlab-parser` depends on nothing at all, so the language can be tested and
 reused on its own. The desktop shell contains no logic worth the name.
-
-- **Behaviour is HyperTalk.** `put it & return after field "Items"`, and
-  `put ai("Summarize this") into field "Summary"` — a model is part of the
-  language, not a panel beside it. Edit a script and it takes effect at once;
-  there is no build step inside a stack.
-- **A stack is a directory.** One `.json` per card and scripts kept as plain
-  `.hypertalk` files rather than escaped inside JSON, so a stack diffs,
-  merges and greps like source code.
-- **A stack can leave.** **File ▸ Export as PDF…** writes a page per card,
-  with the artwork as vector graphics and the text as text you can select.
-  **Go ▸ Map** saves itself as a PNG. And **File ▸ Export as a Web Page…**
-  translates the whole stack into
-  [_hyperscript](https://hyperscript.org) — the language HyperTalk grew into —
-  so it runs in a browser with no HyperLab underneath it.
-- **A stack is also a graph.** Owning the parser means every `go` can be read
-  back out, so **Go ▸ Map** draws the whole thing and names the cards nothing
-  leads to, the cards with no way out, and the links pointing at a card that
-  was deleted last week. `hyperlab-graph <stack.hl>` writes the same reading
-  as Graphviz, or as a report that fails a build.
 
 Read [`docs/architecture.md`](docs/architecture.md) for the reasoning, and
 [`docs/hypertalk.md`](docs/hypertalk.md) for the language.
