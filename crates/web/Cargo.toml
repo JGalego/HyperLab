@@ -38,3 +38,10 @@ wasm-bindgen-futures = "0.4"
 
 [lints]
 workspace = true
+
+[package.metadata.wasm-pack.profile.release]
+# `wasm-opt` would shave about a tenth off an artifact that is already 313 KB
+# over the wire, and to do it wasm-pack downloads a binaryen release mid-build
+# — which fails the whole build when the network says no. A deploy that breaks
+# for a tenth of a file is a bad trade, so the build stays hermetic.
+wasm-opt = false
