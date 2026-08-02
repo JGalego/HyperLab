@@ -12,17 +12,17 @@ follows from there being no server.
 
 ## The playground is the application
 
-The playground page renders the desktop's own React components — the card,
-the inspector, the assistant sidebar, the map, the dialogs. It can, because
+The playground page renders the desktop's own React components, down to the
+dialog a script blocks on. It can, because
 the desktop keeps its whole shell behind one module (`apps/desktop/src/api.ts`,
 a typed wrapper per command), and the renderer never learns which shell
 answers. Vite swaps that one module for `apps/web/src/api.ts`; nothing else
 in the desktop tree is touched, so the two interfaces cannot drift apart —
 they are the same files.
 
-Behind the web `api.ts` sits `crates/web` (`hyperlab-web`): the same crates
-the desktop wraps — runtime, parser, persistence, graph, the assistant —
-compiled to WebAssembly, exporting one function per desktop command. Its
+Behind the web `api.ts` sits `crates/web` (`hyperlab-web`), which wraps the
+same crates the Tauri shell wraps, compiled to WebAssembly and exporting one
+function per desktop command. Its
 `view.rs` is a hand-kept twin of the desktop's, and a test serializes a
 snapshot and checks the field names against what the renderer expects.
 
@@ -110,8 +110,8 @@ keeps the same shape with the parts a page has:
   script blocked mid-line on `ai("…")`. The wire protocol is the same Rust
   code the desktop uses (`hyperlab-ai-providers` built without its native
   clients); only the transport is the browser's.
-- The site being static files is the guarantee's other half: there is no
-  HyperLab server for a key, a stack, or a question to visit.
+- The site being static files is the guarantee's other half: nothing a
+  browser sends has anywhere of ours to stop off at on the way.
 
 Anthropic requires the `anthropic-dangerous-direct-browser-access` header
 before answering a browser at all. Sending it is honest here: the request
