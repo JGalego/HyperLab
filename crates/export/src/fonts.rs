@@ -45,9 +45,9 @@ pub(crate) fn options() -> usvg::Options<'static> {
     let mut options = usvg::Options::default();
     // The machine's own: everything on a desktop, nothing in a browser.
     options.fontdb_mut().load_system_fonts();
-    let had_system_fonts = !options.fontdb_mut().is_empty();
 
     let database = options.fontdb_mut();
+    let before = database.len();
     for font in registered()
         .lock()
         .unwrap_or_else(PoisonError::into_inner)
@@ -58,20 +58,24 @@ pub(crate) fn options() -> usvg::Options<'static> {
 
     // Artwork asks for faces by the names of the era — Chicago, Geneva,
     // Helvetica — and a host-supplied font answers to none of them. usvg
-    // falls back to the generic families when it cannot match a name, so
-    // those are pointed at whatever the host gave us.
+    // falls back to the generic families when it cannot match a name, and
+    // *those* resolve through names of their own: `sans-serif` means Arial
+    // until something says otherwise. A browser has no Arial. Neither, it
+    // turns out, does a stock Linux box — so a picture's labels can go
+    // missing well away from a browser.
     //
-    // Only where the platform itself had nothing. On a desktop these
-    // defaults are the system's business, and quietly redirecting
-    // sans-serif at a font that happened to be registered would change what
-    // a desktop export looks like.
-    // Worked out before anything is set, so the read of the database ends
+    // So the generic families are pointed at a registered font only when
+    // they resolve to nothing as they stand. A machine that can already
+    // draw sans-serif keeps whatever it was drawing it with, which is what
+    // leaves a desktop export exactly as it was.
+    //
+    // Worked out before anything is set, so the reads of the database end
     // before the writes to it begin.
-    let stand_in = (!had_system_fonts)
+    let stand_in = (!resolves(database, usvg::fontdb::Family::SansSerif))
         .then(|| {
             database
                 .faces()
-                .next()
+                .nth(before)
                 .and_then(|face| face.families.first())
                 .map(|(family, _)| family.clone())
         })
@@ -86,6 +90,16 @@ pub(crate) fn options() -> usvg::Options<'static> {
     }
 
     options
+}
+
+/// Whether a generic family names a face this database actually holds.
+fn resolves(database: &usvg::fontdb::Database, family: usvg::fontdb::Family<'_>) -> bool {
+    database
+        .query(&usvg::fontdb::Query {
+            families: &[family],
+            ..usvg::fontdb::Query::default()
+        })
+        .is_some()
 }
 
 #[cfg(test)]
@@ -103,6 +117,34 @@ mod tests {
         ]
         .iter()
         .find_map(|path| std::fs::read(path).ok())
+    }
+
+    /// The rule the stand-in turns on, checked against a database this test
+    /// builds itself — so the answer does not depend on what the machine
+    /// running it happens to have installed.
+    #[test]
+    fn a_generic_family_pointing_at_a_font_that_is_not_there_does_not_resolve() {
+        let Some(font) = a_font() else {
+            eprintln!("no font on this machine to load; skipping");
+            return;
+        };
+
+        let mut database = usvg::fontdb::Database::new();
+        database.load_font_data(font);
+        let family = database
+            .faces()
+            .next()
+            .and_then(|face| face.families.first())
+            .map(|(family, _)| family.clone())
+            .expect("the font was just loaded");
+
+        // usvg's out-of-the-box sans-serif is Arial, which a bare Linux box
+        // and every browser lack. That is the case the stand-in exists for.
+        database.set_sans_serif_family("A Font Nobody Has");
+        assert!(!resolves(&database, usvg::fontdb::Family::SansSerif));
+
+        database.set_sans_serif_family(family);
+        assert!(resolves(&database, usvg::fontdb::Family::SansSerif));
     }
 
     #[test]
