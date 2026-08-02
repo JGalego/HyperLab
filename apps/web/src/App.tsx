@@ -154,8 +154,7 @@ export function App() {
           void api.backendMode().then((mode) => {
             if (mode === 'fallback' && !cancelled) {
               setNotice(
-                'Running without cross-origin isolation, so script dialogs use the ' +
-                  'browser’s plain prompt instead of the real thing.',
+                'Running without cross-origin isolation; script dialogs use the browser’s plain prompt.',
               );
             }
           });
@@ -224,7 +223,7 @@ export function App() {
       .saveStackText()
       .then(({ name, text }) => {
         download(`${name}.hl.json`, text, 'application/json');
-        setNotice(`Downloaded ${name}.hl.json — open it here or in the desktop app`);
+        setNotice(`Downloaded ${name}.hl.json — it also opens in the desktop app`);
         return api.getView();
       })
       .then(apply, (reason: unknown) => setError(String(reason)));

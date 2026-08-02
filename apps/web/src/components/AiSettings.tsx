@@ -228,11 +228,9 @@ export function AiSettings({ onDone, onCancel, onError }: Props) {
               )}
             </div>
             <p className="assistant__note">
-              The key stays in this browser&rsquo;s storage, on this device, and is sent
-              only to the provider above when you ask something. This site is served as
-              static files — there is no HyperLab server for it to visit. Anyone who can
-              open this browser profile could read it, so on a shared computer prefer
-              Forget when you are done.
+              The key stays in this browser&rsquo;s storage and is sent only to the
+              provider above. Anyone who can open this browser profile could read it, so
+              on a shared computer use Forget when you are done.
             </p>
           </>
         )}
