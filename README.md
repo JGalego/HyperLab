@@ -21,6 +21,12 @@ Cards, stacks, fields, buttons, scripts and message passing are all still
 here, and a stack stays inspectable and editable while it runs — the two
 qualities that made the original worth learning in the first place.
 
+🌐 **Try it right now, in your browser:**
+**[jgalego.github.io/HyperLab](https://jgalego.github.io/HyperLab/)** — the
+full application compiled to WebAssembly, with the six examples one click
+away. Nothing to install, and nothing you make there leaves your machine
+unless you ask a model about it.
+
 🕯️ **Bill Atkinson (1951–2025)** wrote QuickDraw, MacPaint and HyperCard, and
 insisted the last of them ship free with every Mac. Millions of people built
 something with it, and a great many of them never thought of themselves as
@@ -66,6 +72,12 @@ card back](docs/demo.gif)
   exact text it sent.
 
 <h2 id="getting-started">🚀 Getting Started</h2>
+
+🌐 **The website** — [jgalego.github.io/HyperLab](https://jgalego.github.io/HyperLab/)
+is the whole application running in your browser, plus a short history of the
+idea it comes from. A stack you download there opens in the desktop
+application, and the other way round: it is the same file. How the site works
+is written down in [`docs/website.md`](docs/website.md).
 
 🖥️ **The application** — a `.dmg`, an `.msi`, and a `.deb`, `.rpm` or
 `.AppImage`, on the
@@ -194,8 +206,12 @@ crates/
                     _hyperscript          — where it goes next
     decker/         a stack as a Decker
                     deck                  — where else it goes
+    web/            the same commands as
+                    the shell, but as
+                    WebAssembly           — how it runs in a browser
 
 apps/desktop/       the Tauri shell and the React renderer
+apps/web/           the website: the same renderer over crates/web
 docs/               architecture, roadmap, HyperTalk reference
 examples/           six stacks, which are also tests
 ```

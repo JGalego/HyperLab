@@ -7,6 +7,34 @@ does, the entry says so and says what to do about it.
 Each entry is written for the person deciding whether to upgrade, so it
 describes what is now possible rather than which files moved.
 
+## Unreleased
+
+HyperLab now runs in a browser, whole:
+**[jgalego.github.io/HyperLab](https://jgalego.github.io/HyperLab/)**.
+
+- **The website.** A retro landing page with a short history of HyperCard,
+  and a playground that is the full application — the same renderer the
+  desktop draws, over the same runtime compiled to WebAssembly. The six
+  examples are one click away, scripts block on real dialogs, and the map,
+  the message box, the inspector and undo all work as they do at home.
+- **Files travel.** The playground opens and downloads stacks as the
+  single-file JSON the desktop already reads and writes, so a stack moves
+  between the two by moving one file.
+- **Bring your own model, or none.** AI ▸ Settings in the browser takes
+  Anthropic, OpenAI, OpenRouter, anything OpenAI-compatible, or the built-in
+  mock. A key is kept in the browser's own storage, is never readable back,
+  and travels only to the provider it belongs to — the site is static files,
+  with no server of its own.
+- The Todo example's list now ends with a return, so the first item anyone
+  adds lands on its own line instead of gluing itself to the last one.
+
+For integrators: `hyperlab-persistence` gained in-memory single-file
+functions (`single_file_string`, `stack_from_single_file`);
+`hyperlab-ai-providers` gained a default-on `native` feature — without it
+the crate is only the wire protocol, for hosts that bring their own
+transport; and `hyperlab_stack::set_clock` lets a host name the clock on
+platforms where the standard one traps, which WebAssembly in a browser is.
+
 ## 0.2.0 — 2026-08-01
 
 A stack that cannot leave HyperLab is a stack you cannot show anyone. This

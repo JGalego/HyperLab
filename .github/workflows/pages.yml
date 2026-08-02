@@ -1,0 +1,71 @@
+name: Website
+
+# Builds the site in apps/web — the retro landing page, and the whole
+# application compiled to WebAssembly — and deploys it to GitHub Pages.
+#
+# One-time setup: the repository's Settings ▸ Pages ▸ Source must say
+# "GitHub Actions", or the deploy step has nowhere to put the artifact.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time, and a new push makes the queued one irrelevant —
+# but a deployment already running is left to finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      # A prebuilt binary, for the same reason cargo-audit is one in ci.yml.
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: Pack the example stacks as single files
+        run: cargo run -p hyperlab-persistence --example pack_single_files -- apps/web/public/examples
+
+      - name: Build the WebAssembly runtime
+        working-directory: apps/web
+        run: |
+          npm ci
+          npm run wasm
+
+      - name: Build the site
+        working-directory: apps/web
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/web/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

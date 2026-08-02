@@ -100,6 +100,41 @@ jobs:
       - run: npm run typecheck
       - run: npx vite build
 
+  website:
+    # The same build the Pages workflow deploys, run here so a pull request
+    # cannot rot it: the wasm target, the packed examples, the typecheck and
+    # the bundle.
+    name: Website
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-pack
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+
+      - name: The runtime holds to its promises on the wasm target too
+        run: cargo clippy -p hyperlab-web --target wasm32-unknown-unknown --all-targets
+
+      - name: Pack the example stacks as single files
+        run: cargo run -p hyperlab-persistence --example pack_single_files -- apps/web/public/examples
+
+      - name: Build the site
+        working-directory: apps/web
+        run: |
+          npm ci
+          npm run wasm
+          npm run format:check
+          npm run build
+
   desktop:
     name: Desktop shell (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
