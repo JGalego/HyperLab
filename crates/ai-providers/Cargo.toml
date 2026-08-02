@@ -19,7 +19,14 @@ serde_json.workspace = true
 reqwest = { version = "0.12", default-features = false, features = [
     "json",
     "rustls-tls",
-] }
+], optional = true }
+
+[features]
+default = ["native"]
+# The clients themselves, on top of reqwest. Without this feature the crate
+# is only the wire protocol — how a request is encoded and a reply decoded —
+# which is what a host that brings its own transport (the browser) needs.
+native = ["dep:reqwest"]
 
 [dev-dependencies]
 # Only the tests need a runtime of their own; the application brings its own.

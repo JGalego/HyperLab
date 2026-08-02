@@ -6,19 +6,25 @@
 //! the lot. That is the point: HyperLab gains four kinds of provider without
 //! learning that any of them exist.
 
+#[cfg(any(feature = "native", test))]
+use hyperlab_ai::Embedding;
 use hyperlab_ai::{
-    AiError, AiProvider, AiResult, BoxFuture, Capabilities, ChatMessage, Completion,
-    CompletionRequest, Embedding, FinishReason, ProviderConfig, Role, ToolCall, ToolDefinition,
-    Usage,
+    AiError, AiResult, ChatMessage, Completion, CompletionRequest, FinishReason, Role, ToolCall,
+    ToolDefinition, Usage,
 };
+#[cfg(feature = "native")]
+use hyperlab_ai::{AiProvider, BoxFuture, Capabilities, ProviderConfig};
 use serde_json::{Map, Value, json};
 
-use crate::http::{Endpoint, text_at};
+#[cfg(feature = "native")]
+use crate::http::Endpoint;
+use crate::text::text_at;
 
 /// Where requests go when the configuration does not say.
 pub const DEFAULT_BASE_URL: &str = "https://api.openai.com/v1";
 
 /// A provider that speaks the OpenAI chat-completions protocol.
+#[cfg(feature = "native")]
 pub struct OpenAiProvider {
     name: String,
     model: String,
@@ -27,6 +33,7 @@ pub struct OpenAiProvider {
     endpoint: Endpoint,
 }
 
+#[cfg(feature = "native")]
 impl OpenAiProvider {
     /// Builds a provider with a key the caller has already found.
     ///
@@ -72,41 +79,44 @@ impl OpenAiProvider {
         self.embedding_model = Some(model.into());
         self
     }
-
-    /// The body of a `/chat/completions` request.
-    fn completion_body(&self, request: &CompletionRequest) -> Value {
-        let mut body = Map::new();
-        body.insert("model".into(), json!(self.model_for(request)));
-        body.insert(
-            "messages".into(),
-            Value::Array(request.messages.iter().map(encode_message).collect()),
-        );
-        if !request.tools.is_empty() {
-            body.insert(
-                "tools".into(),
-                Value::Array(request.tools.iter().map(encode_tool).collect()),
-            );
-        }
-        if let Some(temperature) = request.temperature {
-            body.insert("temperature".into(), json!(temperature));
-        }
-        if let Some(max_tokens) = request.max_tokens {
-            body.insert("max_tokens".into(), json!(max_tokens));
-        }
-        Value::Object(body)
-    }
-
-    /// The model a request should use: its own, or the configured default
-    /// when it does not name one.
-    fn model_for<'a>(&'a self, request: &'a CompletionRequest) -> &'a str {
-        if request.model.is_empty() {
-            &self.model
-        } else {
-            &request.model
-        }
-    }
 }
 
+/// The body of a `/chat/completions` request.
+///
+/// A free function rather than a method so that a host that brings its own
+/// transport — the browser — can speak the protocol without building a
+/// client. `default_model` is used when the request names none.
+#[must_use]
+pub fn completion_body(default_model: &str, request: &CompletionRequest) -> Value {
+    let mut body = Map::new();
+    body.insert(
+        "model".into(),
+        json!(if request.model.is_empty() {
+            default_model
+        } else {
+            &request.model
+        }),
+    );
+    body.insert(
+        "messages".into(),
+        Value::Array(request.messages.iter().map(encode_message).collect()),
+    );
+    if !request.tools.is_empty() {
+        body.insert(
+            "tools".into(),
+            Value::Array(request.tools.iter().map(encode_tool).collect()),
+        );
+    }
+    if let Some(temperature) = request.temperature {
+        body.insert("temperature".into(), json!(temperature));
+    }
+    if let Some(max_tokens) = request.max_tokens {
+        body.insert("max_tokens".into(), json!(max_tokens));
+    }
+    Value::Object(body)
+}
+
+#[cfg(feature = "native")]
 impl AiProvider for OpenAiProvider {
     fn name(&self) -> &str {
         &self.name
@@ -124,7 +134,7 @@ impl AiProvider for OpenAiProvider {
         // Everything the request needs is worked out now, so the future owns
         // its inputs and borrows nothing.
         let endpoint = self.endpoint.clone();
-        let body = self.completion_body(&request);
+        let body = completion_body(&self.model, &request);
         Box::pin(async move {
             let reply = endpoint
                 .post_json("chat/completions", body, describe_error)
@@ -217,7 +227,11 @@ fn encode_tool(tool: &ToolDefinition) -> Value {
 }
 
 /// Reads a reply into a [`Completion`].
-fn decode_completion(reply: &Value) -> AiResult<Completion> {
+///
+/// # Errors
+///
+/// Returns [`AiError::Protocol`] if the reply is not shaped like an answer.
+pub fn decode_completion(reply: &Value) -> AiResult<Completion> {
     let choice = reply
         .get("choices")
         .and_then(Value::as_array)
@@ -310,6 +324,7 @@ fn count(usage: &Value, field: &str) -> u32 {
 
 /// Reads an embeddings reply, putting the vectors back in the order the texts
 /// were given in.
+#[cfg(any(feature = "native", test))]
 fn decode_embeddings(reply: &Value, wanted: usize) -> AiResult<Vec<Embedding>> {
     let data = reply
         .get("data")
@@ -348,16 +363,19 @@ fn decode_embeddings(reply: &Value, wanted: usize) -> AiResult<Vec<Embedding>> {
         .collect())
 }
 
-/// The server's own account of what went wrong.
-fn describe_error(reply: &Value) -> Option<String> {
+/// The server's own account of what went wrong, from an error reply's body.
+#[must_use]
+pub fn describe_error(reply: &Value) -> Option<String> {
     text_at(reply, &["error", "message"]).or_else(|| text_at(reply, &["message"]))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(feature = "native")]
     use hyperlab_ai::ProviderKind;
 
+    #[cfg(feature = "native")]
     fn provider() -> OpenAiProvider {
         OpenAiProvider::with_api_key(
             "openai",
@@ -367,6 +385,7 @@ mod tests {
         .expect("no key, nothing to go wrong")
     }
 
+    #[cfg(feature = "native")]
     #[test]
     fn a_local_server_needs_no_key() {
         let mut config = ProviderConfig::new(ProviderKind::Ollama, "llama");
@@ -375,6 +394,7 @@ mod tests {
         assert!(provider.capabilities().local);
     }
 
+    #[cfg(feature = "native")]
     #[test]
     fn embedding_is_unsupported_until_a_model_is_named() {
         assert!(!provider().capabilities().embeddings);
@@ -389,10 +409,10 @@ mod tests {
     #[test]
     fn a_request_uses_the_configured_model_when_it_names_none() {
         let request = CompletionRequest::new("", vec![ChatMessage::user("hi")]);
-        assert_eq!(provider().completion_body(&request)["model"], "a-model");
+        assert_eq!(completion_body("a-model", &request)["model"], "a-model");
 
         let request = CompletionRequest::new("another", vec![ChatMessage::user("hi")]);
-        assert_eq!(provider().completion_body(&request)["model"], "another");
+        assert_eq!(completion_body("a-model", &request)["model"], "another");
     }
 
     #[test]
@@ -405,7 +425,7 @@ mod tests {
                 ChatMessage::assistant("hi"),
             ],
         );
-        let body = provider().completion_body(&request);
+        let body = completion_body("a-model", &request);
         assert_eq!(
             body["messages"],
             json!([
@@ -429,7 +449,7 @@ mod tests {
             "a-model",
             vec![asking, ChatMessage::tool_result("call_1", "a card")],
         );
-        let body = provider().completion_body(&request);
+        let body = completion_body("a-model", &request);
 
         let asking = &body["messages"][0];
         assert!(asking.get("content").is_none(), "an empty turn sends none");
@@ -447,7 +467,7 @@ mod tests {
                 ToolDefinition::new("read_card", "Reads a card.", json!({"type": "object"})),
             ]);
         assert_eq!(
-            provider().completion_body(&request)["tools"],
+            completion_body("a-model", &request)["tools"],
             json!([{
                 "type": "function",
                 "function": {

@@ -83,7 +83,27 @@ pub fn load(path: impl AsRef<Path>) -> PersistenceResult<Stack> {
 ///
 /// Returns a [`PersistenceError`] if the file cannot be read or parsed.
 pub fn load_single_file(path: impl AsRef<Path>) -> PersistenceResult<Stack> {
-    let stack: Stack = read_json(path.as_ref())?;
+    checked(read_json(path.as_ref())?)
+}
+
+/// Reads a stack from the JSON text
+/// [`save_single_file`](crate::save_single_file) writes, for a caller with no
+/// file system — a browser, a clipboard, a wire.
+///
+/// # Errors
+///
+/// Returns a [`PersistenceError`] if the text cannot be parsed or holds no
+/// cards.
+pub fn stack_from_single_file(text: &str) -> PersistenceResult<Stack> {
+    checked(
+        serde_json::from_str(text)
+            .map_err(|error| PersistenceError::json("a single-file stack", error))?,
+    )
+}
+
+/// What every single-file read ends with: a stack with nothing in it was
+/// mis-saved or hand-edited, and opening it would strand the window.
+fn checked(stack: Stack) -> PersistenceResult<Stack> {
     if stack.is_empty() {
         return Err(PersistenceError::Incomplete(
             "it contains no cards at all".to_string(),

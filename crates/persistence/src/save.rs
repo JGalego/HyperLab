@@ -109,6 +109,20 @@ pub fn save_single_file(path: impl AsRef<Path>, stack: &Stack) -> PersistenceRes
     write_json(path.as_ref(), stack)
 }
 
+/// Renders a stack as the same self-contained JSON document
+/// [`save_single_file`] writes, for a caller with no file system — a browser,
+/// a clipboard, a wire.
+///
+/// # Errors
+///
+/// Returns a [`PersistenceError`] if the stack cannot be serialized, which a
+/// well-formed [`Stack`] never is.
+pub fn single_file_string(stack: &Stack) -> PersistenceResult<String> {
+    serde_json::to_string_pretty(stack)
+        .map(|json| json + "\n")
+        .map_err(|error| PersistenceError::json("a single-file stack", error))
+}
+
 /// Refuses a name that is not a plain file name.
 ///
 /// A picture's name reaches this function from a `Stack`, and a `Stack` can
