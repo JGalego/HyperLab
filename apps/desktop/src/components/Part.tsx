@@ -39,20 +39,29 @@ export function Part({
   const [left, top, width, height] = part.rect;
   const [offset, setOffset] = useState<{ dx: number; dy: number } | null>(null);
   const origin = useRef({ x: 0, y: 0 });
+  /**
+   * How many screen pixels the card is currently drawing per card pixel.
+   *
+   * One, until something shrinks the card to fit — which the website does on
+   * a phone. A drag reports where the part *ended up in card space*, so the
+   * pointer's travel has to be divided by this or the part would lag behind
+   * the finger by exactly the amount the card was scaled.
+   */
+  const scale = useRef(1);
   const [draft, setDraft] = useMirror(part.text);
 
   useEffect(() => {
     if (offset === null) return undefined;
     const move = (event: MouseEvent) =>
       setOffset({
-        dx: event.clientX - origin.current.x,
-        dy: event.clientY - origin.current.y,
+        dx: (event.clientX - origin.current.x) / scale.current,
+        dy: (event.clientY - origin.current.y) / scale.current,
       });
     const up = (event: MouseEvent) => {
-      const dx = event.clientX - origin.current.x;
-      const dy = event.clientY - origin.current.y;
+      const dx = (event.clientX - origin.current.x) / scale.current;
+      const dy = (event.clientY - origin.current.y) / scale.current;
       setOffset(null);
-      if (dx !== 0 || dy !== 0) onMove(part, left + dx, top + dy);
+      if (dx !== 0 || dy !== 0) onMove(part, Math.round(left + dx), Math.round(top + dy));
     };
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseup', up);
@@ -96,6 +105,10 @@ export function Part({
           event.preventDefault();
           onSelect(part);
           origin.current = { x: event.clientX, y: event.clientY };
+          // Measured at the moment the drag starts, from the part's own
+          // drawn size against the size it claims to be.
+          const drawn = event.currentTarget.getBoundingClientRect().width;
+          scale.current = width > 0 && drawn > 0 ? drawn / width : 1;
           setOffset({ dx: 0, dy: 0 });
         }}
       >

@@ -8,7 +8,7 @@
  * the example stacks are fetched from the site itself.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 
 import { Assistant } from '../../desktop/src/components/Assistant';
 import { Card } from '../../desktop/src/components/Card';
@@ -71,6 +71,82 @@ function withFont(): Promise<void> {
   return fontRegistered;
 }
 
+/**
+ * Below this the interface stacks and the panels become sheets. Matches the
+ * breakpoint in `mobile.css`; they have to agree.
+ *
+ * 60rem, because the widest card a stack ships with is 640px and the
+ * inspector holds 290 beside it — so anything under about 960 cannot show
+ * the two side by side, landscape phones very much included.
+ */
+const NARROW = '(max-width: 60rem)';
+
+/**
+ * Whether the screen is narrow enough for the stacked layout.
+ *
+ * Watched rather than read once: a phone that turns on its side is a
+ * different layout, and so is a desktop window dragged narrow.
+ */
+function useNarrowScreen(): boolean {
+  const [narrow, setNarrow] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(NARROW).matches,
+  );
+  useEffect(() => {
+    const query = window.matchMedia(NARROW);
+    const update = () => setNarrow(query.matches);
+    query.addEventListener('change', update);
+    return () => query.removeEventListener('change', update);
+  }, []);
+  return narrow;
+}
+
+/**
+ * How much the card has to shrink to fit the room it has.
+ *
+ * The stage is measured rather than the window, because the window is not
+ * what the card sits in: the menu bar, the status bar and any open sheet
+ * have all taken their share first. A landscape phone is the case that
+ * makes this matter — plenty of width, almost no height.
+ *
+ * Only ever shrinks. A card smaller than the screen is drawn at its own
+ * size, because artwork drawn one bit deep looks wrong blown up. The answer
+ * goes to CSS as `--card-zoom`, and `Part.tsx` measures the same scale back
+ * off the element when a drag starts.
+ */
+function useCardZoom(
+  stage: HTMLDivElement | null,
+  card: { width: number; height: number },
+  active: boolean,
+): number {
+  const [room, setRoom] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    // Taken as state rather than through a ref, because the stage does not
+    // exist on the first render — the window shows a notice until the
+    // runtime is up — and a ref would still be empty when the effect ran.
+    if (stage === null) return undefined;
+    const watch = new ResizeObserver(([entry]) => {
+      if (entry === undefined) return;
+      const { width, height } = entry.contentRect;
+      setRoom((was) =>
+        was.width === width && was.height === height ? was : { width, height },
+      );
+    });
+    watch.observe(stage);
+    return () => watch.disconnect();
+  }, [stage]);
+
+  if (!active || card.width <= 0 || card.height <= 0) return 1;
+  if (room.width === 0 || room.height === 0) return 1;
+  // The hard shadow the card casts needs a few pixels of its own.
+  const margin = 6;
+  return Math.min(
+    1,
+    Math.max(0.2, (room.width - margin) / card.width),
+    Math.max(0.2, (room.height - margin) / card.height),
+  );
+}
+
 /** Hands the user a file, which is what "save" means on a page. */
 function download(name: string, text: string, type: string) {
   const url = URL.createObjectURL(new Blob([text], { type }));
@@ -119,6 +195,14 @@ export function App() {
   // every command and re-encoding a card of artwork each time would be
   // absurd. Cleared when a different stack is opened.
   const [pictures, setPictures] = useState(new Map<string, string>());
+  const narrow = useNarrowScreen();
+  const [stage, setStage] = useState<HTMLDivElement | null>(null);
+  const cardZoom = useCardZoom(stage, view.cardSize, narrow);
+  // On a phone the inspector is a sheet over half the screen, so it starts
+  // out of the way and is asked for. On a desktop it is a column, always
+  // there, and this is ignored.
+  const [inspectorOpen, setInspectorOpen] = useState(false);
+  const showInspector = narrow ? inspectorOpen : true;
 
   // The two file pickers, hidden until a menu item clicks them.
   const stackPicker = useRef<HTMLInputElement>(null);
@@ -459,6 +543,19 @@ export function App() {
         },
       ],
     },
+    ...(narrow
+      ? [
+          {
+            title: 'View',
+            entries: [
+              {
+                label: inspectorOpen ? 'Hide Inspector' : 'Show Inspector',
+                run: () => setInspectorOpen((open) => !open),
+              },
+            ] as MenuEntry[],
+          },
+        ]
+      : []),
     {
       title: 'Examples',
       entries: EXAMPLES.map((name) => ({
@@ -487,11 +584,11 @@ export function App() {
   ];
 
   return (
-    <div className="app">
+    <div className="app" style={{ '--card-zoom': cardZoom } as CSSProperties}>
       <MenuBar view={view} menus={menus} />
 
       <div className="app__body">
-        <div className="app__stage">
+        <div className="app__stage" ref={setStage}>
           <Card
             view={view}
             tool={tool}
@@ -519,15 +616,17 @@ export function App() {
           />
         )}
 
-        <Inspector
-          view={view}
-          selection={selection}
-          onSelect={setSelection}
-          onSetProperty={(kind, id, property, value) =>
-            run(() => api.setProperty(kind, id, property, value))
-          }
-          onSetScript={(kind, id, script) => run(() => api.setScript(kind, id, script))}
-        />
+        {showInspector && (
+          <Inspector
+            view={view}
+            selection={selection}
+            onSelect={setSelection}
+            onSetProperty={(kind, id, property, value) =>
+              run(() => api.setProperty(kind, id, property, value))
+            }
+            onSetScript={(kind, id, script) => run(() => api.setScript(kind, id, script))}
+          />
+        )}
       </div>
 
       <StatusBar
