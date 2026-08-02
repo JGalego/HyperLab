@@ -1,0 +1,96 @@
+/*
+ * The playground on a small screen.
+ *
+ * Layered over `neo-classic.css` rather than folded into it: that file is
+ * the desktop application's theme, where the window is never 375 pixels
+ * wide and every rule here would be dead weight. Nothing below applies
+ * above the breakpoint, so the desktop draws exactly what it always drew.
+ *
+ * The problem it solves: the interface is three columns — stage, assistant,
+ * inspector — and the inspector is a fixed 290px. On a phone that pushed
+ * the card off the left edge and left the whole page scrolling sideways.
+ *
+ * So on a narrow screen the columns become rows, the card is scaled to fit
+ * the width it actually has (`--card-zoom`, worked out in `App.tsx`), and
+ * the panels become sheets across the bottom that the person opens when
+ * they want them.
+ */
+
+@media (max-width: 60rem) {
+  /* Stacked, and allowed to shrink: without `min-width: 0` a flex child
+     refuses to go below its content's width, which is what let a 512px card
+     push the layout wider than the screen. */
+  .app__body {
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .app__stage {
+    padding: var(--space-tight);
+    /* Without this a flex child will not shrink below its content, and the
+       stage would keep the height a full-size card wants. */
+    min-height: 0;
+    /* The card is scaled to fit, so there is nothing left to scroll to. */
+    overflow: hidden;
+  }
+
+  /*
+   * `zoom` rather than `transform: scale()`, because zoom reflows: the card
+   * takes up the room it actually occupies, so the stage centres it and
+   * nothing overflows. A transform would leave a 512px hole behind.
+   *
+   * Part.tsx measures this at the start of a drag, so a part still lands
+   * where the finger left it.
+   */
+  .card {
+    zoom: var(--card-zoom, 1);
+  }
+
+  /* Full width, and never more than half the screen, so the card is always
+     still visible behind whichever sheet is open. */
+  .inspector,
+  .assistant {
+    width: auto;
+    max-height: 50vh;
+    border-left: none;
+    border-top: var(--border);
+  }
+
+  /* Two rows on a phone: the tools and the pager, then the message box
+     across the full width. */
+  .statusbar {
+    flex-wrap: wrap;
+    row-gap: var(--space-tight);
+  }
+
+  .statusbar__message {
+    flex-basis: 100%;
+    order: 10;
+  }
+
+  /*
+   * Seven menus and two titles do not fit a 375-pixel bar, so the bar wraps
+   * onto a second line. Scrolling it sideways was the other option and a
+   * worse one: `overflow-x` makes a clipping context, and the menu that
+   * drops out of a button was cut off by the very bar it belongs to.
+   */
+  .menubar {
+    flex-wrap: wrap;
+    padding: 0 var(--space-hair);
+  }
+
+  .menubar__title {
+    padding: 0 var(--space-tight);
+  }
+
+  /* Wider targets for a thumb, now that there is room for them. */
+  .menu__button {
+    padding: var(--space-hair) var(--space);
+  }
+
+  /* A dialog is a sheet too, rather than a small box adrift in the middle. */
+  .dialog {
+    width: calc(100vw - 2 * var(--space));
+    max-width: none;
+  }
+}

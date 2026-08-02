@@ -122,7 +122,9 @@ jobs:
           cache-dependency-path: apps/web/package-lock.json
 
       - name: The runtime holds to its promises on the wasm target too
-        run: cargo clippy -p hyperlab-web --target wasm32-unknown-unknown --all-targets
+        run: |
+          cargo clippy -p hyperlab-web --target wasm32-unknown-unknown --all-targets
+          cargo clippy -p hyperlab-web-export --target wasm32-unknown-unknown --all-targets
 
       - name: Pack the example stacks as single files
         run: cargo run -p hyperlab-persistence --example pack_single_files -- apps/web/public/examples

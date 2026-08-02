@@ -20,4 +20,5 @@ apps/desktop/src-tauri/target/
 # The website's generated assets: the WebAssembly package wasm-pack writes,
 # and the example stacks packed as single files. Both are built in CI.
 apps/web/wasm-pkg/
+apps/web/wasm-export-pkg/
 apps/web/public/examples/

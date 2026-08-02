@@ -38,6 +38,7 @@ desktop's components, or `apps/web` itself:
 
 ```sh
 cargo clippy -p hyperlab-web --target wasm32-unknown-unknown --all-targets
+cargo clippy -p hyperlab-web-export --target wasm32-unknown-unknown --all-targets
 
 cd apps/web
 npm run prepare:assets          # the wasm package and the example stacks

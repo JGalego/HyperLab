@@ -6,7 +6,7 @@
   "description": "The HyperLab website: a retro landing page and the full application in the browser.",
   "license": "MIT",
   "scripts": {
-    "wasm": "wasm-pack build ../../crates/web --target web --out-dir ../../apps/web/wasm-pkg --out-name hyperlab_web --no-pack",
+    "wasm": "wasm-pack build ../../crates/web --target web --out-dir ../../apps/web/wasm-pkg --out-name hyperlab_web --no-pack && wasm-pack build ../../crates/web-export --target web --out-dir ../../apps/web/wasm-export-pkg --out-name hyperlab_web_export --no-pack",
     "examples": "cargo run -p hyperlab-persistence --example pack_single_files -- public/examples",
     "prepare:assets": "npm run wasm && npm run examples",
     "dev": "vite",
