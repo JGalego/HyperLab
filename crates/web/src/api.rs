@@ -911,6 +911,56 @@ pub fn export_web(_args: &str) -> ApiResult {
     })
 }
 
+/// Offers a typeface for the words drawn inside pictures.
+///
+/// A browser has no system fonts to find, so without this a picture's
+/// labels are missing from a PDF or a deck. The page fetches a font the
+/// first time either export is asked for and hands the bytes over here;
+/// both exporters keep their own registry, and both are told.
+#[wasm_bindgen]
+pub fn add_font(_args: &str, bytes: Vec<u8>) -> ApiResult {
+    hyperlab_export::add_font(bytes.clone());
+    hyperlab_decker::add_font(bytes);
+    reply(&())
+}
+
+/// The whole stack as a PDF, one page per card.
+///
+/// Answers with the bytes rather than a string: a PDF is not text, and
+/// base64 through a JSON channel would cost a third of the file for
+/// nothing. The worker posts the buffer across instead.
+///
+/// # Errors
+///
+/// Returns the exporter's own message if a picture cannot be converted.
+#[wasm_bindgen]
+pub fn export_pdf(_args: &str) -> Result<Vec<u8>, JsValue> {
+    DOC.with(|cell| {
+        let held = cell.borrow();
+        let doc = held.as_ref().ok_or_else(|| fail("init() has not run"))?;
+        hyperlab_export::to_pdf(doc.runtime.stack()).map_err(fail)
+    })
+}
+
+/// The stack as a Decker deck, with a line for everything Lil and a deck
+/// have no equivalent for.
+#[wasm_bindgen]
+pub fn export_deck(_args: &str) -> ApiResult {
+    #[derive(Serialize)]
+    struct Exported {
+        source: String,
+        notes: Vec<String>,
+    }
+    with_doc(|doc| {
+        let translated = hyperlab_decker::deck(doc.runtime.stack());
+        serde_json::to_string(&Exported {
+            source: translated.source,
+            notes: translated.notes,
+        })
+        .map_err(|error| error.to_string())
+    })
+}
+
 // ------------------------------------------------------------------ helpers
 
 fn object_id(kind: &str, id: u64) -> Result<ObjectId, String> {

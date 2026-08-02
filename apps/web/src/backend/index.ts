@@ -86,6 +86,8 @@ interface WorkerReply {
   id?: number;
   ok?: boolean;
   value?: string;
+  /** Set instead of `value` by the commands that make a file. */
+  bytes?: Uint8Array;
   error?: string;
   request?: DialogRequest;
   key?: string;
@@ -167,9 +169,13 @@ function startWorkerBackend(): Promise<Backend> {
           if (settle === undefined || message.id === undefined) break;
           pending.delete(message.id);
           if (message.ok === true) {
-            settle.resolve(
-              message.value === undefined ? undefined : JSON.parse(message.value),
-            );
+            // Bytes come back as themselves; everything else as JSON.
+            if (message.bytes !== undefined) settle.resolve(message.bytes);
+            else {
+              settle.resolve(
+                message.value === undefined ? undefined : JSON.parse(message.value),
+              );
+            }
           } else {
             settle.reject(new Error(message.error ?? 'the command failed'));
           }
@@ -225,8 +231,14 @@ async function startFallbackBackend(): Promise<Backend> {
     async call<T>(command: string, args?: unknown, bytes?: Uint8Array): Promise<T> {
       const argsJson = JSON.stringify(args ?? {});
       let value: string | undefined;
+      if (command === 'export_pdf') {
+        // Bytes, not JSON — the one command that answers with a file.
+        return module.export_pdf(argsJson) as T;
+      }
       if (command === 'import_image_bytes') {
         value = module.import_image_bytes(argsJson, bytes ?? new Uint8Array());
+      } else if (command === 'add_font') {
+        value = module.add_font(argsJson, bytes ?? new Uint8Array());
       } else if (command === 'ai_ask') {
         value = await module.ai_ask(argsJson);
       } else {

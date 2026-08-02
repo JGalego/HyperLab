@@ -7,8 +7,8 @@
 > **Where:** `apps/web`, over `crates/web`, deployed by
 > `.github/workflows/pages.yml`.
 
-The site is two pages of static files on GitHub Pages. There is no server,
-which is not a limitation but the design: everything below follows from it.
+The site is two pages of static files on GitHub Pages. Everything below
+follows from there being no server.
 
 ## The playground is the application
 
@@ -71,6 +71,31 @@ cargo run -p hyperlab-persistence --example pack_single_files -- apps/web/public
 
 and fetched from the site itself; the landing page's gallery links open the
 playground with `?stack=<name>`.
+
+## Getting a stack out
+
+Everything the desktop exports, the playground exports: a PDF of the cards,
+a PNG of the map, a self-contained web page, and a
+[Decker](https://beyondloom.com/decker/) deck. The same crates do the work,
+compiled to WebAssembly, so the output is the same file the application
+would have written.
+
+One thing had to be arranged. Artwork can carry words — Cluedo's board names
+its rooms — and drawing them needs a typeface. `hyperlab-export` and
+`hyperlab-decker` ask the operating system for its fonts, and a page has
+none to give: the labels would simply be missing. So each crate takes a font
+from its host, the way `hyperlab-stack` takes a clock:
+
+```rust
+hyperlab_export::add_font(bytes);
+hyperlab_decker::add_font(bytes);
+```
+
+The site fetches Liberation Sans (OFL, in `public/fonts/`) the first time
+someone exports, so the 400 KB never lands on an ordinary visit, and hands
+it to both. A registered font is loaded *in addition* to the machine's own
+and only stands in for the generic families where the platform found
+nothing — so a desktop export is byte-for-byte what it always was.
 
 ## Keys never leave the browser
 

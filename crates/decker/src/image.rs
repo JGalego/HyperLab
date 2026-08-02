@@ -125,8 +125,7 @@ impl Sheet {
 
 /// Reads a picture, whatever format it arrived in.
 fn parse(picture: &Image) -> Option<usvg::Tree> {
-    let mut options = usvg::Options::default();
-    options.fontdb_mut().load_system_fonts();
+    let options = crate::fonts::options();
 
     if picture.format().media_type() == "image/svg+xml" {
         return usvg::Tree::from_data(picture.bytes(), &options).ok();

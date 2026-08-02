@@ -580,6 +580,8 @@ dependencies = [
  "hyperlab-ai",
  "hyperlab-ai-providers",
  "hyperlab-assistant",
+ "hyperlab-decker",
+ "hyperlab-export",
  "hyperlab-graph",
  "hyperlab-hyperscript",
  "hyperlab-mcp",

@@ -190,6 +190,26 @@ export const saveStackText = (): Promise<{ name: string; text: string }> =>
 export const exportWebPage = (): Promise<{ source: string; notes: string[] }> =>
   call('export_web');
 
+/**
+ * Offers a typeface for the words drawn inside pictures.
+ *
+ * A browser has no system fonts to find, so without one a picture's labels
+ * are missing from a PDF or a deck. The page fetches a font the first time
+ * either export is asked for; see {@link withFont} in `App.tsx`.
+ */
+export const addFont = async (bytes: Uint8Array): Promise<void> => {
+  await (await runtime()).call('add_font', {}, bytes);
+};
+
+/** The whole stack as a PDF, one page per card, as the bytes themselves. */
+export const exportPdf = async (): Promise<Uint8Array> =>
+  (await runtime()).call<Uint8Array>('export_pdf');
+
+/** The stack as a Decker deck, plus a line for everything Lil and a deck
+ * have no equivalent for. */
+export const exportDeck = (): Promise<{ source: string; notes: string[] }> =>
+  call('export_deck');
+
 /** An empty snapshot, for the moment before the first one arrives. */
 export const emptyView: StackView = {
   stackName: '',

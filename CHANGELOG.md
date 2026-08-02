@@ -17,6 +17,11 @@ HyperLab now runs in a browser, whole:
   desktop draws, over the same runtime compiled to WebAssembly. The six
   examples are one click away, scripts block on real dialogs, and the map,
   the message box, the inspector and undo all work as they do at home.
+- **A stack still gets out.** Everything the desktop exports the browser
+  exports: the cards as a PDF, the map as a PNG, the whole stack as a web
+  page, and as a Decker deck. Words drawn inside artwork keep their
+  typeface, which a page has to be handed because it cannot read the
+  machine's own.
 - **Files travel.** The playground opens and downloads stacks as the
   single-file JSON the desktop already reads and writes, so a stack moves
   between the two by moving one file.

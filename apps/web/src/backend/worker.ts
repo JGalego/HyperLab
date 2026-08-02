@@ -115,19 +115,34 @@ function start(message: InitMessage): Promise<void> {
  * an unknown name is answered with an error, not silence. */
 type Command = (args: string) => string;
 
-async function run(message: CallMessage): Promise<string | undefined> {
-  if (message.command === 'import_image_bytes') {
-    return wasm.import_image_bytes(message.args, message.bytes ?? new Uint8Array());
+/** What a command answered with: JSON, or bytes for the ones that make a
+ * file. A PDF is not text, and base64 through the JSON channel would cost a
+ * third of the file for nothing. */
+interface Answer {
+  value?: string;
+  bytes?: Uint8Array;
+}
+
+async function run(message: CallMessage): Promise<Answer> {
+  const given = message.bytes ?? new Uint8Array();
+  switch (message.command) {
+    case 'import_image_bytes':
+      return { value: wasm.import_image_bytes(message.args, given) };
+    case 'add_font':
+      return { value: wasm.add_font(message.args, given) };
+    case 'export_pdf':
+      return { bytes: wasm.export_pdf(message.args) };
+    case 'ai_ask':
+      return { value: await wasm.ai_ask(message.args) };
+    default: {
+      const commands = wasm as unknown as Record<string, Command | undefined>;
+      const command = commands[message.command];
+      if (typeof command !== 'function') {
+        throw new Error(`the runtime has no command called "${message.command}"`);
+      }
+      return { value: command(message.args) };
+    }
   }
-  if (message.command === 'ai_ask') {
-    return wasm.ai_ask(message.args);
-  }
-  const commands = wasm as unknown as Record<string, Command | undefined>;
-  const command = commands[message.command];
-  if (typeof command !== 'function') {
-    throw new Error(`the runtime has no command called "${message.command}"`);
-  }
-  return command(message.args);
 }
 
 self.onmessage = (event: MessageEvent<InitMessage | CallMessage>) => {
@@ -144,8 +159,12 @@ self.onmessage = (event: MessageEvent<InitMessage | CallMessage>) => {
   void (async () => {
     try {
       await started;
-      const value = await run(message);
-      postMessage({ type: 'result', id: message.id, ok: true, value });
+      const { value, bytes } = await run(message);
+      const result = { type: 'result', id: message.id, ok: true, value, bytes };
+      // The buffer is handed over rather than copied; nothing here reads it
+      // again.
+      if (bytes === undefined) postMessage(result);
+      else postMessage(result, [bytes.buffer]);
     } catch (reason) {
       postMessage({
         type: 'result',

@@ -45,6 +45,32 @@ const EXAMPLES = [
   'Todo',
 ] as const;
 
+/**
+ * The typeface handed to the exporters, fetched the first time one runs.
+ *
+ * A page cannot read the machine's fonts, so words drawn inside a stack's
+ * artwork would come out of a PDF or a deck missing. This is fetched only
+ * when someone actually exports, so the 400 KB never lands on an ordinary
+ * visit. A failure is not fatal: the export goes ahead without the labels,
+ * which is what the desktop does on a machine with no fonts either.
+ */
+let fontRegistered: Promise<void> | null = null;
+
+function withFont(): Promise<void> {
+  fontRegistered ??= fetch('fonts/LiberationSans-Regular.ttf')
+    .then((response) => {
+      if (!response.ok) throw new Error(`${response.status}`);
+      return response.arrayBuffer();
+    })
+    .then((buffer) => api.addFont(new Uint8Array(buffer)))
+    .catch(() => {
+      // Tried once; a second export should try again rather than inherit
+      // this failure for the life of the page.
+      fontRegistered = null;
+    });
+  return fontRegistered;
+}
+
 /** Hands the user a file, which is what "save" means on a page. */
 function download(name: string, text: string, type: string) {
   const url = URL.createObjectURL(new Blob([text], { type }));
@@ -55,15 +81,25 @@ function download(name: string, text: string, type: string) {
   URL.revokeObjectURL(url);
 }
 
-function downloadBytes(name: string, bytes: Uint8Array) {
-  const url = URL.createObjectURL(
-    new Blob([bytes as unknown as BlobPart], { type: 'image/png' }),
-  );
+function downloadBytes(name: string, bytes: Uint8Array, type: string) {
+  const url = URL.createObjectURL(new Blob([bytes as unknown as BlobPart], { type }));
   const anchor = document.createElement('a');
   anchor.href = url;
   anchor.download = name;
   anchor.click();
   URL.revokeObjectURL(url);
+}
+
+/**
+ * What to add to a notice about a translation that lost something.
+ *
+ * A destination that came across whole and one that dropped a handler both
+ * wrote a file, and the difference is worth saying out loud.
+ */
+function leftBehind(notes: string[]): string {
+  if (notes.length === 0) return '';
+  const each = notes.length === 1 ? 'thing' : 'things';
+  return ` — ${notes.length} ${each} had no equivalent: ${[...new Set(notes)].join('; ')}`;
 }
 
 export function App() {
@@ -253,21 +289,43 @@ export function App() {
     api.exportWebPage().then(
       ({ source, notes }) => {
         download(`${view.stackName}.html`, source, 'text/html');
-        const missing =
-          notes.length === 0
-            ? ''
-            : ` — ${notes.length} thing${notes.length === 1 ? '' : 's'} had no equivalent: ${[...new Set(notes)].join('; ')}`;
-        setNotice(`Downloaded ${view.stackName}.html${missing}`);
+        setNotice(`Downloaded ${view.stackName}.html${leftBehind(notes)}`);
       },
       (reason: unknown) => setError(String(reason)),
     );
+  }
+
+  /** The whole stack as a PDF, one page per card. */
+  function exportPdf() {
+    withFont()
+      .then(() => api.exportPdf())
+      .then(
+        (bytes) => {
+          downloadBytes(`${view.stackName}.pdf`, bytes, 'application/pdf');
+          setNotice(`Downloaded ${view.stackName}.pdf`);
+        },
+        (reason: unknown) => setError(String(reason)),
+      );
+  }
+
+  /** The stack as a Decker deck. */
+  function exportDeck() {
+    withFont()
+      .then(() => api.exportDeck())
+      .then(
+        ({ source, notes }) => {
+          download(`${view.stackName}.deck`, source, 'text/plain');
+          setNotice(`Downloaded ${view.stackName}.deck${leftBehind(notes)}`);
+        },
+        (reason: unknown) => setError(String(reason)),
+      );
   }
 
   /** The map as a PNG. Drawn in the window, because only it knows the shape. */
   function saveMap(svg: SVGSVGElement) {
     toPng(svg).then(
       (bytes) => {
-        downloadBytes(`${view.stackName} map.png`, bytes);
+        downloadBytes(`${view.stackName} map.png`, bytes, 'image/png');
         setNotice(`Downloaded ${view.stackName} map.png`);
       },
       (reason: unknown) => setError(String(reason)),
@@ -296,7 +354,9 @@ export function App() {
         null,
         { label: 'Download Stack', shortcut: '⌘S', run: downloadStack },
         null,
+        { label: 'Export as PDF…', run: exportPdf },
         { label: 'Export as a Web Page…', run: exportWebPage },
+        { label: 'Export as a Decker Deck…', run: exportDeck },
       ],
     },
     {

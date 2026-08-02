@@ -30,13 +30,11 @@ pub struct Art {
 /// read.
 pub fn render(picture: &Image, next: &mut i32) -> Result<Art, ExportError> {
     let source = as_svg(picture);
-    let mut options = usvg::Options::default();
-    // The machine's own fonts, for words drawn inside a picture. Loaded here
-    // rather than kept around because a stack is exported once and the scan
-    // costs less than the conversion. A machine with no fonts at all still
-    // produces the picture; it produces it without its labels, which is the
-    // best that can be done without shipping a typeface.
-    options.fontdb_mut().load_system_fonts();
+    // Every font this process can reach: the machine's own, plus anything a
+    // host with none of its own registered. Built here rather than kept
+    // around because a stack is exported once and the scan costs less than
+    // the conversion.
+    let options = crate::fonts::options();
 
     let tree = usvg::Tree::from_str(&source, &options).map_err(|error| ExportError::Picture {
         name: picture.name().to_string(),
