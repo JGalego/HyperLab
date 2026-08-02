@@ -28,11 +28,13 @@
 #![warn(missing_docs)]
 
 mod art;
+mod fonts;
 mod metrics;
 mod page;
 
 use hyperlab_stack::Stack;
 
+pub use fonts::add_font;
 pub use metrics::{encode, wrap};
 
 /// Why a stack could not be written out.

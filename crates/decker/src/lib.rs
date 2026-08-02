@@ -37,10 +37,12 @@
 #![warn(missing_docs)]
 
 mod deck;
+mod fonts;
 mod image;
 mod lil;
 
 pub use deck::deck;
+pub use fonts::add_font;
 
 /// A translated deck, and what could not be carried across.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]

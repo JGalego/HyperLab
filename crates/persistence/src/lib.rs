@@ -37,5 +37,5 @@ mod save;
 
 pub use error::{PersistenceError, PersistenceResult};
 pub use format::{BUNDLE_EXTENSION, FORMAT_VERSION, Metadata};
-pub use load::{load, load_single_file, read_metadata};
-pub use save::{save, save_single_file};
+pub use load::{load, load_single_file, read_metadata, stack_from_single_file};
+pub use save::{save, save_single_file, single_file_string};

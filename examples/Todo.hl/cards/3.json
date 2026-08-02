@@ -15,7 +15,7 @@
         "enabled": true,
         "locked": false,
         "style": "rectangle",
-        "text": "x read the HyperTalk reference\nwrite a stack of my own\nshow it to someone",
+        "text": "x read the HyperTalk reference\nwrite a stack of my own\nshow it to someone\n",
         "visible": true,
         "wrap": true
       },

@@ -4,6 +4,7 @@ use std::{fs, path::PathBuf};
 
 use hyperlab_persistence::{
     PersistenceError, load, load_single_file, read_metadata, save, save_single_file,
+    single_file_string, stack_from_single_file,
 };
 use hyperlab_stack::{Image, Object, PartContainer, PartKind, Rect, Size, Stack, Value};
 
@@ -185,6 +186,47 @@ fn a_single_file_holds_the_same_stack() {
 
     save_single_file(&path, &original).unwrap();
     assert_eq!(load_single_file(&path).unwrap(), original);
+}
+
+#[test]
+fn a_single_file_string_holds_the_same_stack_with_no_file_at_all() {
+    let original = sample();
+    let text = single_file_string(&original).unwrap();
+    assert_eq!(stack_from_single_file(&text).unwrap(), original);
+}
+
+#[test]
+fn the_string_is_byte_for_byte_what_the_file_would_hold() {
+    let temp = TempDir::new("single-string");
+    let path = temp.path("Sample.json");
+    let original = sample();
+
+    save_single_file(&path, &original).unwrap();
+    assert_eq!(
+        fs::read_to_string(&path).unwrap(),
+        single_file_string(&original).unwrap()
+    );
+}
+
+#[test]
+fn a_single_file_with_no_cards_is_refused() {
+    // Hand-built JSON, because no honest save can produce a cardless stack.
+    let text = single_file_string(&sample()).unwrap();
+    let mut broken: serde_json::Value = serde_json::from_str(&text).unwrap();
+    broken["cards"] = serde_json::json!([]);
+    match stack_from_single_file(&broken.to_string()) {
+        Err(PersistenceError::Incomplete(reason)) => assert!(reason.contains("no cards")),
+        other => panic!("expected an incompleteness error, got {other:?}"),
+    }
+}
+
+#[test]
+fn text_that_is_not_a_stack_is_refused_readably() {
+    let error = stack_from_single_file("{ not json").unwrap_err();
+    assert!(
+        error.to_string().contains("not valid HyperLab JSON"),
+        "unhelpful: {error}"
+    );
 }
 
 #[test]

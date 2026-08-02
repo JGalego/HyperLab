@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HyperLab — an open-source, AI-native successor to HyperCard</title>
+    <meta
+      name="description"
+      content="Cards, buttons, fields and HyperTalk, with language models built into the language. Runs in the browser."
+    />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="/src/landing.css" />
+    <!-- Registered here as well as on the playground page, so that by the
+         time someone clicks through, the isolation headers are already in
+         place and the playground starts without a reload. -->
+    <script src="coi-serviceworker.js"></script>
+  </head>
+  <body>
+    <header class="menubar" aria-label="Decorative menu bar">
+      <span class="menubar__mark" aria-hidden="true">⌘</span>
+      <span class="menubar__title">HyperLab</span>
+      <span class="menubar__menu" aria-hidden="true">File</span>
+      <span class="menubar__menu" aria-hidden="true">Edit</span>
+      <span class="menubar__menu" aria-hidden="true">Go</span>
+      <span class="menubar__menu" aria-hidden="true">AI</span>
+      <span class="menubar__spring"></span>
+      <a class="menubar__link" href="https://github.com/JGalego/HyperLab">GitHub</a>
+    </header>
+
+    <main class="desk">
+      <!-- ------------------------------------------------------- welcome -->
+      <section class="window window--hero" aria-labelledby="welcome-title">
+        <div class="window__bar">
+          <span class="window__box" aria-hidden="true"></span>
+          <h1 class="window__title" id="welcome-title">Welcome to HyperLab</h1>
+        </div>
+        <div class="window__body">
+          <p class="hero__line">
+            An open-source, <strong>AI-native successor to HyperCard</strong>. Cards,
+            buttons, fields and HyperTalk, and a stack stays editable while it runs.
+          </p>
+          <pre class="hero__script" aria-label="A HyperTalk example">
+on mouseUp
+  put ai("Summarize this card") into field "Summary"
+end mouseUp</pre>
+          <div class="hero__buttons">
+            <a class="button button--default" href="play.html">Open the Playground</a>
+            <a class="button" href="https://github.com/JGalego/HyperLab/releases/latest"
+              >Get the desktop app</a
+            >
+            <a class="button" href="https://github.com/JGalego/HyperLab">Source</a>
+          </div>
+          <p class="hero__note">
+            The playground is the full application, compiled to WebAssembly. Nothing you
+            make leaves your machine unless you ask a model about it.
+          </p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------- history -->
+      <section class="window" aria-labelledby="history-title">
+        <div class="window__bar">
+          <span class="window__box" aria-hidden="true"></span>
+          <h2 class="window__title" id="history-title">A short history</h2>
+        </div>
+        <div class="window__body history">
+          <p>
+            🍎 In 1987, Apple shipped HyperCard, and software stopped being something only
+            programmers made.
+          </p>
+          <p>
+            You drew a button, typed two lines of plain English, and that was the app. No
+            project file. No compiler. <em>Sounds familiar?</em>
+          </p>
+          <ul class="history__list">
+            <li>
+              👩‍🏫 Teachers
+              <a href="https://en.wikipedia.org/wiki/HyperCourseware"
+                >wrote their own courseware</a
+              >
+            </li>
+            <li>
+              🏛️ Museums
+              <a href="https://www.archcalc.cnr.it/indice/PDF7/96_Economou.pdf"
+                >ran kiosks on it</a
+              >
+            </li>
+            <li>
+              🏝️ Myst
+              <a href="https://github.com/erkyrath/mystextract">was made in it</a>
+            </li>
+          </ul>
+          <p>
+            It came free on every Mac for over a decade. Then it was gone, and nothing
+            quite took its place.
+          </p>
+          <p>
+            HyperLab picks the idea back up, with language models part of HyperTalk
+            itself.
+          </p>
+          <p class="history__dedication">
+            🕯️ Dedicated to <strong>Bill Atkinson</strong> (1951–2025), who wrote
+            QuickDraw, MacPaint and HyperCard, and insisted the last of them ship free
+            with every Mac.
+          </p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------ examples -->
+      <section class="window" aria-labelledby="examples-title">
+        <div class="window__bar">
+          <span class="window__box" aria-hidden="true"></span>
+          <h2 class="window__title" id="examples-title">Examples</h2>
+        </div>
+        <div class="window__body">
+          <p>
+            Each opens in the playground, running. Switch to the edit tool to read the
+            scripts that make it work.
+          </p>
+          <ul class="stacks">
+            <li>
+              <a class="stack" href="play.html?stack=Cluedo">
+                <span class="stack__name">Cluedo</span>
+                <span class="stack__blurb"
+                  >A drawn mansion with clickable rooms, and a case you close by
+                  deduction.</span
+                >
+              </a>
+            </li>
+            <li>
+              <a class="stack" href="play.html?stack=Myst">
+                <span class="stack__name">Myst</span>
+                <span class="stack__blurb"
+                  >An island, four Ages, and one book you should not open. Go ▸ Map finds
+                  the trap without running a line.</span
+                >
+              </a>
+            </li>
+            <li>
+              <a class="stack" href="play.html?stack=LLMs%20for%20n00bs">
+                <span class="stack__name">LLMs for n00bs</span>
+                <span class="stack__blurb"
+                  >Nine slides on how a language model works. The last one asks a real
+                  model, and says so plainly when none is set up.</span
+                >
+              </a>
+            </li>
+            <li>
+              <a class="stack" href="play.html?stack=Address%20Book">
+                <span class="stack__name">Address Book</span>
+                <span class="stack__blurb"
+                  >A card per person, one shared background.</span
+                >
+              </a>
+            </li>
+            <li>
+              <a class="stack" href="play.html?stack=Recipe%20Box">
+                <span class="stack__name">Recipe Box</span>
+                <span class="stack__blurb"
+                  >Chunk expressions doing arithmetic on the ingredients.</span
+                >
+              </a>
+            </li>
+            <li>
+              <a class="stack" href="play.html?stack=Todo">
+                <span class="stack__name">Todo</span>
+                <span class="stack__blurb">A list, a dialog, and a loop.</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------------ AI -->
+      <section class="window" aria-labelledby="ai-title">
+        <div class="window__bar">
+          <span class="window__box" aria-hidden="true"></span>
+          <h2 class="window__title" id="ai-title">AI</h2>
+        </div>
+        <div class="window__body">
+          <p>
+            HyperLab works with no provider configured.
+            <strong>AI ▸ Settings</strong> takes Anthropic, OpenAI, OpenRouter, a local
+            Ollama, or a mock that answers offline.
+          </p>
+          <p class="ai__promise">
+            <strong>Your API key stays in your browser.</strong> The site is static files;
+            requests go from your browser directly to your provider, and no command reads
+            a saved key back out. The sidebar shows the exact text of everything sent.
+          </p>
+          <p>
+            The assistant works through the same commands you do, so its changes are
+            undoable like any other.
+          </p>
+        </div>
+      </section>
+
+      <!-- ---------------------------------------------------------- home -->
+      <section class="window" aria-labelledby="home-title">
+        <div class="window__bar">
+          <span class="window__box" aria-hidden="true"></span>
+          <h2 class="window__title" id="home-title">The desktop application</h2>
+        </div>
+        <div class="window__body">
+          <p>
+            A <code>.dmg</code>, an <code>.msi</code>, and a <code>.deb</code>,
+            <code>.rpm</code> or <code>.AppImage</code> on the
+            <a href="https://github.com/JGalego/HyperLab/releases/latest">releases page</a
+            >. A stack downloaded from the playground opens in the application; it is the
+            same file.
+          </p>
+          <p>
+            Stacks export as a PDF, as a PNG of the map, as a self-contained web page, and
+            as a <a href="https://beyondloom.com/decker/">Decker</a> deck — from the
+            playground as readily as from the application.
+          </p>
+        </div>
+      </section>
+
+      <footer class="colophon">
+        <p>
+          <a href="https://github.com/JGalego/HyperLab">HyperLab</a> is MIT-licensed and
+          contains no Apple code and no Apple artwork; the resemblance is to the era.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -10,11 +10,16 @@ whoever is reading the code in thirty years.
 cargo test                      # the core crates: no GUI toolchain needed
 cd apps/desktop && npm install
 npm run tauri dev               # the application
+
+cd apps/web && npm install
+npm run prepare:assets && npm run dev   # the website — see docs/website.md
 ```
 
 The core crates deliberately do not depend on Tauri, so `cargo test` at the
 repository root works on any machine. If you are only touching the runtime,
-the parser or persistence, you never need the desktop toolchain.
+the parser or persistence, you never need the desktop toolchain. The website
+needs Rust's `wasm32-unknown-unknown` target and
+[wasm-pack](https://rustwasm.github.io/wasm-pack/), and nothing else.
 
 ## Before you open a pull request
 
@@ -22,12 +27,26 @@ the parser or persistence, you never need the desktop toolchain.
 cargo fmt --all
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
+RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps
 
 cd apps/desktop
 npm run typecheck && npm run lint && npm run format:check
 ```
 
-CI runs exactly these, so if they pass locally they will pass there.
+And if you touched anything the website builds on — the core crates, the
+desktop's components, or `apps/web` itself:
+
+```sh
+cargo clippy -p hyperlab-web --target wasm32-unknown-unknown --all-targets
+
+cd apps/web
+npm run prepare:assets          # the wasm package and the example stacks
+npm run format:check && npm run build
+```
+
+CI runs exactly these, so if they pass locally they will pass there. Do not
+skip the documentation build: parts of `hyperlab-web` are compiled only for
+wasm, and a doc link to one of them resolves everywhere except there.
 
 ## What good looks like here
 

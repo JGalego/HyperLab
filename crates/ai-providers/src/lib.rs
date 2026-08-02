@@ -18,6 +18,7 @@
 //! a provider means adding a module and one arm.
 //!
 //! ```
+//! # #[cfg(feature = "native")] {
 //! use hyperlab_ai::{NoKeychain, ProviderConfig, ProviderKind};
 //! use hyperlab_ai_providers::build;
 //!
@@ -29,6 +30,7 @@
 //!     Ok(provider) => assert_eq!(provider.name(), "anthropic"),
 //!     Err(why) => println!("{why}"),
 //! }
+//! # }
 //! ```
 //!
 //! # Keys
@@ -50,16 +52,22 @@
 #![warn(missing_docs)]
 
 pub mod anthropic;
+#[cfg(feature = "native")]
 mod http;
 pub mod openai;
+mod text;
 
+#[cfg(feature = "native")]
 use std::sync::Arc;
 
+#[cfg(feature = "native")]
 use hyperlab_ai::{
     AiError, AiProvider, AiResult, KeySource, Keychain, MockProvider, ProviderConfig, ProviderKind,
 };
 
+#[cfg(feature = "native")]
 pub use anthropic::AnthropicProvider;
+#[cfg(feature = "native")]
 pub use openai::OpenAiProvider;
 
 /// Builds the provider a configuration describes.
@@ -72,6 +80,7 @@ pub use openai::OpenAiProvider;
 ///
 /// Returns [`AiError::NotConfigured`] if something the client needs is
 /// missing, and [`AiError::Unsupported`] for a kind no client here speaks.
+#[cfg(feature = "native")]
 pub fn build(
     name: &str,
     config: &ProviderConfig,
@@ -103,6 +112,7 @@ pub fn build(
 ///
 /// A provider that is defined by its address — a local server, a gateway —
 /// cannot have a sensible default, and guessing a port is worse than asking.
+#[cfg(feature = "native")]
 fn with_required_base_url(config: &ProviderConfig) -> AiResult<ProviderConfig> {
     if config.base_url.is_none() {
         return Err(AiError::NotConfigured(format!(
@@ -120,6 +130,7 @@ fn with_required_base_url(config: &ProviderConfig) -> AiResult<ProviderConfig> {
 /// Returns [`AiError::NotConfigured`] naming the empty place. An unset
 /// variable is nearly always a typo or a shell that did not export it; an
 /// empty keychain entry means nobody has typed the key in yet.
+#[cfg(feature = "native")]
 fn configured_key(
     name: &str,
     config: &ProviderConfig,
@@ -135,6 +146,7 @@ fn configured_key(
 }
 
 /// What to say about a place that was named and found empty.
+#[cfg(feature = "native")]
 fn empty(source: &KeySource) -> String {
     match source {
         KeySource::Environment(variable) => {
@@ -144,7 +156,7 @@ fn empty(source: &KeySource) -> String {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "native"))]
 mod tests {
     use hyperlab_ai::NoKeychain;
 

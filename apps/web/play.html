@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HyperLab</title>
+    <meta name="description" content="HyperLab running in your browser." />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <!-- GitHub Pages cannot send the cross-origin-isolation headers that make
+         SharedArrayBuffer available, and without it a script cannot block on a
+         real dialog. This service worker adds the headers and reloads once,
+         which is the accepted arrangement for static hosts. -->
+    <script src="coi-serviceworker.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

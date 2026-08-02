@@ -51,6 +51,10 @@
 
 #![warn(missing_docs)]
 
+// Driving somebody else's MCP server means spawning a program, which a
+// browser cannot do. The rest of this crate — the tool table, the policy —
+// is what a page needs, and compiles for it.
+#[cfg(not(target_arch = "wasm32"))]
 mod client;
 mod error;
 pub mod jsonrpc;
@@ -59,6 +63,7 @@ mod registry;
 mod server;
 mod tools;
 
+#[cfg(not(target_arch = "wasm32"))]
 pub use client::{Client, ExternalTool, Launch, MAX_LINE, PATIENCE, SHUTDOWN_GRACE};
 pub use error::{ToolError, ToolResult};
 pub use permission::{

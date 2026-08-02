@@ -6,6 +6,8 @@
 //! [`TcpListener`](std::net::TcpListener) on loopback — see [`support`] — so
 //! nothing here touches a network or a vendor.
 
+#![cfg(feature = "native")]
+
 mod support;
 
 use hyperlab_ai::{

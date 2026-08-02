@@ -10,12 +10,16 @@
 //! * `max_tokens` is required (see [`DEFAULT_MAX_TOKENS`]).
 
 use hyperlab_ai::{
-    AiError, AiProvider, AiResult, BoxFuture, Capabilities, ChatMessage, Completion,
-    CompletionRequest, FinishReason, ProviderConfig, Role, ToolCall, ToolDefinition, Usage,
+    AiError, AiResult, ChatMessage, Completion, CompletionRequest, FinishReason, Role, ToolCall,
+    ToolDefinition, Usage,
 };
+#[cfg(feature = "native")]
+use hyperlab_ai::{AiProvider, BoxFuture, Capabilities, ProviderConfig};
 use serde_json::{Map, Value, json};
 
-use crate::http::{Endpoint, text_at};
+#[cfg(feature = "native")]
+use crate::http::Endpoint;
+use crate::text::text_at;
 
 /// Where requests go when the configuration does not say.
 pub const DEFAULT_BASE_URL: &str = "https://api.anthropic.com/v1";
@@ -34,6 +38,7 @@ pub const API_VERSION: &str = "2023-06-01";
 pub const DEFAULT_MAX_TOKENS: u32 = 4096;
 
 /// A provider that speaks Anthropic's Messages API.
+#[cfg(feature = "native")]
 pub struct AnthropicProvider {
     name: String,
     model: String,
@@ -41,6 +46,7 @@ pub struct AnthropicProvider {
     endpoint: Endpoint,
 }
 
+#[cfg(feature = "native")]
 impl AnthropicProvider {
     /// Builds a provider with a key the caller has already found.
     ///
@@ -72,39 +78,45 @@ impl AnthropicProvider {
             )?,
         })
     }
-
-    /// The body of a `/messages` request.
-    fn completion_body(&self, request: &CompletionRequest) -> Value {
-        let mut body = Map::new();
-        body.insert(
-            "model".into(),
-            json!(if request.model.is_empty() {
-                &self.model
-            } else {
-                &request.model
-            }),
-        );
-        body.insert(
-            "max_tokens".into(),
-            json!(request.max_tokens.unwrap_or(DEFAULT_MAX_TOKENS)),
-        );
-        if let Some(system) = hoist_system(&request.messages) {
-            body.insert("system".into(), json!(system));
-        }
-        body.insert("messages".into(), encode_messages(&request.messages));
-        if !request.tools.is_empty() {
-            body.insert(
-                "tools".into(),
-                Value::Array(request.tools.iter().map(encode_tool).collect()),
-            );
-        }
-        if let Some(temperature) = request.temperature {
-            body.insert("temperature".into(), json!(temperature));
-        }
-        Value::Object(body)
-    }
 }
 
+/// The body of a `/messages` request.
+///
+/// A free function rather than a method so that a host that brings its own
+/// transport — the browser — can speak the protocol without building a
+/// client. `default_model` is used when the request names none.
+#[must_use]
+pub fn completion_body(default_model: &str, request: &CompletionRequest) -> Value {
+    let mut body = Map::new();
+    body.insert(
+        "model".into(),
+        json!(if request.model.is_empty() {
+            default_model
+        } else {
+            &request.model
+        }),
+    );
+    body.insert(
+        "max_tokens".into(),
+        json!(request.max_tokens.unwrap_or(DEFAULT_MAX_TOKENS)),
+    );
+    if let Some(system) = hoist_system(&request.messages) {
+        body.insert("system".into(), json!(system));
+    }
+    body.insert("messages".into(), encode_messages(&request.messages));
+    if !request.tools.is_empty() {
+        body.insert(
+            "tools".into(),
+            Value::Array(request.tools.iter().map(encode_tool).collect()),
+        );
+    }
+    if let Some(temperature) = request.temperature {
+        body.insert("temperature".into(), json!(temperature));
+    }
+    Value::Object(body)
+}
+
+#[cfg(feature = "native")]
 impl AiProvider for AnthropicProvider {
     fn name(&self) -> &str {
         &self.name
@@ -122,7 +134,7 @@ impl AiProvider for AnthropicProvider {
 
     fn complete<'a>(&'a self, request: CompletionRequest) -> BoxFuture<'a, AiResult<Completion>> {
         let endpoint = self.endpoint.clone();
-        let body = self.completion_body(&request);
+        let body = completion_body(&self.model, &request);
         Box::pin(async move {
             let reply = endpoint.post_json("messages", body, describe_error).await?;
             decode_completion(&reply)
@@ -214,7 +226,11 @@ fn encode_tool(tool: &ToolDefinition) -> Value {
 }
 
 /// Reads a reply into a [`Completion`].
-fn decode_completion(reply: &Value) -> AiResult<Completion> {
+///
+/// # Errors
+///
+/// Returns [`AiError::Protocol`] if the reply is not shaped like an answer.
+pub fn decode_completion(reply: &Value) -> AiResult<Completion> {
     let blocks = reply
         .get("content")
         .and_then(Value::as_array)
@@ -295,35 +311,26 @@ fn count(usage: &Value, field: &str) -> u32 {
         .unwrap_or(0)
 }
 
-/// The API's own account of what went wrong.
-fn describe_error(reply: &Value) -> Option<String> {
+/// The API's own account of what went wrong, from an error reply's body.
+#[must_use]
+pub fn describe_error(reply: &Value) -> Option<String> {
     text_at(reply, &["error", "message"])
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use hyperlab_ai::ProviderKind;
-
-    fn provider() -> AnthropicProvider {
-        AnthropicProvider::with_api_key(
-            "anthropic",
-            &ProviderConfig::new(ProviderKind::Anthropic, "a-model"),
-            None,
-        )
-        .expect("no key, nothing to go wrong")
-    }
 
     #[test]
     fn max_tokens_is_always_sent_because_the_api_insists() {
         let mut request = CompletionRequest::new("a-model", vec![ChatMessage::user("hi")]);
         assert_eq!(
-            provider().completion_body(&request)["max_tokens"],
+            completion_body("a-model", &request)["max_tokens"],
             DEFAULT_MAX_TOKENS
         );
 
         request.max_tokens = Some(64);
-        assert_eq!(provider().completion_body(&request)["max_tokens"], 64);
+        assert_eq!(completion_body("a-model", &request)["max_tokens"], 64);
     }
 
     #[test]
@@ -336,7 +343,7 @@ mod tests {
                 ChatMessage::system("and kind"),
             ],
         );
-        let body = provider().completion_body(&request);
+        let body = completion_body("a-model", &request);
         assert_eq!(body["system"], "be brief\n\nand kind");
         assert_eq!(
             body["messages"],
@@ -347,7 +354,7 @@ mod tests {
     #[test]
     fn a_conversation_with_no_system_prompt_sends_no_field() {
         let request = CompletionRequest::new("a-model", vec![ChatMessage::user("hello")]);
-        assert!(provider().completion_body(&request).get("system").is_none());
+        assert!(completion_body("a-model", &request).get("system").is_none());
     }
 
     #[test]
@@ -368,7 +375,7 @@ mod tests {
         );
 
         assert_eq!(
-            provider().completion_body(&request)["messages"],
+            completion_body("a-model", &request)["messages"],
             json!([
                 {"role": "user", "content": [{"type": "text", "text": "what is on card 2?"}]},
                 {"role": "assistant", "content": [
@@ -391,7 +398,7 @@ mod tests {
                 ChatMessage::tool_result("toolu_2", "two"),
             ],
         );
-        let messages = provider().completion_body(&request)["messages"].clone();
+        let messages = completion_body("a-model", &request)["messages"].clone();
         assert_eq!(messages.as_array().map(Vec::len), Some(1));
         assert_eq!(messages[0]["content"].as_array().map(Vec::len), Some(2));
     }
@@ -402,7 +409,7 @@ mod tests {
             "a-model",
             vec![ChatMessage::user("hi"), ChatMessage::assistant("")],
         );
-        let messages = provider().completion_body(&request)["messages"].clone();
+        let messages = completion_body("a-model", &request)["messages"].clone();
         assert_eq!(messages.as_array().map(Vec::len), Some(1));
     }
 
@@ -413,7 +420,7 @@ mod tests {
                 ToolDefinition::new("read_card", "Reads a card.", json!({"type": "object"})),
             ]);
         assert_eq!(
-            provider().completion_body(&request)["tools"],
+            completion_body("a-model", &request)["tools"],
             json!([{
                 "name": "read_card",
                 "description": "Reads a card.",

@@ -1071,6 +1071,10 @@ crates/
 apps/desktop/
     src-tauri/      the shell: state, commands, view model
     src/            React: renderer, inspector, editors, theme
+
+crates/web/         the same commands as the shell, as WebAssembly
+apps/web/           the website: the desktop's renderer over crates/web,
+                    and the landing page — see docs/website.md
 ```
 
 The dependency graph runs one way, and is enforced by Cargo:
