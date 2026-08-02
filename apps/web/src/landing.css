@@ -293,3 +293,45 @@ body {
 .colophon a {
   color: var(--ink);
 }
+
+/* ----------------------------------------------------------------- phones */
+
+/*
+ * A phone is narrower than `put ai("Summarize this card") into field
+ * "Summary"`. Scrolling the sample sideways is no help when nothing on
+ * screen says it scrolls — the line just stops at the edge and looks
+ * broken — and shrinking it to fit would take it under ten pixels. So on a
+ * narrow screen it wraps instead.
+ */
+@media (max-width: 34rem) {
+  .desk {
+    padding: 20px 10px 32px;
+    gap: 20px;
+  }
+
+  .window__body {
+    padding: 12px 14px;
+  }
+
+  .hero__script {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    font-size: 11px;
+  }
+
+  .hero__line {
+    font-size: 15px;
+  }
+
+  /* Thumb-sized, and each on its own line rather than three cramped side
+     by side. */
+  .hero__buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .button {
+    text-align: center;
+    padding: 8px 18px;
+  }
+}
