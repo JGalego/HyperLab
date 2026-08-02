@@ -1,0 +1,39 @@
+[package]
+name = "hyperlab-web"
+description = "HyperLab in a browser: the runtime compiled to WebAssembly, behind the same command surface the desktop shell exposes."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lib]
+# `cdylib` is the WebAssembly module; `rlib` lets the pure parts — the view
+# model, provider resolution — be tested on the host like any other crate.
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+hyperlab-ai.workspace = true
+# Protocol only: the browser brings its own transport, so reqwest and the
+# native clients stay out of the build.
+hyperlab-ai-providers = { path = "../ai-providers", version = "0.2.0", default-features = false }
+hyperlab-assistant.workspace = true
+hyperlab-graph.workspace = true
+hyperlab-hyperscript.workspace = true
+hyperlab-mcp.workspace = true
+hyperlab-persistence.workspace = true
+hyperlab-runtime.workspace = true
+hyperlab-stack.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+# The JavaScript boundary exists only on the WebAssembly target, so the host
+# build — `cargo test` at the repository root — never compiles it.
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+js-sys = "0.3"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+
+[lints]
+workspace = true

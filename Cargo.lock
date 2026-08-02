@@ -563,6 +563,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "hyperlab-web"
+version = "0.2.0"
+dependencies = [
+ "hyperlab-ai",
+ "hyperlab-ai-providers",
+ "hyperlab-assistant",
+ "hyperlab-graph",
+ "hyperlab-hyperscript",
+ "hyperlab-mcp",
+ "hyperlab-persistence",
+ "hyperlab-runtime",
+ "hyperlab-stack",
+ "js-sys",
+ "serde",
+ "serde_json",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+]
+
+[[package]]
 name = "icu_collections"
 version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
