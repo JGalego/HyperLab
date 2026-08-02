@@ -12,7 +12,7 @@
 //!   [`Host`](hyperlab_runtime::Host) callbacks cross into JavaScript, which
 //!   blocks the worker on `Atomics.wait` while the page shows the same
 //!   dialog. Neither side of that trade lives in this crate: the host is a
-//!   JavaScript object handed to [`api::init`].
+//!   JavaScript object handed to `api::init`.
 //! * **Files.** There is no file system. A stack travels as the single-file
 //!   JSON `hyperlab-persistence` already speaks, uploaded and downloaded by
 //!   the page.

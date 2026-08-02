@@ -1,8 +1,9 @@
 //! Reaching a language model from a page, with the page's own transport.
 //!
-//! The native build turns a [`ProviderConfig`] into a client that owns an
-//! HTTP stack. A browser already has one — `fetch` — and it is the only one
-//! a page may use, so here a configuration resolves to a [`WebProvider`]:
+//! The native build turns a [`ProviderConfig`](hyperlab_ai::ProviderConfig)
+//! into a client that owns an HTTP stack. A browser already has one —
+//! `fetch` — and it is the only one a page may use, so here a
+//! configuration resolves to a [`WebProvider`]:
 //! the address to post to, the headers to send, and the wire protocol to
 //! speak, with the actual sending left to JavaScript.
 //!
