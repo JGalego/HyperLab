@@ -154,12 +154,12 @@ recover it from the original. **Go ▸ Map** finds the trap book without
 running a line.
 
 <p align="center">
-  <img src="docs/deck.gif" alt="Paging through the LLMs for n00bs deck" width="640">
+  <img src="docs/deck.gif" alt="Paging through the Language Models, Explained deck" width="640">
 </p>
 
-**LLMs for n00bs** — how a language model works, drawn one bit deep, with the
-paper to read next under each slide. Near the end it asks a real model, and
-says so plainly when none is set up.
+**Language Models, Explained** — how a language model works, drawn one bit
+deep, with the paper to read next under each slide. Near the end it asks a
+real model, and says so plainly when none is set up.
 
 **Address Book** — what backgrounds are for: everyone gets a card, and the
 layout they all sit on is edited once.

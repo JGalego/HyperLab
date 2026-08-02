@@ -39,7 +39,7 @@ import { AiSettings } from './components/AiSettings';
 const EXAMPLES = [
   'Address Book',
   'Cluedo',
-  'LLMs for n00bs',
+  'Language Models, Explained',
   'Myst',
   'Recipe Box',
   'Todo',

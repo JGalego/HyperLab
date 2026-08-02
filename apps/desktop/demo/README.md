@@ -19,7 +19,7 @@ shoot everything else and say so.
 | `film` | Recipe Box | cards, scripts, undo, the message box, the assistant |
 | `cluedo` | Cluedo | pictures, and a model reading the game off the card |
 | `myst` | Myst | what **Go ▸ Map** knows about a stack it never ran |
-| `deck` | LLMs for n00bs | a slide deck that asks a real model before its references |
+| `deck` | Language Models, Explained | a slide deck that asks a real model before its references |
 
 ## What is actually being filmed
 

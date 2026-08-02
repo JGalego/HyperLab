@@ -32,8 +32,10 @@ HyperLab now runs in a browser, whole:
   with no server of its own.
 - The Todo example's list now ends with a return, so the first item anyone
   adds lands on its own line instead of gluing itself to the last one.
-- **The LLMs for n00bs deck says more, and says where it got it.** The
-  paragraphs now name the mechanism — logits and softmax, byte-pair
+- **The deck about language models says more, and says where it got it.** It
+  is now called **Language Models, Explained** — it was LLMs for n00bs, and
+  a stack that opens with an insult is a poor way in. The paragraphs now
+  name the mechanism — logits and softmax, byte-pair
   encoding, the quadratic cost of attention, top-p — at the level of a
   final-year undergraduate course, and each slide carries the paper to read
   next. A closing card collects those, together with the textbook, the

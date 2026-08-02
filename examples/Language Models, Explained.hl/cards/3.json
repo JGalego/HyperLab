@@ -1,6 +1,6 @@
 {
   "id": 3,
-  "name": "LLMs for n00bs",
+  "name": "Language Models, Explained",
   "script": "",
   "properties": {},
   "created_at": 1735689600000,
@@ -15,7 +15,7 @@
         "enabled": true,
         "locked": true,
         "style": "shadow",
-        "text": "LLMs for n00bs",
+        "text": "Language Models, Explained",
         "visible": true,
         "wrap": true
       },
@@ -53,7 +53,7 @@
     },
     {
       "id": 15,
-      "name": "LLMs for n00bs",
+      "name": "Language Models, Explained",
       "script": "",
       "properties": {
         "enabled": true,

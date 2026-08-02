@@ -395,7 +395,7 @@ fn myst_is_a_hub_with_one_way_in_and_no_way_out() {
 
 #[test]
 fn the_deck_numbers_its_own_slides() {
-    let mut runtime = open("LLMs for n00bs");
+    let mut runtime = open("Language Models, Explained");
     let slides = runtime.stack().card_count();
     assert_eq!(slides, 10);
     assert_eq!(
@@ -426,7 +426,7 @@ fn the_deck_numbers_its_own_slides() {
 
 #[test]
 fn the_last_slide_says_so_when_no_model_is_set_up() {
-    let mut runtime = open("LLMs for n00bs");
+    let mut runtime = open("Language Models, Explained");
     go_to(&mut runtime, "Now ask a real one");
 
     // `SilentHost` is what the tests run with, and what a fresh install is:
@@ -445,7 +445,7 @@ fn the_last_slide_says_so_when_no_model_is_set_up() {
 
 #[test]
 fn the_last_slide_refuses_an_empty_question() {
-    let mut runtime = open("LLMs for n00bs");
+    let mut runtime = open("Language Models, Explained");
     go_to(&mut runtime, "Now ask a real one");
 
     let card = ObjectId::new(hyperlab_stack::ObjectKind::Card, runtime.current_card());

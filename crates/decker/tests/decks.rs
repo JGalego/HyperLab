@@ -26,7 +26,7 @@ const EVERY: [&str; 6] = [
     "Todo",
     "Cluedo",
     "Myst",
-    "LLMs for n00bs",
+    "Language Models, Explained",
 ];
 
 #[test]
@@ -52,7 +52,7 @@ fn only_the_assistant_and_the_opening_fail_to_come_across() {
         let opening = "a deck has no moment of opening to run a script at".to_string();
         let expected: Vec<String> = match name {
             "Address Book" | "Myst" | "Cluedo" => vec![opening],
-            "LLMs for n00bs" => vec![
+            "Language Models, Explained" => vec![
                 "\"ask assistant\" is not translated".to_string(),
                 "\"the result\" is not translated".to_string(),
                 "\"the result\" is not translated".to_string(),

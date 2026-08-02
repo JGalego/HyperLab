@@ -35,7 +35,7 @@ film="${1:-film}"
 case "$film" in
 cluedo) default_stack="$root/examples/Cluedo.hl" ;;
 myst) default_stack="$root/examples/Myst.hl" ;;
-deck) default_stack="$root/examples/LLMs for n00bs.hl" ;;
+deck) default_stack="$root/examples/Language Models, Explained.hl" ;;
 *) default_stack="$root/examples/Recipe Box.hl" ;;
 esac
 stack="${2:-$default_stack}"

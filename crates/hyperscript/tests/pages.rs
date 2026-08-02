@@ -26,7 +26,7 @@ const EVERY: [&str; 6] = [
     "Todo",
     "Cluedo",
     "Myst",
-    "LLMs for n00bs",
+    "Language Models, Explained",
 ];
 
 #[test]
@@ -45,7 +45,7 @@ fn only_the_assistant_fails_to_come_across() {
     // last card, and a page has none — so exactly one note, and it says that.
     for name in EVERY {
         let notes = page(&open(name)).notes;
-        if name == "LLMs for n00bs" {
+        if name == "Language Models, Explained" {
             assert_eq!(notes, vec!["a page has no assistant to ask".to_string()]);
         } else {
             assert!(notes.is_empty(), "{name} left something behind: {notes:?}");

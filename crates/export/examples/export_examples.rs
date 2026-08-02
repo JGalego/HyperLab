@@ -32,7 +32,7 @@ const STACKS: [(&str, &str); 6] = [
     ("Todo", "todo"),
     ("Cluedo", "cluedo"),
     ("Myst", "myst"),
-    ("LLMs for n00bs", "deck"),
+    ("Language Models, Explained", "deck"),
 ];
 
 fn main() {

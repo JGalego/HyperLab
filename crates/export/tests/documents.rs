@@ -44,7 +44,7 @@ fn every_example_becomes_a_pdf_with_a_page_per_card() {
         "Todo",
         "Cluedo",
         "Myst",
-        "LLMs for n00bs",
+        "Language Models, Explained",
     ] {
         let stack = open(name);
         let pdf = to_pdf(&stack).unwrap_or_else(|error| panic!("{name}: {error}"));

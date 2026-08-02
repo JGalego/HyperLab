@@ -40,7 +40,7 @@ fn main() {
         ("Todo", todo()),
         ("Cluedo", cluedo()),
         ("Myst", myst()),
-        ("LLMs for n00bs", deck()),
+        ("Language Models, Explained", deck()),
     ] {
         freeze_timestamps(&mut stack);
         let path = examples.join(format!("{name}.hl"));
@@ -1169,7 +1169,7 @@ struct Slide {
 /// The deck, in the order it is shown.
 const SLIDES: [Slide; 10] = [
     Slide {
-        title: "LLMs for n00bs",
+        title: "Language Models, Explained",
         body: "What follows is a working picture of how a language model turns text into \
                more text. It is coarse in places and nowhere false, and it is enough to \
                reason about the thing rather than guess at it.\n\n\
@@ -1309,7 +1309,7 @@ Schick et al., Toolformer: Language Models Can Teach Themselves to Use Tools, 20
 
 /// A slide deck about language models, driven by one on the last card.
 fn deck() -> Stack {
-    let mut stack = Stack::new("LLMs for n00bs");
+    let mut stack = Stack::new("Language Models, Explained");
     stack.set_size(Size::new(640, 500));
     stack.set_script("on openStack\n  go to first card\nend openStack");
 
