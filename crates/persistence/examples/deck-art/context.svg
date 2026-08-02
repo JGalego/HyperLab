@@ -17,7 +17,7 @@
     <g stroke="#000" stroke-width="2" fill="none">
       <path d="M104 76 H24" marker-end="url(#tip2)"/>
     </g>
-    <text x="16" y="62" font-style="italic">older text, gone</text>
+    <text x="16" y="62" font-style="italic">older tokens, evicted</text>
 
     <g fill="#fff" stroke="#000" stroke-width="2">
       <rect x="170" y="72" width="46" height="14"/>
@@ -34,8 +34,8 @@
       <rect x="398" y="96" width="38" height="14"/>
     </g>
     <rect x="158" y="54" width="292" height="76" fill="none" stroke="#000" stroke-width="5"/>
-    <text x="304" y="150" text-anchor="middle" font-size="15">everything it can see</text>
-    <text x="304" y="172" text-anchor="middle" font-style="italic">your prompt, the whole chat, and nothing else</text>
+    <text x="304" y="150" text-anchor="middle" font-size="15">the context window</text>
+    <text x="304" y="172" text-anchor="middle" font-style="italic">re-sent in full on every request</text>
 
     <g stroke="#000" stroke-width="2" fill="none">
       <path d="M462 92 h34"/>
@@ -43,6 +43,6 @@
       <path d="M492 60 h8 M492 124 h8"/>
     </g>
     <text x="510" y="88" font-size="13">a fixed</text>
-    <text x="510" y="106" font-size="13">size</text>
+    <text x="510" y="106" font-size="13">token budget</text>
   </g>
 </svg>

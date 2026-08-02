@@ -97,7 +97,13 @@ pub fn document(stack: &Stack) -> Result<Vec<u8>, ExportError> {
     pdf.pages(tree)
         .count(i32::try_from(kids.len()).unwrap_or(i32::MAX))
         .kids(kids);
-    pdf.type1_font(font).base_font(Name(b"Helvetica"));
+    // [`crate::encode`] spells strings in WinAnsi, and a reader told nothing
+    // assumes the Standard encoding instead — where the bytes curly quotes and
+    // dashes live at are unassigned, so those characters silently draw as
+    // nothing. Saying which encoding it is costs one entry.
+    pdf.type1_font(font)
+        .base_font(Name(b"Helvetica"))
+        .encoding_predefined(Name(b"WinAnsiEncoding"));
 
     for (page, content, used) in &pages {
         let mut written = pdf.page(*page);

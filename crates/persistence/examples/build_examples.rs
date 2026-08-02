@@ -1143,94 +1143,174 @@ fn myst_art() -> [(&'static str, &'static [u8]); 11] {
 
 // --------------------------------------------------------------- the deck
 
-/// One slide: its title, what it says, and the diagram under it.
+/// What sits in the middle of a slide, under the paragraph.
+enum Illustration {
+    /// A diagram, by the name the stack knows the picture by.
+    Diagram(&'static str),
+    /// A question box, a button, and room for a live model's answer.
+    Ask,
+    /// The reference list the citation lines have been building towards.
+    Bibliography,
+}
+
+/// One slide: its heading, the paragraph, the source to go to next, and
+/// whatever is drawn between them.
 ///
-/// The last slide has no diagram, because what goes there is a question box
-/// and a real model's answer.
+/// `reading` is the citation shown while the idea is still on screen, which
+/// is where a citation is worth anything. The last card collects them and
+/// adds the books, the explainers and the code.
 struct Slide {
     title: &'static str,
     body: &'static str,
-    picture: &'static str,
+    reading: &'static str,
+    under: Illustration,
 }
 
-/// Nine slides on what a language model does, in the order they are shown.
-const SLIDES: [Slide; 9] = [
+/// The deck, in the order it is shown.
+const SLIDES: [Slide; 10] = [
     Slide {
         title: "LLMs for n00bs",
-        body: "Nine slides on what a language model actually does, and what it cannot. \
-               No maths.\n\n\
-               The last one asks a real one, if you have set one up. \
-               Press Next.",
-        picture: "pipeline.svg",
+        body: "What follows is a working picture of how a language model turns text into \
+               more text. It is coarse in places and nowhere false, and it is enough to \
+               reason about the thing rather than guess at it.\n\n\
+               Each card cites where to read further. The last one asks a live model, if \
+               you have configured one. Press Next.",
+        reading: "Jurafsky & Martin, Speech and Language Processing, 3rd ed. draft \u{b7} \
+                  web.stanford.edu/~jurafsky/slp3",
+        under: Illustration::Diagram("pipeline.svg"),
     },
     Slide {
         title: "It predicts the next token",
-        body: "Given some text, it scores every token that could come next, picks one, \
-               sticks it on the end, and starts again.\n\n\
-               That is the whole mechanic. Everything on the slides after this one is a \
-               consequence of it.",
-        picture: "next-token.svg",
+        body: "The model reads a sequence of tokens and scores every token in its \
+               vocabulary \u{2014} tens of thousands of numbers, one per candidate. A \
+               softmax turns those scores into a probability distribution, one token is \
+               drawn from it and appended, and the whole sequence goes through \
+               again.\n\n\
+               That loop is the entire mechanic. Everything after this card follows from \
+               it.",
+        reading: "Vaswani et al., Attention Is All You Need, NeurIPS 2017 \u{b7} \
+                  arXiv:1706.03762\n\
+                  Alammar, The Illustrated Transformer \u{b7} \
+                  jalammar.github.io/illustrated-transformer",
+        under: Illustration::Diagram("next-token.svg"),
     },
     Slide {
         title: "A token is not a word",
-        body: "Text is chopped up before the model ever sees it. Common words survive \
-               whole; rarer ones become several pieces.\n\n\
-               Which is why it is bad at questions about spelling. It was never shown \
-               the letters.",
-        picture: "tokens.svg",
+        body: "A tokenizer splits text into subword units learned by byte-pair encoding, \
+               which merges the commonest adjacent pairs over and over. Frequent words \
+               survive whole while rare ones shatter, and a leading space usually \
+               belongs to the token after it.\n\n\
+               The model never sees letters, so counting the r\u{2019}s in a word asks it \
+               about something it was never given.",
+        reading: "Sennrich, Haddow & Birch, Neural Machine Translation of Rare Words with \
+                  Subword Units, ACL 2016 \u{b7} arXiv:1508.07909\n\
+                  Watch a tokenizer work: tiktokenizer.vercel.app",
+        under: Illustration::Diagram("tokens.svg"),
     },
     Slide {
-        title: "The context is everything it knows",
-        body: "Nothing carries over between conversations. Whatever it seems to remember \
-               about you was sent again, in the text.\n\n\
-               The window holding that text has a size, and the oldest of it falls out.",
-        picture: "context.svg",
+        title: "The context window is all it knows",
+        body: "Nothing persists between calls. The weights are frozen, so whatever a chat \
+               appears to remember about you was re-sent as text in that same request, \
+               and the window holding it has a hard limit in tokens.\n\n\
+               Position inside that window matters: models use what sits at the start and \
+               the end of a long context far more reliably than what is buried in the \
+               middle.",
+        reading: "Liu et al., Lost in the Middle: How Language Models Use Long Contexts, \
+                  TACL 2024 \u{b7} arXiv:2307.03172",
+        under: Illustration::Diagram("context.svg"),
     },
     Slide {
-        title: "Temperature is how boldly it picks",
-        body: "The scores do not change. What changes is how far down the list it is \
-               willing to reach.\n\n\
-               Low repeats itself. High invents, and is wrong more often. Neither one is \
-               a truth setting.",
-        picture: "temperature.svg",
+        title: "Temperature reshapes the distribution",
+        body: "Sampling is a stage after the model, and the scores it is handed do not \
+               change. Temperature divides them before the softmax: under one sharpens \
+               the distribution toward the top candidates, over one flattens it. Top-p \
+               keeps the smallest set of tokens whose probability sums to p.\n\n\
+               Turning it down buys consistency. Truthfulness is not on this dial.",
+        reading: "Holtzman et al., The Curious Case of Neural Text Degeneration, ICLR 2020 \
+                  \u{b7} arXiv:1904.09751",
+        under: Illustration::Diagram("temperature.svg"),
     },
     Slide {
         title: "It is not looking anything up",
-        body: "No index, no database, no search. The answer is computed from a great many \
-               numbers, so it reads exactly as fluently when it is wrong as when it is \
-               right.\n\n\
-               If it has to be right about something, put the something in the prompt.",
-        picture: "weights.svg",
+        body: "There is no index and no retrieval step. An answer is computed in one \
+               forward pass from billions of weights that encode statistical regularities \
+               of the training data, so facts seen often come back well and facts seen \
+               rarely are reconstructed \u{2014} with the same fluent cadence either \
+               way.\n\n\
+               If it has to be right, put the source in the context and say so.",
+        reading: "Lewis et al., Retrieval-Augmented Generation for Knowledge-Intensive NLP \
+                  Tasks, NeurIPS 2020 \u{b7} arXiv:2005.11401",
+        under: Illustration::Diagram("weights.svg"),
     },
     Slide {
-        title: "Prompting is just more context",
-        body: "There are no magic words. Telling it to be accurate does nothing; showing \
-               it one worked example does a great deal.\n\n\
-               Say what you want, show it once, hand over the material, then ask.",
-        picture: "prompt.svg",
+        title: "A prompt is just more context",
+        body: "Nothing in a prompt is a command. Your text conditions the same next-token \
+               distribution everything else conditions, which is why an incantation like \
+               \u{201c}be accurate\u{201d} moves almost nothing while one worked example \
+               moves a great deal: the behaviour was already there, and the example \
+               locates it.\n\n\
+               Show the shape of the answer you want, then hand over the material.",
+        reading: "Brown et al., Language Models are Few-Shot Learners, NeurIPS 2020 \u{b7} \
+                  arXiv:2005.14165",
+        under: Illustration::Diagram("prompt.svg"),
     },
     Slide {
-        title: "Tools: it asks, something else does",
-        body: "A model can only emit text. It cannot open a file or call anything. So it \
-               emits a request, a program outside it does the work, and the result comes \
-               back as more text.\n\n\
-               HyperLab's assistant works this way, which is why you can undo what it does.",
-        picture: "tools.svg",
+        title: "Tools: it asks, something else acts",
+        body: "A model emits tokens and nothing else. Given a schema of the calls \
+               available to it, it can emit one \u{2014} a name and arguments \u{2014} and \
+               stop. Your program parses that, does the work, and feeds the result back \
+               as more tokens.\n\n\
+               HyperLab's assistant works this way, and each action it takes is a \
+               Command, which is why you can undo it.",
+        reading: "Yao et al., ReAct: Synergizing Reasoning and Acting in Language Models, \
+                  ICLR 2023 \u{b7} arXiv:2210.03629",
+        under: Illustration::Diagram("tools.svg"),
     },
     Slide {
         title: "Now ask a real one",
-        body: "Everything above was written in advance. This is not. Set a model up under \
-               AI \u{25b8} Show Assistant \u{25b8} Settings, then press Ask.\n\n\
-               With none set up it says so and the stack keeps working, which is the rule \
-               the runtime enforces.",
-        picture: "",
+        body: "Everything so far was written in advance. What comes back below will not \
+               be. Configure a provider under AI \u{25b8} Show Assistant \u{25b8} Settings, \
+               then press Ask.\n\n\
+               With none configured it says so and the stack keeps working, which is a \
+               rule the runtime enforces.",
+        reading: "Ouyang et al., Training language models to follow instructions with \
+                  human feedback, NeurIPS 2022 \u{b7} arXiv:2203.02155",
+        under: Illustration::Ask,
+    },
+    Slide {
+        title: "Where to read next",
+        body: "Everything cited on the way here, and a few places to go further than these \
+               cards can.",
+        reading: "",
+        under: Illustration::Bibliography,
     },
 ];
+
+/// The reference list on the last card.
+///
+/// Written out rather than gathered from the `reading` lines above, because
+/// half of it never appears on a slide: the textbook, the explainers, the
+/// code you can read in an afternoon.
+const BIBLIOGRAPHY: &str = "\
+Jurafsky & Martin, Speech and Language Processing, 3rd ed. draft \u{b7} \
+web.stanford.edu/~jurafsky/slp3
+Alammar, The Illustrated Transformer \u{b7} jalammar.github.io/illustrated-transformer
+Karpathy, nanoGPT \u{2014} a GPT in about 300 lines \u{b7} github.com/karpathy/nanoGPT
+Elhage et al., A Mathematical Framework for Transformer Circuits, 2021 \u{b7} \
+transformer-circuits.pub
+Bender, Gebru, McMillan-Major & Shmitchell, On the Dangers of Stochastic Parrots, \
+FAccT 2021
+Wei et al., Chain-of-Thought Prompting Elicits Reasoning in Large Language Models, \
+NeurIPS 2022 \u{b7} arXiv:2201.11903
+Ji et al., Survey of Hallucination in Natural Language Generation, ACM Computing \
+Surveys \u{b7} arXiv:2202.03629
+Schick et al., Toolformer: Language Models Can Teach Themselves to Use Tools, 2023 \
+\u{b7} arXiv:2302.04761";
 
 /// A slide deck about language models, driven by one on the last card.
 fn deck() -> Stack {
     let mut stack = Stack::new("LLMs for n00bs");
-    stack.set_size(Size::new(640, 400));
+    stack.set_size(Size::new(640, 500));
     stack.set_script("on openStack\n  go to first card\nend openStack");
 
     for (name, bytes) in deck_art() {
@@ -1253,24 +1333,41 @@ fn deck() -> Stack {
     for (index, (card, slide)) in cards.iter().zip(SLIDES.iter()).enumerate() {
         rename_card(&mut stack, *card, slide.title);
         add_card_title(&mut stack, *card, slide.title, Rect::new(24, 12, 592, 30));
-        add_card_caption(
-            &mut stack,
-            *card,
-            "Body",
-            slide.body,
-            Rect::new(24, 50, 592, 78),
-        );
 
-        if slide.picture.is_empty() {
-            build_ask_slide(&mut stack, *card);
-        } else {
-            add_card_image(
+        // The reference list needs the height a diagram would have taken, so
+        // its paragraph is the one short one in the deck.
+        let body = match slide.under {
+            Illustration::Bibliography => Rect::new(24, 50, 592, 60),
+            _ => Rect::new(24, 50, 592, 112),
+        };
+        add_card_caption(&mut stack, *card, "Body", slide.body, body);
+
+        match slide.under {
+            Illustration::Diagram(picture) => add_card_image(
                 &mut stack,
                 *card,
                 slide.title,
-                Rect::new(24, 134, 592, 200),
-                slide.picture,
+                Rect::new(24, 170, 592, 200),
+                picture,
                 "",
+            ),
+            Illustration::Ask => build_ask_slide(&mut stack, *card),
+            Illustration::Bibliography => add_card_caption(
+                &mut stack,
+                *card,
+                "References",
+                BIBLIOGRAPHY,
+                Rect::new(24, 118, 592, 312),
+            ),
+        }
+
+        if !slide.reading.is_empty() {
+            add_card_caption(
+                &mut stack,
+                *card,
+                "Reading",
+                slide.reading,
+                Rect::new(24, 376, 592, 54),
             );
         }
 
@@ -1291,25 +1388,25 @@ fn deck() -> Stack {
         &mut stack,
         background,
         "Back",
-        Rect::new(24, 346, 84, 26),
+        Rect::new(24, 442, 84, 26),
         "on mouseUp\n  go to previous card\nend mouseUp",
     );
     add_button(
         &mut stack,
         background,
         "Next",
-        Rect::new(116, 346, 84, 26),
+        Rect::new(116, 442, 84, 26),
         "on mouseUp\n  go to next card\nend mouseUp",
     );
     add_button(
         &mut stack,
         background,
         "Start Over",
-        Rect::new(208, 346, 100, 26),
+        Rect::new(208, 442, 100, 26),
         "on mouseUp\n  go to first card\nend mouseUp",
     );
 
-    let mut where_are_we = stack.new_part(PartKind::Field, "Where", Rect::new(500, 348, 116, 22));
+    let mut where_are_we = stack.new_part(PartKind::Field, "Where", Rect::new(500, 444, 116, 22));
     set(&mut where_are_we, "locked", true);
     set(&mut where_are_we, "style", "transparent");
     background_of(&mut stack, background).add_part(where_are_we);
@@ -1328,14 +1425,14 @@ fn build_ask_slide(stack: &mut Stack, card: Id) {
         stack,
         card,
         "Question",
-        Rect::new(24, 134, 592, 40),
+        Rect::new(24, 170, 592, 44),
         "Explain a context window to someone who has never heard of one.",
     );
     add_card_button(
         stack,
         card,
         "Ask",
-        Rect::new(24, 182, 96, 26),
+        Rect::new(24, 222, 96, 26),
         "on mouseUp\n  \
            put field \"Question\" into asked\n  \
            if asked is empty then\n    \
@@ -1351,7 +1448,7 @@ fn build_ask_slide(stack: &mut Stack, card: Id) {
          end mouseUp",
         false,
     );
-    add_card_field(stack, card, "Answer", Rect::new(24, 216, 592, 118), "");
+    add_card_field(stack, card, "Answer", Rect::new(24, 256, 592, 114), "");
 }
 
 /// The diagrams, by the name they are known by inside the stack.

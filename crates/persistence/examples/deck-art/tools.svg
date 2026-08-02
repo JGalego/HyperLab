@@ -16,18 +16,18 @@
 
     <rect x="422" y="66" width="140" height="70" fill="#fff" stroke="#000" stroke-width="2.5"/>
     <text x="492" y="96">your program</text>
-    <text x="492" y="118" font-size="12" font-style="italic">files, network, a stack</text>
+    <text x="492" y="118" font-size="12" font-style="italic">whatever it is allowed to touch</text>
 
     <g stroke="#000" stroke-width="2.5" fill="none">
       <path d="M178 82 h236" marker-end="url(#tip4)"/>
       <path d="M414 122 H178" marker-end="url(#tip4)"/>
     </g>
     <g font-size="13">
-      <text x="296" y="74">“call search with these words”</text>
-      <text x="296" y="142">the result, as more text</text>
+      <text x="296" y="74">a tool call: a name and arguments</text>
+      <text x="296" y="142">the result, appended as tokens</text>
     </g>
 
-    <text x="296" y="176" font-size="13" font-style="italic">round and round until it has an answer</text>
-    <text x="296" y="194" font-size="13" font-style="italic">— that is all an agent is</text>
+    <text x="296" y="176" font-size="13" font-style="italic">the loop repeats until the model stops</text>
+    <text x="296" y="194" font-size="13" font-style="italic">asking for tools, which is what an agent is</text>
   </g>
 </svg>

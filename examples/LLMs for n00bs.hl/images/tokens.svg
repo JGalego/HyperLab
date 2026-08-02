@@ -19,7 +19,7 @@
       <text x="187" y="80">12144</text>
       <text x="258" y="80">1122</text>
     </g>
-    <text x="168" y="104" font-size="13" font-style="italic">four pieces, one word</text>
+    <text x="168" y="104" font-size="13" font-style="italic">four token ids, one word</text>
 
     <g fill="#fff" stroke="#000" stroke-width="2.5">
       <rect x="40" y="126" width="56" height="34"/>
@@ -31,15 +31,16 @@
       <text x="121" y="149">aw</text>
       <text x="189" y="149">berry</text>
     </g>
-    <text x="136" y="184" font-size="13" font-style="italic">three pieces, and not one of them is an “r”</text>
+    <text x="136" y="184" font-size="13" font-style="italic">three tokens, none of them the letter r</text>
 
     <g stroke="#000" stroke-width="2.5" fill="none"><path d="M330 24 v152"/></g>
     <g font-size="13" text-anchor="start" fill="#000">
-      <text x="354" y="60">Common words are one piece.</text>
-      <text x="354" y="84">Rare ones are several.</text>
-      <text x="354" y="124">Asking how many r’s are in</text>
-      <text x="354" y="146">“strawberry” asks about letters</text>
-      <text x="354" y="168">it was never shown.</text>
+      <text x="354" y="50">Byte-pair encoding merges the</text>
+      <text x="354" y="72">commonest pairs, so frequent</text>
+      <text x="354" y="94">words survive whole.</text>
+      <text x="354" y="132">Asking how many r’s are in</text>
+      <text x="354" y="154">“strawberry” asks about letters</text>
+      <text x="354" y="176">it was never shown.</text>
     </g>
   </g>
 </svg>

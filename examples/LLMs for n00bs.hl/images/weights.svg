@@ -21,13 +21,13 @@
     <g stroke="#000" stroke-width="6" fill="none" stroke-linecap="round">
       <path d="M42 26 L182 154 M182 26 L42 154"/>
     </g>
-    <text x="112" y="180" font-size="15">nothing is looked up</text>
+    <text x="112" y="180" font-size="15">no index, no retrieval</text>
 
     <path d="M296 24 v152" stroke="#000" stroke-width="2.5" fill="none"/>
 
     <circle cx="440" cy="90" r="62" fill="url(#d50w)" stroke="#000" stroke-width="2.5"/>
     <rect x="386" y="76" width="108" height="28" fill="#fff" stroke="#000" stroke-width="2.5"/>
     <text x="440" y="95" font-size="15">weights</text>
-    <text x="440" y="180" font-size="15">every answer is computed</text>
+    <text x="440" y="180" font-size="15">one forward pass computes it</text>
   </g>
 </svg>

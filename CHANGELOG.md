@@ -32,6 +32,18 @@ HyperLab now runs in a browser, whole:
   with no server of its own.
 - The Todo example's list now ends with a return, so the first item anyone
   adds lands on its own line instead of gluing itself to the last one.
+- **The LLMs for n00bs deck says more, and says where it got it.** The
+  paragraphs now name the mechanism — logits and softmax, byte-pair
+  encoding, the quadratic cost of attention, top-p — at the level of a
+  final-year undergraduate course, and each slide carries the paper to read
+  next. A closing card collects those, together with the textbook, the
+  explainers and a GPT you can read in an afternoon. The cards grew to
+  640×500 to hold it.
+- **A PDF says which encoding its text is in.** It was written in WinAnsi
+  and declared nothing, so a reader fell back to the Standard encoding and
+  quietly drew nothing at all where a dash or a curly quote had been. Menu
+  paths keep their ▸ as well, as the nearest mark WinAnsi has rather than a
+  question mark.
 
 For integrators: `hyperlab-persistence` gained in-memory single-file
 functions (`single_file_string`, `stack_from_single_file`);

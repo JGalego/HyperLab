@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 592 200" width="592" height="200">
-  <title>Text goes in, one token comes out, and the whole thing runs again</title>
+  <title>A token sequence in, logits out, one token sampled and appended</title>
   <defs>
     <pattern id="d50" width="4" height="4" patternUnits="userSpaceOnUse">
       <rect width="4" height="4" fill="#fff"/>
@@ -26,13 +26,13 @@
     <rect x="480" y="56" width="70" height="28" fill="#000"/>
     <text x="515" y="76" fill="#fff" font-size="15">mat</text>
 
-    <text x="76" y="132">what you sent</text>
-    <text x="296" y="140">a score for every token it knows</text>
-    <text x="515" y="132">one token</text>
+    <text x="76" y="132">the token sequence</text>
+    <text x="296" y="140">logits: one score per vocabulary token</text>
+    <text x="515" y="132">one sampled token</text>
 
     <g stroke="#000" stroke-width="2.5" fill="none">
       <path d="M515 150 v22 H76 v-24" marker-end="url(#tip)"/>
     </g>
-    <text x="296" y="188" font-style="italic">stuck on the end, and the whole thing runs again</text>
+    <text x="296" y="188" font-style="italic">appended, and the forward pass runs again</text>
   </g>
 </svg>

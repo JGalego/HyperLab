@@ -1,6 +1,6 @@
 {
   "id": 6,
-  "name": "The context is everything it knows",
+  "name": "The context window is all it knows",
   "script": "",
   "properties": {},
   "created_at": 1735689600000,
@@ -8,14 +8,14 @@
   "background": 2,
   "parts": [
     {
-      "id": 21,
+      "id": 25,
       "name": "Title",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "shadow",
-        "text": "The context is everything it knows",
+        "text": "The context window is all it knows",
         "visible": true,
         "wrap": true
       },
@@ -30,14 +30,14 @@
       }
     },
     {
-      "id": 22,
+      "id": 26,
       "name": "Body",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "Nothing carries over between conversations. Whatever it seems to remember about you was sent again, in the text.\n\nThe window holding that text has a size, and the oldest of it falls out.",
+        "text": "Nothing persists between calls. The weights are frozen, so whatever a chat appears to remember about you was re-sent as text in that same request, and the window holding it has a hard limit in tokens.\n\nPosition inside that window matters: models use what sits at the start and the end of a long context far more reliably than what is buried in the middle.",
         "visible": true,
         "wrap": true
       },
@@ -48,12 +48,12 @@
         "left": 24,
         "top": 50,
         "width": 592,
-        "height": 78
+        "height": 112
       }
     },
     {
-      "id": 23,
-      "name": "The context is everything it knows",
+      "id": 27,
+      "name": "The context window is all it knows",
       "script": "",
       "properties": {
         "enabled": true,
@@ -66,9 +66,31 @@
       "kind": "image",
       "geometry": {
         "left": 24,
-        "top": 134,
+        "top": 170,
         "width": 592,
         "height": 200
+      }
+    },
+    {
+      "id": 28,
+      "name": "Reading",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Liu et al., Lost in the Middle: How Language Models Use Long Contexts, TACL 2024 · arXiv:2307.03172",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 376,
+        "width": 592,
+        "height": 54
       }
     }
   ]

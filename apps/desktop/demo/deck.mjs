@@ -1,11 +1,12 @@
 /**
- * Films the slide deck, and then lets it prove its own last slide.
+ * Films the slide deck, and then lets it prove its own last claim.
  *
- * Eight of the nine slides are a drawing and a paragraph, written in
- * advance. The ninth is a question box wired to `ask assistant`, so with a
- * model configured the deck about language models is finished by one — and
- * with none configured it says so and keeps working, which is the rule the
- * runtime enforces and the thing worth filming either way.
+ * Most of the deck is a drawing, a paragraph and the paper to read next, all
+ * written in advance. The card before the references is a question box wired
+ * to `ask assistant`, so with a model configured the deck about language
+ * models is finished by one — and with none configured it says so and keeps
+ * working, which is the rule the runtime enforces and the thing worth
+ * filming either way.
  *
  *   GROQ_API_KEY=… apps/desktop/demo/record.sh deck
  */
@@ -21,22 +22,24 @@ async function next(page, caption, hold = 3200) {
 
 async function main() {
   const withAi = assistantAvailable();
-  // Snug around a 640×400 card and the inspector.
-  const { page, finish } = await roll({ size: { width: 1020, height: 580 }, withAi });
+  // Snug around a 640×500 card and the inspector.
+  const { page, finish } = await roll({ size: { width: 1020, height: 680 }, withAi });
 
   await say(page, 'A stack that teaches the thing it is built on.', 2800);
   await beat(1400);
 
-  await next(page, 'Score every token, pick one, do it again.');
+  await next(page, 'Score every token, sample one, do it again.');
   await next(page, 'Which is why it cannot count the r’s in strawberry.');
   await next(page, 'Nothing carries over. It was all sent again.');
-  await next(page, 'Temperature is nerve, not truth.');
+  await next(page, 'Temperature reshapes the distribution. It does not add truth.');
   await next(page, 'No index. Every answer is computed.');
   await next(page, 'No magic words — just more context.');
   await next(page, 'And a tool call is text too.');
 
   await press(page, 'button.part:has-text("Next")', { settle: 900 });
   await askAct(page, withAi);
+
+  await next(page, 'Every claim on the way here, with somewhere to check it.', 3600);
 
   await say(page, 'HyperLab — github.com/JGalego/HyperLab', 3000);
   await say(page, '', 400);

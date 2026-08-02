@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 592 200" width="592" height="200">
-  <title>The likeliest next token, and the ones it beat</title>
+  <title>The distribution over the next token, and the tail it came from</title>
   <defs>
     <pattern id="d50" width="4" height="4" patternUnits="userSpaceOnUse">
       <rect width="4" height="4" fill="#fff"/>
@@ -37,9 +37,9 @@
       <path d="M96 48 v140"/>
     </g>
     <g font-size="13" font-style="italic" text-anchor="end">
-      <text x="568" y="130">every token it knows gets a number.</text>
-      <text x="568" y="150">then one of them is picked, added to</text>
-      <text x="568" y="170">the end, and the question asked again.</text>
+      <text x="568" y="130">a logit for every token in the vocabulary;</text>
+      <text x="568" y="150">softmax makes them a distribution, one is</text>
+      <text x="568" y="170">sampled, appended, and the pass runs again.</text>
     </g>
   </g>
 </svg>

@@ -1,6 +1,6 @@
 {
-  "id": 5,
-  "name": "A token is not a word",
+  "id": 12,
+  "name": "Where to read next",
   "script": "",
   "properties": {},
   "created_at": 1735689600000,
@@ -8,14 +8,14 @@
   "background": 2,
   "parts": [
     {
-      "id": 21,
+      "id": 51,
       "name": "Title",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "shadow",
-        "text": "A token is not a word",
+        "text": "Where to read next",
         "visible": true,
         "wrap": true
       },
@@ -30,14 +30,14 @@
       }
     },
     {
-      "id": 22,
+      "id": 52,
       "name": "Body",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "A tokenizer splits text into subword units learned by byte-pair encoding, which merges the commonest adjacent pairs over and over. Frequent words survive whole while rare ones shatter, and a leading space usually belongs to the token after it.\n\nThe model never sees letters, so counting the r’s in a word asks it about something it was never given.",
+        "text": "Everything cited on the way here, and a few places to go further than these cards can.",
         "visible": true,
         "wrap": true
       },
@@ -48,38 +48,18 @@
         "left": 24,
         "top": 50,
         "width": 592,
-        "height": 112
+        "height": 60
       }
     },
     {
-      "id": 23,
-      "name": "A token is not a word",
-      "script": "",
-      "properties": {
-        "enabled": true,
-        "source": "tokens.svg",
-        "style": "transparent",
-        "visible": true
-      },
-      "created_at": 1735689600000,
-      "updated_at": 1735689600000,
-      "kind": "image",
-      "geometry": {
-        "left": 24,
-        "top": 170,
-        "width": 592,
-        "height": 200
-      }
-    },
-    {
-      "id": 24,
-      "name": "Reading",
+      "id": 53,
+      "name": "References",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "Sennrich, Haddow & Birch, Neural Machine Translation of Rare Words with Subword Units, ACL 2016 · arXiv:1508.07909\nWatch a tokenizer work: tiktokenizer.vercel.app",
+        "text": "Jurafsky & Martin, Speech and Language Processing, 3rd ed. draft · web.stanford.edu/~jurafsky/slp3\nAlammar, The Illustrated Transformer · jalammar.github.io/illustrated-transformer\nKarpathy, nanoGPT — a GPT in about 300 lines · github.com/karpathy/nanoGPT\nElhage et al., A Mathematical Framework for Transformer Circuits, 2021 · transformer-circuits.pub\nBender, Gebru, McMillan-Major & Shmitchell, On the Dangers of Stochastic Parrots, FAccT 2021\nWei et al., Chain-of-Thought Prompting Elicits Reasoning in Large Language Models, NeurIPS 2022 · arXiv:2201.11903\nJi et al., Survey of Hallucination in Natural Language Generation, ACM Computing Surveys · arXiv:2202.03629\nSchick et al., Toolformer: Language Models Can Teach Themselves to Use Tools, 2023 · arXiv:2302.04761",
         "visible": true,
         "wrap": true
       },
@@ -88,9 +68,9 @@
       "kind": "field",
       "geometry": {
         "left": 24,
-        "top": 376,
+        "top": 118,
         "width": 592,
-        "height": 54
+        "height": 312
       }
     }
   ]

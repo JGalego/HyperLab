@@ -3,10 +3,10 @@
   "name": "LLMs for n00bs",
   "size": {
     "width": 640,
-    "height": 400
+    "height": 500
   },
   "properties": {},
-  "nextId": 45,
+  "nextId": 58,
   "createdAt": 1735689600000,
   "updatedAt": 1735689600000,
   "backgrounds": [
@@ -21,6 +21,7 @@
     8,
     9,
     10,
-    11
+    11,
+    12
   ]
 }

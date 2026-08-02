@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 592 200" width="592" height="200">
-  <title>The same probabilities, sampled timidly and boldly</title>
+  <title>One set of logits, sharpened and flattened by temperature</title>
   <defs>
     <pattern id="d50t" width="4" height="4" patternUnits="userSpaceOnUse">
       <rect width="4" height="4" fill="#fff"/>
@@ -16,7 +16,7 @@
     </g>
     <path d="M36 148 h182" stroke="#000" stroke-width="2.5" fill="none"/>
     <text x="127" y="172" font-size="15">temperature 0.2</text>
-    <text x="127" y="190" font-style="italic">the same answer every time</text>
+    <text x="127" y="190" font-style="italic">sharpened toward the mode</text>
 
     <path d="M296 24 v152" stroke="#000" stroke-width="2.5" fill="none"/>
 
@@ -29,6 +29,6 @@
     </g>
     <path d="M366 148 h182" stroke="#000" stroke-width="2.5" fill="none"/>
     <text x="457" y="172" font-size="15">temperature 1.2</text>
-    <text x="457" y="190" font-style="italic">surprising, and wrong more often</text>
+    <text x="457" y="190" font-style="italic">flattened; the tail is reachable</text>
   </g>
 </svg>

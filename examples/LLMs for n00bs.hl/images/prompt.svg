@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 592 200" width="592" height="200">
-  <title>What actually goes in a prompt, stacked up</title>
+  <title>The parts of a prompt, and the one sequence they become</title>
   <defs>
     <marker id="tip3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0 0 L10 5 L0 10 z"/>
@@ -17,10 +17,10 @@
       <rect x="30" y="138" width="270" height="34"/>
     </g>
     <g fill="#000" stroke="none">
-      <text x="46" y="40">say what you want</text>
-      <text x="46" y="80">show one worked example</text>
-      <text x="46" y="120">hand over the material</text>
-      <text x="46" y="160">then ask</text>
+      <text x="46" y="40">instruction</text>
+      <text x="46" y="80">demonstration: input → output</text>
+      <text x="46" y="120">the material</text>
+      <text x="46" y="160">the query</text>
     </g>
     <g stroke="#000" stroke-width="2.5" fill="none">
       <path d="M308 95 h56" marker-end="url(#tip3)"/>
@@ -33,7 +33,7 @@
       <path d="M548 78 h24 M548 95 h24 M548 112 h14"/>
     </g>
     <g font-size="13" font-style="italic" text-anchor="middle">
-      <text x="165" y="192">there are no magic words — this is the whole trick</text>
+      <text x="165" y="192">one sequence; the model sees no seam between them</text>
     </g>
   </g>
 </svg>

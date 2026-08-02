@@ -116,7 +116,7 @@ fn encode_char(character: char) -> u8 {
         '\u{2013}' => 0x96,
         '\u{2014}' => 0x97,
         '\u{2122}' => 0x99,
-        '\u{203a}' => 0x9b,
+        '\u{203a}' | '\u{25b8}' => 0x9b,
         _ => b'?',
     }
 }
@@ -183,9 +183,12 @@ mod tests {
 
     #[test]
     fn a_character_winansi_cannot_hold_becomes_a_question_mark() {
-        // The deck uses ▸ in a caption, and there is no WinAnsi byte for it.
-        assert_eq!(encode("▸"), b"?");
-        // But the ones it does have are spelled properly rather than lost.
+        assert_eq!(encode("\u{2603}"), b"?");
+        // The deck writes menu paths with ▸, which WinAnsi has no byte for.
+        // The nearest thing it does have reads as the same gesture, and a
+        // question mark in the middle of a menu path reads as a fault.
+        assert_eq!(encode("▸"), [0x9b]);
+        // The ones it has outright are spelled properly rather than lost.
         assert_eq!(encode("…"), [0x85]);
         assert_eq!(encode("don’t"), [b'd', b'o', b'n', 0x92, b't']);
     }

@@ -9,7 +9,7 @@ use std::path::{Path, PathBuf};
 
 use hyperlab_export::to_pdf;
 use hyperlab_persistence::load;
-use hyperlab_stack::{Object, Stack};
+use hyperlab_stack::{Object, PartContainer, Stack};
 
 fn examples() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -68,6 +68,40 @@ fn the_words_on_a_card_are_words_in_the_document() {
     assert!(
         text.contains("/BaseFont /Helvetica"),
         "the text should use a font every reader already has"
+    );
+}
+
+#[test]
+fn a_dash_written_into_a_card_survives_into_the_document() {
+    // The strings are WinAnsi, and a reader told nothing assumes the Standard
+    // encoding — which leaves the byte an em dash is written as unassigned, so
+    // the character draws as nothing at all. It went unnoticed for as long as
+    // no example used one.
+    let mut stack = hyperlab_stack::Stack::new("Punctuation");
+    let card = stack.cards()[0].id();
+    let mut caption = stack.new_part(
+        hyperlab_stack::PartKind::Field,
+        "Caption",
+        hyperlab_stack::Rect::new(10, 10, 200, 40),
+    );
+    caption
+        .set_property("text", "one \u{2014} two".into())
+        .expect("text is an ordinary property");
+    stack
+        .card_mut(card)
+        .expect("the card exists")
+        .add_part(caption);
+
+    let pdf = to_pdf(&stack).expect("it exports");
+    let text = String::from_utf8_lossy(&pdf);
+    assert!(
+        text.contains("/Encoding /WinAnsiEncoding"),
+        "the strings are WinAnsi and the font has to say so"
+    );
+    // Strings are written as hex, so this is "one \x97 two" spelled out.
+    assert!(
+        text.contains("<6F6E6520972074776F>"),
+        "the dash did not reach the page"
     );
 }
 

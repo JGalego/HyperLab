@@ -139,15 +139,16 @@ Then open one of the [examples](#examples).
   <img src="docs/cluedo.gif" alt="Playing Cluedo in HyperLab" width="640">
 </p>
 
-**Cluedo** — a drawn mansion with clickable rooms, portraits that are
-themselves the buttons, and a case you close by deduction.
+**Cluedo** — the mansion is drawn artwork, and every room on it is a button.
+You close the case by clicking your way around it.
 
 <p align="center">
   <img src="docs/myst.gif" alt="The map of the Myst stack" width="640">
 </p>
 
-**Myst** — an island, four Ages, and one book you should not open. Its
-shape is the point, which is why [DeMystify](https://github.com/glthr/DeMystify)
+**Myst** — wander the island and the Ages it leads to, and try not to open the
+wrong book. Its shape is the point, which is why
+[DeMystify](https://github.com/glthr/DeMystify)
 and [mystextract](https://github.com/erkyrath/mystextract) both exist to
 recover it from the original. **Go ▸ Map** finds the trap book without
 running a line.
@@ -156,14 +157,17 @@ running a line.
   <img src="docs/deck.gif" alt="Paging through the LLMs for n00bs deck" width="640">
 </p>
 
-**LLMs for n00bs** — nine slides on how a language model works, drawn one bit
-deep. The last one asks a real model, and says so plainly when none is set up.
+**LLMs for n00bs** — how a language model works, drawn one bit deep, with the
+paper to read next under each slide. Near the end it asks a real model, and
+says so plainly when none is set up.
 
-**Address Book** — a card per person, one shared background.
+**Address Book** — what backgrounds are for: everyone gets a card, and the
+layout they all sit on is edited once.
 
 **Recipe Box** — chunk expressions doing arithmetic on the ingredients.
 
-**Todo** — a list, a dialog, and a loop.
+**Todo** — adds whatever you type to the list, then walks back through it to
+count what is still outstanding.
 
 Every one of them is also a PDF in [`docs/`](docs) — the same cards, exported
 by HyperLab itself, if you would rather read them than run them.

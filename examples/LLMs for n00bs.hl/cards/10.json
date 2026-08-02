@@ -1,6 +1,6 @@
 {
   "id": 10,
-  "name": "Tools: it asks, something else does",
+  "name": "Tools: it asks, something else acts",
   "script": "",
   "properties": {},
   "created_at": 1735689600000,
@@ -8,14 +8,14 @@
   "background": 2,
   "parts": [
     {
-      "id": 33,
+      "id": 41,
       "name": "Title",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "shadow",
-        "text": "Tools: it asks, something else does",
+        "text": "Tools: it asks, something else acts",
         "visible": true,
         "wrap": true
       },
@@ -30,14 +30,14 @@
       }
     },
     {
-      "id": 34,
+      "id": 42,
       "name": "Body",
       "script": "",
       "properties": {
         "enabled": true,
         "locked": true,
         "style": "transparent",
-        "text": "A model can only emit text. It cannot open a file or call anything. So it emits a request, a program outside it does the work, and the result comes back as more text.\n\nHyperLab's assistant works this way, which is why you can undo what it does.",
+        "text": "A model emits tokens and nothing else. Given a schema of the calls available to it, it can emit one — a name and arguments — and stop. Your program parses that, does the work, and feeds the result back as more tokens.\n\nHyperLab's assistant works this way, and each action it takes is a Command, which is why you can undo it.",
         "visible": true,
         "wrap": true
       },
@@ -48,12 +48,12 @@
         "left": 24,
         "top": 50,
         "width": 592,
-        "height": 78
+        "height": 112
       }
     },
     {
-      "id": 35,
-      "name": "Tools: it asks, something else does",
+      "id": 43,
+      "name": "Tools: it asks, something else acts",
       "script": "",
       "properties": {
         "enabled": true,
@@ -66,9 +66,31 @@
       "kind": "image",
       "geometry": {
         "left": 24,
-        "top": 134,
+        "top": 170,
         "width": 592,
         "height": 200
+      }
+    },
+    {
+      "id": 44,
+      "name": "Reading",
+      "script": "",
+      "properties": {
+        "enabled": true,
+        "locked": true,
+        "style": "transparent",
+        "text": "Yao et al., ReAct: Synergizing Reasoning and Acting in Language Models, ICLR 2023 · arXiv:2210.03629",
+        "visible": true,
+        "wrap": true
+      },
+      "created_at": 1735689600000,
+      "updated_at": 1735689600000,
+      "kind": "field",
+      "geometry": {
+        "left": 24,
+        "top": 376,
+        "width": 592,
+        "height": 54
       }
     }
   ]

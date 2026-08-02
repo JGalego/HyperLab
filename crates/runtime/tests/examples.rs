@@ -397,27 +397,31 @@ fn myst_is_a_hub_with_one_way_in_and_no_way_out() {
 fn the_deck_numbers_its_own_slides() {
     let mut runtime = open("LLMs for n00bs");
     let slides = runtime.stack().card_count();
-    assert_eq!(slides, 9);
-    assert_eq!(runtime.stack().images().len(), 8, "one diagram per slide");
+    assert_eq!(slides, 10);
+    assert_eq!(
+        runtime.stack().images().len(),
+        8,
+        "a diagram on every slide that is not the question or the references"
+    );
 
     // The first card is numbered on opening, not on the first click: the
     // window sends `openCard` when a stack opens, and the counter is drawn
     // before anyone has pressed anything.
-    assert_eq!(field_text(&runtime, "Where"), "1 of 9");
+    assert_eq!(field_text(&runtime, "Where"), "1 of 10");
 
     click(&mut runtime, "Next");
-    assert_eq!(field_text(&runtime, "Where"), "2 of 9");
+    assert_eq!(field_text(&runtime, "Where"), "2 of 10");
     click(&mut runtime, "Back");
-    assert_eq!(field_text(&runtime, "Where"), "1 of 9");
+    assert_eq!(field_text(&runtime, "Where"), "1 of 10");
 
     // Paging to the end and pressing Start Over gets back to the beginning
     // from anywhere, which is the only way out of the last slide.
     for _ in 1..slides {
         click(&mut runtime, "Next");
     }
-    assert_eq!(field_text(&runtime, "Where"), "9 of 9");
+    assert_eq!(field_text(&runtime, "Where"), "10 of 10");
     click(&mut runtime, "Start Over");
-    assert_eq!(field_text(&runtime, "Where"), "1 of 9");
+    assert_eq!(field_text(&runtime, "Where"), "1 of 10");
 }
 
 #[test]
