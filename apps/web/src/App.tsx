@@ -46,29 +46,30 @@ const EXAMPLES = [
 ] as const;
 
 /**
- * The typeface handed to the exporters, fetched the first time one runs.
+ * The typeface the exporters draw a picture's words with, fetched the first
+ * time one runs.
  *
  * A page cannot read the machine's fonts, so words drawn inside a stack's
- * artwork would come out of a PDF or a deck missing. This is fetched only
- * when someone actually exports, so the 400 KB never lands on an ordinary
- * visit. A failure is not fatal: the export goes ahead without the labels,
- * which is what the desktop does on a machine with no fonts either.
+ * artwork would come out of a PDF or a deck missing. Fetched only when
+ * somebody actually exports, so the 400 KB never lands on an ordinary
+ * visit, and kept afterwards.
  */
-let fontRegistered: Promise<void> | null = null;
+let fontBytes: Promise<Uint8Array> | null = null;
 
-function withFont(): Promise<void> {
-  fontRegistered ??= fetch('fonts/LiberationSans-Regular.ttf')
+function theFont(): Promise<Uint8Array> {
+  fontBytes ??= fetch('fonts/LiberationSans-Regular.ttf')
     .then((response) => {
       if (!response.ok) throw new Error(`${response.status}`);
       return response.arrayBuffer();
     })
-    .then((buffer) => api.addFont(new Uint8Array(buffer)))
-    .catch(() => {
-      // Tried once; a second export should try again rather than inherit
+    .then((buffer) => new Uint8Array(buffer))
+    .catch((reason: unknown) => {
+      // Tried once; a later export should try again rather than inherit
       // this failure for the life of the page.
-      fontRegistered = null;
+      fontBytes = null;
+      throw reason;
     });
-  return fontRegistered;
+  return fontBytes;
 }
 
 /**
@@ -379,30 +380,33 @@ export function App() {
     );
   }
 
-  /** The whole stack as a PDF, one page per card. */
+  /**
+   * The whole stack as a PDF, one page per card.
+   *
+   * The exporters are a WebAssembly module of their own, fetched here on
+   * first use, so the notice goes up before the wait rather than after it.
+   */
   function exportPdf() {
-    withFont()
-      .then(() => api.exportPdf())
-      .then(
-        (bytes) => {
-          downloadBytes(`${view.stackName}.pdf`, bytes, 'application/pdf');
-          setNotice(`Downloaded ${view.stackName}.pdf`);
-        },
-        (reason: unknown) => setError(String(reason)),
-      );
+    setNotice(`Exporting ${view.stackName}.pdf…`);
+    api.exportPdf(theFont).then(
+      (bytes) => {
+        downloadBytes(`${view.stackName}.pdf`, bytes, 'application/pdf');
+        setNotice(`Downloaded ${view.stackName}.pdf`);
+      },
+      (reason: unknown) => setError(String(reason)),
+    );
   }
 
   /** The stack as a Decker deck. */
   function exportDeck() {
-    withFont()
-      .then(() => api.exportDeck())
-      .then(
-        ({ source, notes }) => {
-          download(`${view.stackName}.deck`, source, 'text/plain');
-          setNotice(`Downloaded ${view.stackName}.deck${leftBehind(notes)}`);
-        },
-        (reason: unknown) => setError(String(reason)),
-      );
+    setNotice(`Exporting ${view.stackName}.deck…`);
+    api.exportDeck(theFont).then(
+      ({ source, notes }) => {
+        download(`${view.stackName}.deck`, source, 'text/plain');
+        setNotice(`Downloaded ${view.stackName}.deck${leftBehind(notes)}`);
+      },
+      (reason: unknown) => setError(String(reason)),
+    );
   }
 
   /** The map as a PNG. Drawn in the window, because only it knows the shape. */

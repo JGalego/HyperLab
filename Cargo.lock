@@ -580,8 +580,6 @@ dependencies = [
  "hyperlab-ai",
  "hyperlab-ai-providers",
  "hyperlab-assistant",
- "hyperlab-decker",
- "hyperlab-export",
  "hyperlab-graph",
  "hyperlab-hyperscript",
  "hyperlab-mcp",
@@ -593,6 +591,20 @@ dependencies = [
  "serde_json",
  "wasm-bindgen",
  "wasm-bindgen-futures",
+]
+
+[[package]]
+name = "hyperlab-web-export"
+version = "0.2.0"
+dependencies = [
+ "console_error_panic_hook",
+ "hyperlab-decker",
+ "hyperlab-export",
+ "hyperlab-persistence",
+ "hyperlab-stack",
+ "serde",
+ "serde_json",
+ "wasm-bindgen",
 ]
 
 [[package]]

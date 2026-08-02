@@ -1,0 +1,32 @@
+[package]
+name = "hyperlab-web-export"
+description = "Turning a stack into a PDF or a Decker deck, in a browser, as a module of its own."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+hyperlab-decker.workspace = true
+hyperlab-export.workspace = true
+hyperlab-persistence.workspace = true
+hyperlab-stack.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = "0.1"
+wasm-bindgen = "0.2"
+
+[lints]
+workspace = true
+
+[package.metadata.wasm-pack.profile.release]
+# Same reasoning as `hyperlab-web`: wasm-opt downloads a binaryen release
+# mid-build, and a failed download fails the build.
+wasm-opt = false

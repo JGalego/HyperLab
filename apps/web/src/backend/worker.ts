@@ -128,10 +128,6 @@ async function run(message: CallMessage): Promise<Answer> {
   switch (message.command) {
     case 'import_image_bytes':
       return { value: wasm.import_image_bytes(message.args, given) };
-    case 'add_font':
-      return { value: wasm.add_font(message.args, given) };
-    case 'export_pdf':
-      return { bytes: wasm.export_pdf(message.args) };
     case 'ai_ask':
       return { value: await wasm.ai_ask(message.args) };
     default: {

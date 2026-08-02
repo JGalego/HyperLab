@@ -92,10 +92,26 @@ hyperlab_decker::add_font(bytes);
 ```
 
 The site fetches Liberation Sans (OFL, in `public/fonts/`) the first time
-someone exports, so the 400 KB never lands on an ordinary visit, and hands
-it to both. A registered font is loaded *in addition* to the machine's own
-and only stands in for the generic families where the platform found
-nothing — so a desktop export is byte-for-byte what it always was.
+someone exports and hands it to both. A registered font is loaded *in
+addition* to the machine's own, and only stands in for the generic families
+where they resolve to nothing as they stand — which is every browser, and
+also a stock Linux box with no Arial. A machine that can already draw
+sans-serif keeps whatever it was drawing it with.
+
+### Why the exporters are a module of their own
+
+An SVG renderer, a font database and a text shaper come with them, and
+together they are most of what HyperLab compiles to: with the exporters in
+the main module the runtime was 1.6 MB over the wire, paid for by everyone
+who only wanted to click through Cluedo. Split out, the runtime is 326 KB
+and `crates/web-export` is fetched the first time somebody exports
+something.
+
+The seam is the stack's own single-file JSON. `stack_text` hands the text
+over — distinct from `save_stack_json`, which marks the document clean
+because a download *is* the save — and the export module parses it and works
+from that. Nothing else crosses, so the two modules share no state and
+cannot disagree about any.
 
 ## Keys never leave the browser
 
