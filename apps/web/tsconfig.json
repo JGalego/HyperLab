@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "WebWorker"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    // The desktop's components are compiled into this app too — that reuse
+    // is the point of the site — and they resolve their imports against
+    // *their* directory, where nothing is installed. These map them to this
+    // app's packages. The @tauri-apps entries exist only to give the
+    // desktop's api module its types; nothing from it reaches the bundle,
+    // because Vite swaps that module for src/api.ts.
+    "paths": {
+      "react": ["./node_modules/@types/react"],
+      "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom/client": ["./node_modules/@types/react-dom/client.d.ts"],
+      "@tauri-apps/api/core": ["./node_modules/@tauri-apps/api/core.d.ts"],
+      "@tauri-apps/api/event": ["./node_modules/@tauri-apps/api/event.d.ts"],
+      "@tauri-apps/plugin-dialog": [
+        "./node_modules/@tauri-apps/plugin-dialog/dist-js/index.d.ts"
+      ]
+    }
+  },
+  "include": ["src", "../desktop/src"],
+  // The desktop's own entry points are not part of this site: its App is
+  // replaced by src/App.tsx, and its main.tsx by src/main.tsx.
+  "exclude": ["../desktop/src/main.tsx", "../desktop/src/App.tsx", "../desktop/src/vite-env.d.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

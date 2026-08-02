@@ -274,6 +274,11 @@ fn parse_args<'a, T: Deserialize<'a>>(json: &'a str) -> Result<T, JsValue> {
 /// opened on a stack; so does HyperLab, on either shell.
 #[wasm_bindgen]
 pub fn init(host: JsValue) {
+    // A panic in here would otherwise reach the page as "unreachable", which
+    // helps nobody; this turns it into the message and a stack trace.
+    console_error_panic_hook::set_once();
+    // The platform has no clock, so objects are stamped by the browser's.
+    hyperlab_stack::set_clock(|| js_sys::Date::now() as u64);
     HOST.with(|cell| *cell.borrow_mut() = Some(host));
 
     let (settings, mut problems) = match with_host(|h| h.storage_get(SETTINGS_KEY)) {

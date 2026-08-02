@@ -316,7 +316,10 @@ fn todo() -> Stack {
         card,
         "Items",
         Rect::new(20, 44, 340, 196),
-        "x read the HyperTalk reference\nwrite a stack of my own\nshow it to someone",
+        // The trailing newline matters: the Add button does `put it & return
+        // after field "Items"`, and without it the first thing anyone adds
+        // glues itself to "show it to someone".
+        "x read the HyperTalk reference\nwrite a stack of my own\nshow it to someone\n",
     );
 
     add_button(

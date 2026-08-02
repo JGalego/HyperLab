@@ -336,11 +336,10 @@ fn object_argument<'a>(
 
 // ------------------------------------------------------------------- clocks
 
-/// Seconds since the Unix epoch.
+/// Seconds since the Unix epoch, from the same clock that stamps objects —
+/// which is the one a host may have replaced on a platform with none.
 fn unix_seconds() -> u64 {
-    std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .map_or(0, |duration| duration.as_secs())
+    hyperlab_stack::now_millis() / 1_000
 }
 
 /// A random number, from a generator seeded by the clock.
@@ -355,10 +354,15 @@ fn next_random() -> u64 {
     STATE.with(|state| {
         let mut x = state.get();
         if x == 0 {
-            x = std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .map_or(0x2545_F491_4F6C_DD1D, |d| d.subsec_nanos().into())
-                | 1;
+            // Seeded from the shared clock rather than the platform's, which
+            // a browser does not have. The constant covers a clock stuck at
+            // zero; the `| 1` keeps xorshift off its fixed point.
+            let seed = hyperlab_stack::now_millis();
+            x = if seed == 0 {
+                0x2545_F491_4F6C_DD1D
+            } else {
+                seed
+            } | 1;
         }
         // xorshift64: tiny, fast, and good enough to shuffle cards.
         x ^= x << 13;

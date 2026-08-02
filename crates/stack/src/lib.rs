@@ -66,5 +66,5 @@ pub use object::{Object, ObjectCore, ObjectId, ObjectKind};
 pub use part::{Part, PartKind};
 pub use property::PropertyBag;
 pub use stack::{PartLocation, Stack, centre_of};
-pub use time::now_millis;
+pub use time::{now_millis, set_clock};
 pub use value::Value;

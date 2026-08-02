@@ -1,0 +1,34 @@
+{
+  "name": "hyperlab-web",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "description": "The HyperLab website: a retro landing page and the full application in the browser.",
+  "license": "MIT",
+  "scripts": {
+    "wasm": "wasm-pack build ../../crates/web --target web --out-dir ../../apps/web/wasm-pkg --out-name hyperlab_web --no-pack",
+    "examples": "cargo run -p hyperlab-persistence --example pack_single_files -- public/examples",
+    "prepare:assets": "npm run wasm && npm run examples",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\""
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/api": "^2.1.1",
+    "@tauri-apps/plugin-dialog": "^2.2.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^6.0.5",
+    "prettier": "^3.4.2",
+    "typescript": "^6.0.3",
+    "vite": "^8.2.0"
+  }
+}

@@ -1,0 +1,295 @@
+/*
+ * The landing page, dressed the way the application is.
+ *
+ * The values are the Neo Classic theme's — same faces, same measurements,
+ * same hard shadows — restated here because this page is plain HTML with no
+ * bundle to share custom properties through. An original design in the
+ * spirit of late-1980s Macintosh software; nothing is copied from Apple.
+ */
+
+:root {
+  --font-ui:
+    'ChicagoFLF', 'Sysfont', 'Geneva', 'Verdana', 'DejaVu Sans', ui-sans-serif, sans-serif;
+  --font-code: 'Monaco', 'Menlo', 'DejaVu Sans Mono', ui-monospace, monospace;
+
+  --ink: #000000;
+  --paper: #ffffff;
+  --shade: #808080;
+  --shade-light: #c0c0c0;
+  --desk: #9a9a9a;
+
+  --border: 1px solid var(--ink);
+  --radius-button: 9px;
+  --shadow-card: 3px 3px 0 rgba(0, 0, 0, 0.55);
+
+  --space: 8px;
+  --space-wide: 16px;
+
+  --text: 13px;
+  --text-small: 11px;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: var(--text);
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--desk);
+  /* The classic 50% dither, drawn rather than pictured. */
+  background-image:
+    linear-gradient(45deg, rgba(0, 0, 0, 0.06) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(0, 0, 0, 0.06) 25%, transparent 25%);
+  background-size: 4px 4px;
+  -webkit-font-smoothing: none;
+}
+
+/* --------------------------------------------------------------- menu bar */
+
+.menubar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space);
+  padding: 4px 12px;
+  background: var(--paper);
+  border-bottom: var(--border);
+}
+
+.menubar__mark {
+  font-size: 15px;
+}
+
+.menubar__title {
+  font-weight: bold;
+}
+
+.menubar__menu {
+  color: var(--ink);
+}
+
+.menubar__spring {
+  flex: 1;
+}
+
+.menubar__link {
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- windows */
+
+.desk {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 32px var(--space-wide) 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.window {
+  background: var(--paper);
+  border: var(--border);
+  box-shadow: var(--shadow-card);
+}
+
+.window__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space);
+  padding: 3px 6px;
+  border-bottom: var(--border);
+  /* The classic title bar's pinstripes. */
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--paper) 0 2px,
+    var(--shade-light) 2px 3px
+  );
+}
+
+.window__box {
+  width: 11px;
+  height: 11px;
+  background: var(--paper);
+  border: var(--border);
+  flex: none;
+}
+
+.window__title {
+  flex: 1;
+  margin: 0;
+  font-size: var(--text);
+  font-weight: bold;
+  text-align: center;
+  background: var(--paper);
+  padding: 0 var(--space);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.window__body {
+  padding: var(--space-wide) 20px;
+}
+
+.window__body p {
+  margin: 0 0 12px;
+}
+
+.window__body p:last-child {
+  margin-bottom: 0;
+}
+
+.window__body a {
+  color: var(--ink);
+}
+
+.window__body code {
+  font-family: var(--font-code);
+  font-size: var(--text-small);
+}
+
+/* ------------------------------------------------------------------- hero */
+
+.hero__line {
+  font-size: 16px;
+}
+
+.hero__script {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: var(--border);
+  background: var(--paper);
+  box-shadow: inset 2px 2px 0 var(--shade-light);
+  font-family: var(--font-code);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-x: auto;
+}
+
+.hero__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 14px 0 10px;
+}
+
+.button {
+  display: inline-block;
+  padding: 5px 18px;
+  border: var(--border);
+  border-radius: var(--radius-button);
+  background: var(--paper);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.button:active {
+  translate: 2px 2px;
+  box-shadow: none;
+}
+
+/* HyperCard's default button: the one Return would press. */
+.button--default {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+  font-weight: bold;
+}
+
+.hero__note {
+  color: var(--ink);
+  font-size: var(--text-small);
+}
+
+/* ---------------------------------------------------------------- history */
+
+.history__list {
+  margin: 0 0 12px;
+  padding: 0 0 0 8px;
+  list-style: none;
+}
+
+.history__list li {
+  margin: 4px 0;
+}
+
+.history__dedication {
+  border-top: 1px solid var(--shade-light);
+  padding-top: 10px;
+  font-size: var(--text-small);
+}
+
+/* --------------------------------------------------------------- examples */
+
+.stacks {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 10px;
+}
+
+.stack {
+  display: block;
+  height: 100%;
+  padding: 10px 12px;
+  border: var(--border);
+  background: var(--paper);
+  box-shadow: 2px 2px 0 var(--ink);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.stack:active {
+  translate: 2px 2px;
+  box-shadow: none;
+}
+
+.stack__name {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.stack__name::before {
+  content: '🃏 ';
+}
+
+.stack__blurb {
+  display: block;
+  font-size: var(--text-small);
+}
+
+/* --------------------------------------------------------------------- AI */
+
+.ai__promise {
+  padding: 10px 12px;
+  border: var(--border);
+  box-shadow: inset 2px 2px 0 var(--shade-light);
+}
+
+/* --------------------------------------------------------------- colophon */
+
+.colophon {
+  text-align: center;
+  font-size: var(--text-small);
+  padding: 0 var(--space-wide);
+}
+
+.colophon a {
+  color: var(--ink);
+}
